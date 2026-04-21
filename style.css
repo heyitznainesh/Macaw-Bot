@@ -1,0 +1,257 @@
+/* =========================================
+   BASE STYLES (Offline Fonts)
+========================================= */
+body { 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    background-color: #f1f5f9; 
+    height: 100vh; 
+    margin: 0; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+}
+
+.header { 
+    background-color: #ffffff; 
+    padding: 1rem 1.5rem; 
+    display: flex; 
+    align-items: center; 
+    border-bottom: 1px solid #e2e8f0; 
+}
+
+.avatar-container { 
+    width: 58px; 
+    height: 58px; 
+    margin-right: 1rem; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background-color: transparent; 
+}
+
+.parrot-svg { 
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    transition: all 0.5s ease;
+}
+
+.bird-feather { 
+    fill: #94a3b8; /* Static Grey */
+    transition: fill 0.5s ease;
+}
+
+/* =========================================
+   EMOTIONAL STATES & ANIMATIONS
+========================================= */
+.parrot-svg.react-blue .bird-feather { fill: #3b82f6 !important; }
+.parrot-svg.react-blue { 
+    filter: drop-shadow(0 0 15px #3b82f6); 
+    animation: happy-bounce 0.8s ease-in-out infinite; 
+}
+
+@keyframes happy-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.parrot-svg.react-yellow .bird-feather { fill: #facc15 !important; }
+.parrot-svg.react-yellow { 
+    filter: drop-shadow(0 0 15px #facc15); 
+    animation: sad-droop 2.5s ease-in-out infinite; 
+}
+
+@keyframes sad-droop {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(8deg) scale(0.95) translateY(5px); }
+}
+
+.parrot-svg.react-pink .bird-feather { fill: #f472b6 !important; }
+.parrot-svg.react-pink { 
+    filter: drop-shadow(0 0 15px #f472b6); 
+    animation: love-heartbeat 1.2s ease-in-out infinite; 
+}
+
+@keyframes love-heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.08); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.12); }
+}
+
+.parrot-svg.react-green .bird-feather { fill: #22c55e !important; }
+.parrot-svg.react-green { 
+    filter: drop-shadow(0 0 15px #22c55e); 
+    animation: plant-sway 3s ease-in-out infinite; 
+}
+
+@keyframes plant-sway {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+}
+
+.parrot-svg.react-red-shake .bird-feather { fill: #ef4444 !important; }
+.parrot-svg.react-red-shake { 
+    animation: violent-shake 0.1s infinite; 
+    filter: drop-shadow(0 0 15px #ef4444); 
+}
+
+@keyframes violent-shake {
+    0% { transform: translate(2px, 2px); }
+    25% { transform: translate(-2px, -2px); }
+    50% { transform: translate(-2px, 2px); }
+    75% { transform: translate(2px, -2px); }
+    100% { transform: translate(0, 0); }
+}
+
+.parrot-svg.react-bye-pulse .bird-feather { fill: #a855f7 !important; }
+.parrot-svg.react-bye-pulse { 
+    animation: pulse-shadow 1.5s infinite; 
+    filter: drop-shadow(0 0 15px #a855f7); 
+}
+
+.parrot-svg.react-reading .bird-feather { fill: #a855f7 !important; }
+.parrot-svg.react-reading { 
+    transform: scale(1.05); 
+    filter: drop-shadow(0 0 15px #a855f7); 
+}
+
+@keyframes pulse-shadow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.parrot-svg.react-orange-giggle .bird-feather { fill: #f97316 !important; }
+.parrot-svg.react-orange-giggle { 
+    filter: drop-shadow(0 0 15px #f97316); 
+    animation: giggle 0.4s ease-in-out infinite; 
+}
+
+@keyframes giggle {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25% { transform: rotate(-3deg) translateY(-2px); }
+    50% { transform: rotate(0deg) translateY(0); }
+    75% { transform: rotate(3deg) translateY(-2px); }
+}
+
+.parrot-svg.react-neutral .bird-feather { fill: #94a3b8 !important; }
+.parrot-svg.react-neutral { 
+    filter: drop-shadow(0 0 10px #94a3b8); 
+    transform: scale(1);
+}
+
+/* =========================================
+   LAYOUT ELEMENTS
+========================================= */
+.main-container { flex: 1; display: flex; overflow: hidden; }
+
+.rag-sidebar { 
+    width: 300px; 
+    background-color: #ffffff; 
+    border-right: 1px solid #e2e8f0; 
+    padding: 1.5rem; 
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-area { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    background-color: #f8fafc; 
+}
+
+.chat-history { 
+    flex: 1; 
+    padding: 1.5rem; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+}
+
+.msg-bubble { 
+    max-width: 80%; 
+    padding: 0.8rem 1.25rem; 
+    border-radius: 1rem; 
+    font-size: 0.95rem;
+    white-space: pre-wrap; 
+}
+
+.msg-user { 
+    align-self: flex-end; 
+    background: #3b82f6; 
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.msg-bot { 
+    align-self: flex-start; 
+    background: #ffffff; 
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-bottom-left-radius: 0.25rem;
+}
+
+.input-area { 
+    background: #ffffff; 
+    padding: 1.5rem; 
+    border-top: 1px solid #e2e8f0;
+}
+
+.input-field { 
+    background: #f8fafc; 
+    border: 1px solid #cbd5e1; 
+    color: #0f172a; 
+    border-radius: 1rem; 
+    padding: 0.75rem 1.25rem; 
+    width: 100%; 
+    outline: none; 
+    transition: border-color 0.2s;
+}
+
+.input-field:focus { border-color: #3b82f6; }
+
+.drop-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 1rem;
+    padding: 2rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drop-zone:hover, .drop-zone.border-blue-500 {
+    border-color: #3b82f6;
+    background: #f1f5f9;
+}
+
+#audio-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.pulse-btn {
+    background: #fbbf24;
+    color: #0a0f1e;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
