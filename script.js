@@ -23,7 +23,7 @@ const happyStories = [
 ];
 
 const jokesList = [
-    "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય?\nવિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!\nશિક્ષક: કેવી રીતે?\nવિદ્યાર્થી: તમે ગયા વર્ષે પણ ભણાવતા હતા અને આવતા વર્ષે પણ ભણાવશો!",
+    "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય?\nવિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!",
     "દર્દી: ડોક્ટર સાહેબ, મને રોજ સપનામાં વાંદરાઓ ક્રિકેટ રમતા દેખાય છે.\nડોક્ટર: આ ગોળી લો, આજથી સપના બંધ.\nદર્દી: કાલથી લઉં તો ચાલશે? આજે ફાઇનલ મેચ છે!",
     "ચિન્ટુ: પપ્પા, મને એક નવો ફોન અપાવો ને!\nપપ્પા: તારો જૂનો ફોન ક્યાં છે?\nચિન્ટુ: એ તો ગેમ રમતા-રમતા હેંગ થઈ ગયો!\nપપ્પા: તો હવે તું પણ બે દિવસ હેંગ થઈ જા, નવો ફોન નહીં મળે!",
     "એક ભાઈએ ડોક્ટરને પૂછ્યું: સાહેબ, વજન ઓછું કરવા શું કરવું?\nડોક્ટર: રોજ 5 કિલોમીટર ચાલવું.\nએક મહિના પછી ભાઈનો ફોન આવ્યો: સાહેબ, હું તો ચાલતા-ચાલતા અમદાવાદ પહોંચી ગયો છું, હવે પાછો આવું?",
@@ -47,6 +47,8 @@ if ('speechSynthesis' in window) {
 }
 
 function speak(text) {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    
     const cleanText = text.replace(/[*#_`~]/g, ''); 
     const words = cleanText.split(' ');
     const chunks = [];
@@ -70,8 +72,11 @@ function speak(text) {
         if (currentChunkIndex >= chunks.length) return;
         
         const chunk = chunks[currentChunkIndex];
-        const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=gtx&q=${encodeURIComponent(chunk)}`;
+        const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=tw-ob&q=${encodeURIComponent(chunk)}`;
         const audio = new Audio(url);
+        
+        // Use normal clear playback
+        audio.playbackRate = 1.0; 
         
         audio.onended = () => {
             currentChunkIndex++;
@@ -89,28 +94,35 @@ function speak(text) {
         }
     }
 
-    if(window.speechSynthesis) window.speechSynthesis.cancel();
     if (chunks.length > 0) playNextChunk();
 }
 
-function fallbackSpeak(cleanText) {
+function fallbackSpeak(fallbackText) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     
     setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(cleanText);
         if (voices.length === 0) voices = window.speechSynthesis.getVoices();
 
         let selectedVoice = voices.find(v => (v.lang === 'gu-IN' || v.lang === 'gu_IN') && v.name.includes('Google'));
         if (!selectedVoice) selectedVoice = voices.find(v => v.lang === 'gu-IN' || v.lang === 'gu_IN');
-        if (!selectedVoice) selectedVoice = voices.find(v => v.lang.includes('IN') && (v.name.includes('Female') || v.name.includes('Aditi')));
+        
+        let utteranceText = fallbackText;
+        
+        if (!selectedVoice) {
+            selectedVoice = voices.find(v => v.lang.includes('IN') && (v.name.includes('Female') || v.name.includes('Aditi')));
+        }
+        
+        if (!selectedVoice) {
+            selectedVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Google'));
+        }
 
+        const utterance = new SpeechSynthesisUtterance(utteranceText);
         if (selectedVoice) utterance.voice = selectedVoice;
         
-        utterance.lang = 'gu-IN'; 
         utterance.volume = 1.0; 
-        utterance.pitch = 1.1;
-        utterance.rate = 0.9; 
+        utterance.pitch = 1.1; 
+        utterance.rate = 1.0;  
         
         window.speechSynthesis.speak(utterance);
     }, 50);
@@ -133,13 +145,14 @@ function appendMessage(text, sender) {
         msg.className = 'msg-bubble msg-user';
         msg.innerText = text;
     } else {
-        const displayText = text.replace(/[*#_`~]/g, ''); 
+        const cleanText = text.replace(/[*#_`~]/g, '');
+        
         msg.className = 'msg-bubble msg-bot cursor-pointer hover:bg-slate-50 transition-colors flex justify-between items-start gap-3';
         msg.title = "સાંભળવા માટે ક્લિક કરો (Click to listen)";
-        msg.onclick = () => speak(displayText);
+        msg.onclick = () => speak(cleanText);
         
         msg.innerHTML = `
-            <span class="flex-1">${displayText}</span>
+            <div class="flex-1">${cleanText}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 mt-1 flex-shrink-0 hover:text-[#fbbf24] transition-colors"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         `;
     }
@@ -240,6 +253,21 @@ async function processMessage() {
         response = "આવજો મિત્ર, જલ્દી પાછા આવજો!";
         mood = "react-bye-pulse"; 
     } 
+    else if (query.includes("day") || query.includes("દિવસ")) {
+        const now = new Date();
+        const dayName = now.toLocaleDateString('gu-IN', { weekday: 'long' });
+        response = `આજે ${dayName} છે.`;
+    }
+    else if (query.includes("time") || query.includes("સમય") || query.includes("વગ્યા")) {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('gu-IN', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: true 
+        });
+        response = `હાલનો સમય ${timeStr} છે.`;
+    }
     else if (query.includes("date") || query.includes("તારીખ")) {
         const now = new Date();
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
