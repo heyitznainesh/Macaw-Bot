@@ -6,8 +6,12 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import ollama
 
-# Importing from our local module[cite: 1]
-from doc_analyzer import get_text_from_any_file, get_relevant_context
+# Importing from our local module
+from doc_analyzer import extract_text_from_file
+
+def get_relevant_context(full_text, user_query):
+    # Fallback context extraction, returning a chunk of the text
+    return full_text[:4000]
 
 app = Flask(__name__)
 CORS(app)
@@ -16,11 +20,11 @@ CORS(app)
 LOCAL_MODEL = 'gemma3:4b' 
 
 # ==========================================
-# 1. AUTOMATIC OLLAMA STARTUP[cite: 1]
+# 1. AUTOMATIC OLLAMA STARTUP
 # ==========================================
 def start_ollama_automatically():
     try:
-        # Check if process is running[cite: 1]
+        # Check if process is running
         task_check = subprocess.check_output('tasklist', shell=True).decode()
         if "ollama.exe" not in task_check:
             print(">>> Starting Ollama server...")
@@ -47,7 +51,7 @@ def serve_static(path):
     return send_from_directory('.', path)
 
 # ==========================================
-# 3. MODELS & API ROUTES[cite: 1]
+# 3. MODELS & API ROUTES
 # ==========================================
 
 @app.route('/api/ai/transcribe', methods=['POST'])
@@ -82,14 +86,14 @@ def upload_and_analyze():
         return jsonify({"error": "No file uploaded"}), 400
 
     # High-speed reading[cite: 1]
-    full_text, error = get_text_from_any_file(uploaded_file)
+    full_text, error = extract_text_from_file(uploaded_file)
     if error: 
         return jsonify({"error": error}), 400
 
-    # Context extraction[cite: 1]
+    # Context extraction
     analyzed_context = get_relevant_context(full_text, user_query)
 
-    # Strict Gujarati Prompt[cite: 1]
+    # Strict Gujarati Prompt
     prompt = f"""તમે એક અત્યંત કડક ડોક્યુમેન્ટ રીડર અને ટ્રાન્સલેટર છો. 
 તમારો જવાબ માત્ર શુદ્ધ ગુજરાતીમાં જ હોવો જોઈએ.
 
