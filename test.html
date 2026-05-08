@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACAW BOT - Super Fast Full Reply</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; height: 100vh; display: flex; overflow: hidden; }
+        .sidebar { width: 320px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        .kb-container { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .upload-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; background: #fff; transition: 0.2s; }
+        .upload-zone:hover { border-color: #3b82f6; background: #eff6ff; }
+        .file-card { background: #f8fafc; padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; margin-top: 10px; }
+        .btn-clear { color: #ef4444; font-weight: bold; cursor: pointer; padding: 4px; font-size: 1.1rem; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #f8fafc; }
+        .chat-history { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+        .msg-bubble { max-width: 75%; padding: 1.2rem 1.5rem; border-radius: 1.25rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03); line-height: 1.6; font-size: 1.05rem; }
+        .msg-user { align-self: flex-end; background: #3b82f6; color: white; border-bottom-right-radius: 0.25rem; }
+        .msg-bot { align-self: flex-start; background: white; border-bottom-left-radius: 0.25rem; color: #1e293b; border: 1px solid #e2e8f0; transition: background 0.3s; }
+        
+        #start-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* --- EMOTION ANIMATIONS --- */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-3deg); }
+            40%, 80% { transform: translateX(5px) rotate(3deg); }
+        }
+        @keyframes dance {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            25% { transform: translateY(-8px) rotate(5deg); }
+            75% { transform: translateY(-8px) rotate(-5deg); }
+        }
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .anim-shake { animation: shake 0.3s infinite; }
+        .anim-dance { animation: dance 0.8s infinite; }
+        .anim-pop { animation: pop 0.4s ease-out forwards; }
+        
+        .svg-color { transition: fill 0.5s ease; }
+    </style>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <svg viewBox="0 0 100 100" class="w-24 h-24 mb-6 drop-shadow-2xl" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 75 L 22 92 L 38 82 Z" fill="#ef4444" />
+            <path d="M 35 25 L 30 8 L 45 18 Z" fill="#3b82f6" />
+            <circle cx="45" cy="55" r="32" fill="#3b82f6" />
+            <circle cx="62" cy="52" r="22" fill="#ffffff" />
+            <circle cx="56" cy="52" r="7" fill="#fbbf24" />
+            <circle cx="56" cy="52" r="3.5" fill="#111827" />
+            <path d="M 78 44 C 95 44, 102 55, 92 74 C 88 64, 80 60, 70 60 Z" fill="#0f172a" />
+        </svg>
+        <h2 class="text-3xl font-bold text-white mb-8 tracking-wide">MACAW BOT</h2>
+        <button onclick="startBot()" class="bg-yellow-400 text-slate-900 px-10 py-4 rounded-full font-bold text-xl hover:bg-yellow-500 active:scale-95 transition-all shadow-[0_0_20px_rgba(250,204,21,0.4)]">
+            શરૂ કરો (Start)
+        </button>
+    </div>
+
+    <aside class="sidebar">
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <svg id="macaw-svg" viewBox="0 0 100 100" class="w-16 h-16 drop-shadow-md flex-shrink-0 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 30 75 L 22 92 L 38 82 Z" fill="#ef4444" />
+                    <path id="macaw-tuft" class="svg-color" d="M 35 25 L 30 8 L 45 18 Z" fill="#3b82f6" />
+                    <circle id="macaw-head" class="svg-color" cx="45" cy="55" r="32" fill="#3b82f6" />
+                    
+                    <circle cx="62" cy="52" r="22" fill="#ffffff" />
+                    <circle cx="56" cy="52" r="7" fill="#fbbf24" />
+                    <circle cx="56" cy="52" r="3.5" fill="#111827" />
+                    <path d="M 78 44 C 95 44, 102 55, 92 74 C 88 64, 80 60, 70 60 Z" fill="#0f172a" />
+                </svg>
+                <div id="macaw-emoji" class="absolute -top-2 -right-2 text-2xl hidden"></div>
+            </div>
+
+            <div>
+                <h1 class="font-bold text-xl text-slate-800 tracking-tight leading-none mb-1">Macaw Bot</h1>
+                <div class="flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-slate-500 text-[11px] font-bold">ઝડપી મોડ એક્ટિવ</span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-slate-100">
+
+        <div class="kb-container">
+            <h3 class="font-bold text-slate-800 text-[13px] tracking-wide">જ્ઞાન કોષ (Knowledge Base)</h3>
+            <input type="file" id="file-input" class="hidden" accept=".txt,.pdf,.docx">
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <p class="text-[12px] text-slate-500 font-medium">અહીં ફાઈલ મૂકો (.pdf, .docx, .txt)</p>
+            </div>
+            <div id="file-display-area"></div>
+        </div>
+    </aside>
+
+    <main class="chat-area">
+        <div id="chat-history" class="chat-history"></div>
+        <div id="typing" class="hidden px-8 py-2 text-xs text-slate-400 italic font-medium">Macaw વિચારી રહ્યું છે...</div>
+
+        <div class="p-6 border-t border-slate-200 bg-white">
+            <div class="max-w-4xl mx-auto flex gap-3">
+                <div class="relative flex-1">
+                    <button id="mic-btn" onclick="toggleMic()" class="absolute left-4 top-4 text-slate-500 hover:text-blue-500 transition-colors text-lg" title="ગુજરાતીમાં બોલવા માટે ક્લિક કરો">🎤</button>
+                    <input type="text" id="user-input" placeholder="ગુજરાતીમાં બોલો અથવા લખો..." 
+                           class="w-full border border-slate-200 py-4 pl-12 pr-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-300 bg-slate-50 transition-all text-slate-700">
+                </div>
+                <button onclick="handleSend()" class="bg-yellow-400 px-8 py-4 rounded-xl font-bold text-slate-800 hover:bg-yellow-500 active:scale-95 transition-all shadow-sm">
+                    મોકલો
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentFileText = "";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        let availableVoices = [];
+        window.speechSynthesis.onvoiceschanged = () => { availableVoices = window.speechSynthesis.getVoices(); };
+
+        // --- EMOTION DICTIONARY ---
+        const emotions = {
+            angry: {
+                keywords: ["hit", "kill", "fight", "weapons", "gun", "માર", "મારી", "હથિયાર", "બંદૂક", "લડાઈ", "ગુસ્સો"],
+                color: "#ef4444", animation: "anim-shake", emoji: "💢", pitch: 1.1, rate: 1.0, 
+                prompt: "You are ANGRY! Scold them briefly in Gujarati. Maximum 2 short sentences."
+            },
+            happy: {
+                keywords: ["happy", "smile", "good", "ખુશ", "સ્મિત", "સારું", "મજા", "આનંદ", "સરસ"],
+                color: "#f97316", animation: "anim-dance", emoji: "✨", pitch: 1.1, rate: 0.95,
+                prompt: "You are happy. Tell a highly creative, joyful short story in Gujarati. Maximum 2 short sentences."
+            },
+            sad: {
+                keywords: ["break", "bad", "sad", "દુઃખી", "ખરાબ", "રડવું", "ઉદાસ", "તૂટી", "બ્રેકઅપ"],
+                color: "#94a3b8", animation: "", emoji: "💧", pitch: 0.9, rate: 0.9,
+                prompt: "You are sad. Tell an empathetic, slightly sad short story in Gujarati. Maximum 2 short sentences."
+            },
+            nature: {
+                keywords: ["plant", "trees", "flower", "જંગલ", "વૃક્ષ", "ફૂલ", "પ્રકૃતિ", "પક્ષી", "છોડ"],
+                color: "#22c55e", animation: "anim-dance", emoji: "🌸", pitch: 1.0, rate: 0.95,
+                prompt: "Tell a vivid, beautiful short story about nature or birds in Gujarati. Maximum 2 short sentences."
+            },
+            tech: {
+                keywords: ["computer", "ai", "tech", "mobile", "કમ્પ્યુટર", "ટેકનોલોજી", "મોબાઇલ", "એઆઈ"],
+                color: "#0ea5e9", animation: "", emoji: "🤖", pitch: 0.8, rate: 0.95,
+                prompt: "Discuss modern technology related to the input in Gujarati. Speak logically. Maximum 2 short sentences."
+            },
+            love: {
+                keywords: ["love", "attraction", "fondness", "પ્રેમ", "આકર્ષણ", "સ્નેહ", "વાહલ"],
+                color: "#f472b6", animation: "", emoji: "💖", pitch: 1.1, rate: 0.95,
+                prompt: "Tell a sweet, romantic short love story in Gujarati. Maximum 2 short sentences."
+            },
+            sleepy: {
+                keywords: ["sleep", "tired", "night", "ઊંઘ", "થાક", "રાત", "સૂવું"],
+                color: "#a855f7", animation: "", emoji: "💤", pitch: 0.9, rate: 0.85,
+                prompt: "You are sleepy. Give a short, dreamy response in Gujarati. Maximum 2 short sentences."
+            }
+        };
+
+        let currentEmotion = "normal";
+
+        function startBot() {
+            document.getElementById("start-overlay").style.display = "none";
+            const introMsg = "નમસ્તે! મારું નામ Macaw છે. હું તમારી ડિજિટલ આસિસ્ટન્ટ છું.";
+            appendMessage(introMsg, 'bot');
+            speak(introMsg);
+            document.getElementById("user-input").focus();
+        }
+
+        document.getElementById("user-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { event.preventDefault(); handleSend(); }
+        });
+
+        function applyEmotion(text) {
+            const lowerText = text.toLowerCase();
+            let detected = "normal";
+
+            for (const [key, data] of Object.entries(emotions)) {
+                if (data.keywords.some(kw => lowerText.includes(kw))) {
+                    detected = key;
+                    break;
+                }
+            }
+
+            currentEmotion = detected;
+            const svgGroup = document.getElementById("macaw-svg");
+            const head = document.getElementById("macaw-head");
+            const tuft = document.getElementById("macaw-tuft");
+            const emojiEl = document.getElementById("macaw-emoji");
+
+            svgGroup.className = "w-16 h-16 drop-shadow-md flex-shrink-0 transition-transform duration-300";
+            emojiEl.className = "absolute -top-2 -right-2 text-2xl hidden";
+
+            if (detected === "normal") {
+                head.setAttribute("fill", "#3b82f6");
+                tuft.setAttribute("fill", "#3b82f6");
+                return null;
+            }
+
+            const em = emotions[detected];
+            head.setAttribute("fill", em.color);
+            tuft.setAttribute("fill", em.color);
+
+            if (em.animation) {
+                svgGroup.classList.add(em.animation);
+                if (detected === "angry") setTimeout(() => svgGroup.classList.remove(em.animation), 2000);
+            }
+
+            if (em.emoji) {
+                emojiEl.innerText = em.emoji;
+                emojiEl.classList.remove("hidden");
+                emojiEl.classList.add("anim-pop");
+            }
+
+            return em.prompt;
+        }
+
+        function speak(text) {
+            window.speechSynthesis.resume();
+            window.speechSynthesis.cancel(); 
+
+            setTimeout(() => {
+                const cleanText = text.replace(/[*#_`~"'\n]/g, ' ').trim(); 
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                
+                utterance.lang = 'gu-IN'; 
+                utterance.pitch = 1.0;  
+                utterance.rate = 0.95;  
+                utterance.volume = 1.0; 
+
+                if (currentEmotion !== "normal") {
+                    utterance.pitch = emotions[currentEmotion].pitch;
+                    utterance.rate = emotions[currentEmotion].rate;
+                }
+                
+                if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+
+                let selectedVoice = availableVoices.find(v => v.lang === 'gu-IN' || v.lang.toLowerCase().includes('gu'));
+                if (!selectedVoice) selectedVoice = availableVoices.find(v => v.lang === 'hi-IN' || v.lang.toLowerCase().includes('hi'));
+                if (selectedVoice) utterance.voice = selectedVoice;
+                
+                window.speechSynthesis.speak(utterance);
+            }, 100); 
+        }
+
+        let recognition;
+        let isListening = false;
+        const micBtn = document.getElementById("mic-btn");
+        const userInput = document.getElementById("user-input");
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'gu-IN'; 
+            recognition.continuous = false; 
+
+            recognition.onstart = function() {
+                isListening = true;
+                micBtn.classList.add("text-red-500", "animate-pulse"); 
+                micBtn.classList.remove("text-slate-500");
+                userInput.placeholder = "ગુજરાતી સાંભળી રહ્યું છે..."; 
+            };
+            recognition.onresult = function(event) { userInput.value = event.results[0][0].transcript; };
+            recognition.onerror = function() { resetMic(); };
+            recognition.onend = function() { resetMic(); };
+        }
+
+        function toggleMic() {
+            if (!recognition) return;
+            if (isListening) recognition.stop();
+            else recognition.start();
+        }
+
+        function resetMic() {
+            isListening = false;
+            micBtn.classList.remove("text-red-500", "animate-pulse");
+            micBtn.classList.add("text-slate-500");
+            userInput.placeholder = "ગુજરાતીમાં બોલો અથવા લખો..."; 
+        }
+
+        document.getElementById("file-input").addEventListener("change", async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            document.getElementById("typing").classList.remove("hidden");
+
+            try {
+                if (ext === 'pdf') {
+                    const reader = new FileReader();
+                    reader.onload = async function() {
+                        const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+                        let text = "";
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(" ") + " ";
+                        }
+                        finalizeFile(file.name, text);
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (ext === 'docx') {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const res = await mammoth.extractRawText({arrayBuffer: e.target.result});
+                        finalizeFile(file.name, res.value);
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = (e) => finalizeFile(file.name, e.target.result);
+                    reader.readAsText(file);
+                }
+            } catch (err) { alert("Error reading file."); }
+        });
+
+        function finalizeFile(name, text) {
+            currentFileText = text;
+            document.getElementById("typing").classList.add("hidden");
+            document.getElementById("file-display-area").innerHTML = `
+                <div class="file-card"><span class="truncate w-40 font-bold">📄 ${name}</span><span class="btn-clear" onclick="clearFile()">✖</span></div>`;
+            speak("મેં તમારી ફાઇલ વાંચી લીધી છે.");
+        }
+
+        function clearFile() {
+            currentFileText = "";
+            document.getElementById("file-input").value = "";
+            document.getElementById("file-display-area").innerHTML = "";
+            speak("ફાઇલ દૂર કરી છે.");
+        }
+
+        function appendMessage(text, sender) {
+            const history = document.getElementById("chat-history");
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'msg-bubble msg-user' : 'msg-bubble msg-bot';
+            
+            if (sender === 'bot' && currentEmotion !== "normal") {
+                div.style.borderLeft = `5px solid ${emotions[currentEmotion].color}`;
+            }
+
+            div.innerHTML = text.replace(/[*#`]/g, '');
+            if(sender === 'bot') div.onclick = () => speak(text);
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+            return div; 
+        }
+
+        // --- INSTANT & FAST FULL RESPONSE LOGIC ---
+        async function handleSend() {
+            const input = document.getElementById("user-input");
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            appendMessage(msg, 'user');
+            input.value = "";
+            
+            // Show the thinking indicator
+            document.getElementById("typing").classList.remove("hidden");
+            
+            const emotionInstruction = applyEmotion(msg);
+            
+            // OPTIMIZATION: Tell Ollama to give a very short answer so it processes much faster
+            let prompt = currentFileText ? `Context: ${currentFileText.substring(0, 500)}\n\nQuestion: ${msg}` : msg;
+            
+            let finalInstruction = `Give a very short and direct answer. You MUST reply ONLY in Gujarati. Maximum 2 sentences.\n\n${prompt}`;
+            
+            if (emotionInstruction) {
+                finalInstruction += `\n\n[EMOTION]: ${emotionInstruction}`;
+            }
+
+            try {
+                // stream is false: It will wait and show everything at once.
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: "llama3.1",
+                        prompt: finalInstruction,
+                        stream: false, 
+                        // OPTIMIZATION: Force it to stop generating after a short length
+                        options: {
+                            num_predict: 100 
+                        }
+                    })
+                });
+                
+                if (!response.ok) throw new Error("Network error");
+                
+                const data = await response.json();
+                
+                // Hide the thinking indicator
+                document.getElementById("typing").classList.add("hidden");
+                
+                // Append the complete message instantly all at once
+                appendMessage(data.response, 'bot');
+                speak(data.response);
+
+            } catch (err) {
+                document.getElementById("typing").classList.add("hidden");
+                appendMessage("Ollama offline છે. કૃપા કરીને Ollama ચાલુ કરો.", 'bot');
+            }
+        }
+    </script>
+</body>
+</html>
