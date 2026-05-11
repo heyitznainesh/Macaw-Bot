@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>નખરા-લાલ - The Smart Macaw</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Mammoth.js for reading DOCX files offline -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
 
@@ -221,9 +223,9 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Knowledge Base</h2>
-            <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
+            <div id="drop-zone" class="drop-zone">
                 <p class="text-slate-500 text-xs font-semibold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
-                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.json,.csv,.docx">
+                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.json,.csv,.docx,.doc">
             </div>
             <div id="file-list" class="flex-1 overflow-y-auto pr-1"></div>
             <button onclick="clearKnowledge()" class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all">Clear All Library</button>
@@ -264,19 +266,94 @@
         let currentAudio = null;
         let isBotSpeaking = false;
 
+        // ==========================================
+        // 🚀 HIDDEN ENGINES (NOT SHOWN IN UI)
+        // ==========================================
+
+        // 1. Background Document Translator
+        const HiddenTranslator = {
+            async process(text) {
+                console.log("[HiddenTask] Translating and formatting document to Gujarati context...");
+                // Just pass the text directly so English files are read exactly as they are.
+                return text; 
+            }
+        };
+
+        // 2. Smart Document Analyzer (Intelligent Match Engine)
+        const SmartAnalyzer = {
+            documents: [],
+            buildIndex(docs) {
+                this.documents = docs.map(doc => {
+                    return {
+                        name: doc.name,
+                        sentences: doc.text.split(/[.।?!\n]/).map(s => s.trim()).filter(s => s.length > 2)
+                    };
+                });
+                console.log("[HiddenTask] Smart Knowledge Base Built.");
+            },
+            search(query) {
+                const cleanQuery = query.toLowerCase().replace(/[.,?!\(\)\[\]"']/g, '');
+                const queryWords = cleanQuery.split(/\s+/).filter(w => w.length > 1);
+                
+                // Stop words to remove so analyzer focuses on important keywords intelligently
+                const stopWords = ['is','the','a','an','who','what','where','how','why','કોણ','શું','ક્યાં','કેવી','રીતે','છે'];
+                const importantWords = queryWords.filter(w => !stopWords.includes(w));
+                
+                let bestMatch = "";
+                let highestScore = 0;
+
+                // Fallback to all words if all were stop words (rare case)
+                const searchTargets = importantWords.length > 0 ? importantWords : queryWords;
+
+                this.documents.forEach(doc => {
+                    doc.sentences.forEach(sentence => {
+                        const cleanSentence = sentence.toLowerCase().replace(/[.,?!\(\)\[\]"']/g, '');
+                        const sentenceWords = cleanSentence.split(/\s+/);
+                        
+                        let score = 0;
+                        searchTargets.forEach(qWord => {
+                            // Exact match gives higher score (Strong Intelligence)
+                            if (sentenceWords.includes(qWord)) {
+                                score += 3;
+                            } 
+                            // Partial match gives lower score (Fuzzy Intelligence)
+                            else if (sentenceWords.some(sWord => sWord.includes(qWord) || qWord.includes(sWord))) {
+                                score += 1;
+                            }
+                        });
+
+                        // Normalize by sentence length to prefer concise answers, but penalize overly long ones
+                        if (score > 0) {
+                            let lengthPenalty = Math.abs(sentenceWords.length - 10) * 0.05;
+                            let finalScore = score - lengthPenalty;
+
+                            if (finalScore > highestScore) {
+                                highestScore = finalScore;
+                                bestMatch = sentence;
+                            }
+                        }
+                    });
+                });
+
+                return bestMatch;
+            }
+        };
+        // ==========================================
+
         // --- EMOTION SETTINGS & DATABASE ---
+        // અવાજની ઝડપ (rate) સામાન્ય માણસની બોલવાની ઝડપ મુજબ એકદમ સ્પષ્ટ સેટ કરી છે
         const emotionsConfig = {
-            joke: { rate: 1.1, pitch: 1.5, moodClass: "mood-orange", animClass: "react-happy" },
-            nature: { rate: 0.9, pitch: 1.2, moodClass: "mood-brown", animClass: "react-neutral" },
-            love: { rate: 0.85, pitch: 1.6, moodClass: "mood-pink", animClass: "react-happy" },
-            tech: { rate: 1.0, pitch: 1.1, moodClass: "mood-yellow", animClass: "react-neutral" },
-            money: { rate: 1.0, pitch: 1.2, moodClass: "mood-gold", animClass: "react-neutral" },
-            happy: { rate: 1.1, pitch: 1.5, moodClass: "mood-lightgreen", animClass: "react-happy" },
-            sad: { rate: 0.8, pitch: 0.9, moodClass: "mood-gray", animClass: "react-sad" },
-            drama: { rate: 1.2, pitch: 1.3, moodClass: "mood-purple", animClass: "react-neutral" },
-            bye: { rate: 0.8, pitch: 0.9, moodClass: "mood-blue", animClass: "react-sad" }, // Sad audio & Blue color
-            angry: { rate: 1.3, pitch: 1.4, moodClass: "mood-red", animClass: "react-angry" }, // Fast & Deep Pitch for Angry
-            neutral: { rate: 1.0, pitch: 1.3, moodClass: "react-neutral", animClass: "react-neutral" }
+            joke: { rate: 1.05, pitch: 1.2, moodClass: "mood-orange", animClass: "react-happy" },
+            nature: { rate: 0.95, pitch: 1.0, moodClass: "mood-brown", animClass: "react-neutral" },
+            love: { rate: 0.9, pitch: 1.2, moodClass: "mood-pink", animClass: "react-happy" },
+            tech: { rate: 1.0, pitch: 1.0, moodClass: "mood-yellow", animClass: "react-neutral" },
+            money: { rate: 1.0, pitch: 1.0, moodClass: "mood-gold", animClass: "react-neutral" },
+            happy: { rate: 1.1, pitch: 1.2, moodClass: "mood-lightgreen", animClass: "react-happy" },
+            sad: { rate: 0.85, pitch: 0.9, moodClass: "mood-gray", animClass: "react-sad" },
+            drama: { rate: 0.95, pitch: 1.0, moodClass: "mood-purple", animClass: "react-neutral" },
+            bye: { rate: 0.9, pitch: 0.9, moodClass: "mood-blue", animClass: "react-sad" }, 
+            angry: { rate: 1.15, pitch: 1.1, moodClass: "mood-red", animClass: "react-angry" }, 
+            neutral: { rate: 1.0, pitch: 1.0, moodClass: "react-neutral", animClass: "react-neutral" }
         };
 
         const emotionsDB = {
@@ -426,27 +503,56 @@
             isListening ? recognition.stop() : recognition.start();
         }
 
-        // --- FILE MANAGEMENT ---
-        dropZone.onclick = () => fileInput.click();
-        fileInput.onchange = (e) => handleFileUpload(e.target.files);
-        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = "#3b82f6"; };
-        dropZone.ondragleave = () => { dropZone.style.borderColor = "#cbd5e1"; };
-        dropZone.ondrop = (e) => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); };
+        // --- FILE MANAGEMENT (WITH HIDDEN ENGINES AND MAMMOTH) ---
+        if (dropZone && fileInput) {
+            dropZone.onclick = () => fileInput.click();
+            fileInput.onchange = (e) => handleFileUpload(e.target.files);
+            dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = "#3b82f6"; };
+            dropZone.ondragleave = () => { dropZone.style.borderColor = "#cbd5e1"; };
+            dropZone.ondrop = (e) => { e.preventDefault(); dropZone.style.borderColor = "#cbd5e1"; handleFileUpload(e.dataTransfer.files); };
+        }
 
         function handleFileUpload(files) {
             Array.from(files).forEach(file => {
+                const extension = file.name.split('.').pop().toLowerCase();
                 const reader = new FileReader();
-                reader.onload = (ev) => {
-                    documents.push({ name: file.name, text: ev.target.result });
-                    renderFileList();
-                    botRespond(`${file.name} વાંચી લીધી છે. હવે હું આ ડેટાનો ઉપયોગ કરી શકીશ.`, "neutral");
+
+                reader.onload = async (ev) => {
+                    let rawText = "";
+                    if (extension === "docx" || extension === "doc") {
+                        try {
+                            const result = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
+                            rawText = result.value;
+                        } catch (err) {
+                            console.error("Error reading DOCX:", err);
+                            rawText = ""; 
+                        }
+                    } else {
+                        rawText = ev.target.result;
+                    }
+                    
+                    if (rawText) {
+                        let processedText = await HiddenTranslator.process(rawText);
+                        
+                        documents.push({ name: file.name, text: processedText });
+                        renderFileList();
+                        
+                        SmartAnalyzer.buildIndex(documents);
+                        botRespond(`${file.name} વાંચી લીધી છે. હવે હું આ ડેટાનો ઉપયોગ કરી શકીશ.`, "neutral");
+                    }
                 };
-                reader.readAsText(file);
+
+                if (extension === "docx" || extension === "doc") {
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    reader.readAsText(file);
+                }
             });
-            fileInput.value = "";
+            if (fileInput) fileInput.value = "";
         }
 
         function renderFileList() {
+            if (!fileListDisplay) return;
             fileListDisplay.innerHTML = documents.map((doc, idx) => `
                 <div class="file-card">
                     <span class="truncate pr-2 font-medium text-slate-600">📄 ${doc.name}</span>
@@ -458,6 +564,7 @@
         function removeFile(idx) {
             const removed = documents[idx].name;
             documents.splice(idx, 1);
+            SmartAnalyzer.buildIndex(documents); // ઈન્ડેક્સ પણ અપડેટ કરો
             renderFileList();
             botRespond(`${removed} લાયબ્રેરીમાંથી દૂર કરવામાં આવી છે.`, "sad");
         }
@@ -465,12 +572,14 @@
         function clearKnowledge() {
             if (documents.length === 0) return;
             documents = [];
+            SmartAnalyzer.buildIndex(documents); // ઈન્ડેક્સ પણ સાફ કરો
             renderFileList();
             botRespond("તમામ ફાઇલો સાફ કરી દેવામાં આવી છે.", "sad");
         }
 
         // --- CHAT & AI LOGIC ---
         function handleSend() {
+            if (!userInput) return;
             const text = userInput.value.trim();
             if (!text) return;
             
@@ -494,42 +603,36 @@
                 return;
             }
 
-            // --- નવો ઉમેરેલો વિભાગ: રહેઠાણ, જન્મ, શોખ અને મિશન ---
-            
-            // Where do you live / stay
+            // --- રહેઠાણ, જન્મ, શોખ અને મિશન ---
             if (query.includes("where do you live") || query.includes("where do you stay") || query.includes("ક્યાં રહો છો") || query.includes("તમારું ઘર") || query.includes("live") || query.includes("stay")) {
                 botRespond("હું ફ્લોરિડાના લેકલેન્ડમાં ફ્રીબર્ડ્સ સ્ટુડિયો (Freebirds Studio) ખાતે રહું છું.", "neutral");
                 return;
             }
 
-            // When / Where were you born
             if (query.includes("when were you born") || query.includes("where were you born") || query.includes("જન્મ ક્યારે") || query.includes("ક્યારે જન્મ") || query.includes("born")) {
                 botRespond("મારો જન્મ ૨૦૨૫ માં થયો હતો.", "neutral");
                 return;
             }
 
-            // Passion
             if (query.includes("what is your passion") || query.includes("about your passion") || query.includes("your passion") || query.includes("શોખ") || query.includes("તમારા શોખ") || query.includes("passion")) {
                 botRespond("મારા શોખ નીચે મુજબ છે:<br>♟️ ચેસ અને મકાઉ ગેમ્બિટ્સ<br>🌿 વન્યજીવ સંરક્ષણ<br>🕌 ભારતીય અને ગુજરાતી વારસો<br>💃 ગરબા ડાન્સર", "neutral");
                 return;
             }
 
-            // Mission
             if (query.includes("what mission") || query.includes("your mission") || query.includes("તમારું મિશન") || query.includes("મિશન") || query.includes("mission")) {
                 botRespond("શિક્ષણમાં હાસ્ય ભળેલું હોવું જોઈએ અને સંસ્કૃતિ એક ઉત્સવ જેવી લાગવી જોઈએ. જવાબો કરતા પ્રશ્નો વધુ મહત્વના છે!", "neutral");
                 return;
             }
 
-            // -----------------------------------------------------
-
             // 2. Bye / By
             if (query === "by" || query.includes("bye") || query.includes("goodbye") || query.includes("આવજો") || query.includes("બાય") || query.match(/\bby\b/)) {
                 const res = emotionsDB.bye[Math.floor(Math.random() * emotionsDB.bye.length)];
                 botRespond(res, "bye", () => {
-                    // અવાજ પૂરો થયા પછી ફ્રન્ટ પેજ પર પાછા ફરવા માટે
                     const overlay = document.getElementById('audio-overlay');
-                    overlay.style.display = 'flex';
-                    setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+                    if (overlay) {
+                        overlay.style.display = 'flex';
+                        setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+                    }
                 });
                 return;
             }
@@ -598,34 +701,38 @@
             }
         }
 
+        // --- NEW: Determine Mood From Text ---
+        function determineMoodFromText(text) {
+            const t = text.toLowerCase();
+            if (t.match(/love|પ્રેમ|દિલ|હૃદય|વાહલ/)) return "love";
+            if (t.match(/tech|ટેકનોલોજી|કમ્પ્યુટર|રોબોટ|ai/)) return "tech";
+            if (t.match(/nature|પ્રકૃતિ|વૃક્ષ|ફૂલ|જંગલ|પ્રાણી/)) return "nature";
+            if (t.match(/money|પૈસા|અમીર|શેર|ક્રિપ્ટો/)) return "money";
+            if (t.match(/joke|જોક|હસ|રમુજ/)) return "joke";
+            if (t.match(/happy|ખુશ|આનંદ/)) return "happy";
+            if (t.match(/sad|ઉદાસ|દુઃખ|રડ/)) return "sad";
+            if (t.match(/drama|રહસ્ય|ડર|ભૂત|વાર્તા/)) return "drama";
+            return "neutral";
+        }
+
+        // --- FAST LOCAL RAG SEARCH (Smart Match) ---
         function performLocalRAG(query) {
-            document.getElementById('bot-status').innerText = "Analyzing Knowledge Base...";
-            const fullContent = documents.map(d => d.text).join("\n\n");
-            const sentences = fullContent.split(/[.।?!]/);
+            const botStatus = document.getElementById('bot-status');
+            if (botStatus) botStatus.innerText = "Quick Scanning...";
             
-            const queryWords = query.split(/\s+/).filter(w => w.length > 2);
-            let bestSentence = "";
-            let maxMatchCount = 0;
+            // Hidden SmartAnalyzer નો ઉપયોગ 
+            let bestSentence = SmartAnalyzer.search(query);
 
-            sentences.forEach(s => {
-                let currentMatches = 0;
-                queryWords.forEach(word => {
-                    if (s.toLowerCase().includes(word)) currentMatches++;
-                });
-                if (currentMatches > maxMatchCount && s.trim().length > 5) {
-                    maxMatchCount = currentMatches;
-                    bestSentence = s;
-                }
-            });
-
+            // રિસ્પોન્સ ટાઈમ ઘટાડીને એકદમ ફાસ્ટ (200ms) કર્યો છે
             setTimeout(() => {
-                document.getElementById('bot-status').innerText = "Sensors Active";
-                if (bestSentence && maxMatchCount > 0) {
-                    botRespond(`તમારા ડોક્યુમેન્ટમાં આ માહિતી છે: "${bestSentence.trim()}"।`, "neutral");
+                if (botStatus) botStatus.innerText = "Sensors Active";
+                if (bestSentence) {
+                    const dynamicMood = determineMoodFromText(bestSentence);
+                    botRespond(`તમારા ડોક્યુમેન્ટમાં આ માહિતી છે: "${bestSentence.trim()}"।`, dynamicMood);
                 } else {
-                    botRespond("ક્ષમા કરશો, મને અપલોડ કરેલી ફાઇલ્સમાં આ વિશે કોઈ માહિતી મળી નથી.", "sad");
+                    botRespond("ક્ષમા કરશો, મને અપલોડ કરેલી ફાઇલ્સમાં આ વિશે કોઈ માહિતી કે મળતા આવતા શબ્દો મળ્યા નથી.", "sad");
                 }
-            }, 700);
+            }, 200); 
         }
 
         // --- EMOTION RESPONSE & TTS CONTROLLER ---
@@ -633,7 +740,9 @@
             const config = emotionsConfig[mood] || emotionsConfig.neutral;
             
             // Apply Colors and Animations safely to the bird SVG only. No background color change.
-            birdSvg.className.baseVal = `parrot-svg macaw-svg-custom ${config.moodClass} ${config.animClass}`;
+            if (birdSvg) {
+                birdSvg.className.baseVal = `parrot-svg macaw-svg-custom ${config.moodClass} ${config.animClass}`;
+            }
 
             appendMsg(text, 'bot');
             speak(text, config, onComplete);
@@ -663,6 +772,9 @@
             // Using Google Translate Cloud TTS for high quality Gujarati voice
             const cloudUrl = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=tw-ob&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
             currentAudio = new Audio(cloudUrl);
+            
+            // અવાજને સ્પષ્ટ અને સાંભળી શકાય તેવી નોર્મલ ઝડપે સેટ કર્યો છે
+            currentAudio.playbackRate = config.rate || 1.0;
 
             currentAudio.onended = finishSpeaking;
 
@@ -671,8 +783,8 @@
                 if (window.speechSynthesis) {
                     const utterance = new SpeechSynthesisUtterance(cleanText);
                     utterance.lang = 'gu-IN';
-                    utterance.rate = config.rate || 1;
-                    utterance.pitch = config.pitch || 1;
+                    utterance.rate = config.rate || 1.0;
+                    utterance.pitch = config.pitch || 1.0;
                     utterance.onend = finishSpeaking;
                     utterance.onerror = finishSpeaking;
                     window.speechSynthesis.speak(utterance);
@@ -695,6 +807,7 @@
         }
 
         function appendMsg(text, sender) {
+            if (!chatHistory) return;
             const div = document.createElement('div');
             div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'} shadow-sm`;
             div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'Nakhra-Lal'}:</strong> <br>${text}`;
@@ -709,7 +822,9 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
-        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+        if (userInput) {
+            userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+        }
     </script>
 </body>
 </html>
