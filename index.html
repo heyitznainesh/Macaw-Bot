@@ -473,6 +473,11 @@
             setTimeout(() => {
                 document.getElementById('audio-overlay').style.display = 'none';
                 
+                // જૂની ચેટ ક્લિયર કરવા માટે (Clear old chat history on every start)
+                if (chatHistory) {
+                    chatHistory.innerHTML = '';
+                }
+                
                 // Unlock Audio Context
                 if (window.speechSynthesis) window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); 
                 
