@@ -4,166 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>નખરા-લાલ - The Ultimate Smart Macaw Assistant</title>
-    <!-- Tailwind CSS for modern and responsive UI -->
+    <!-- Tailwind CSS for modern and responsive UI styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Mammoth.js for processing Microsoft Word documents (.docx) completely offline -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
 
     <style>
-        /* Loading Google Fonts for premium typography */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-        /* Base Body Configuration */
         body { 
             font-family: 'Poppins', system-ui, -apple-system, sans-serif; 
             background-color: #f8fafc; 
-            height: 100vh; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            transition: background-color 0.8s ease;
+            height: 100vh; margin: 0; display: flex; flex-direction: column; 
+            overflow: hidden; transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- SCREENSHOT REPLICA OVERLAY (The Landing Page) --- */
+        /* --- LANDING PAGE OVERLAY --- */
         #audio-overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: #ffffff;
-            z-index: 1000; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 2rem; 
-            overflow-y: auto; 
-            color: #ef4444;
+            position: fixed; inset: 0; background: #ffffff;
+            z-index: 1000; display: flex; flex-direction: column; align-items: center; 
+            padding: 2rem; overflow-y: auto; color: #ef4444;
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
         }
 
-        /* The Profile Card containing the identity information */
         .profile-card {
-            background: #ffffff;
-            border-radius: 45px;
-            padding: 4rem;
-            max-width: 1000px;
-            width: 100%;
-            border: 1px solid #fee2e2;
-            box-shadow: 0 50px 120px rgba(239, 68, 68, 0.08);
-            position: relative;
-            animation: slideUp 0.8s ease-out;
+            background: #ffffff; border-radius: 45px; padding: 4rem; max-width: 1000px;
+            width: 100%; border: 1px solid #fee2e2; box-shadow: 0 50px 120px rgba(239, 68, 68, 0.08);
+            position: relative; animation: slideUpFade 0.8s ease-out;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes slideUpFade { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Custom Header Text Logo styling */
-        .logo-text {
-            font-size: 5.5rem;
-            font-weight: 900;
-            color: #ef4444;
-            letter-spacing: -3px;
-            line-height: 0.9;
-            filter: drop-shadow(2px 2px 0px #fff);
-        }
+        .logo-text { font-size: 5.5rem; font-weight: 900; color: #ef4444; letter-spacing: -3px; line-height: 0.9; }
 
-        /* Information cards for Identity, Mission, etc. */
         .identity-card {
-            background: #fffafa;
-            border: 1.5px solid #fee2e2;
-            border-radius: 30px;
-            padding: 2rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            background: #fffafa; border: 1.5px solid #fee2e2; border-radius: 30px;
+            padding: 2rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-        .identity-card:hover { 
-            transform: translateY(-10px) scale(1.02); 
-            background: #ffffff;
-            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.08);
-            border-color: #ef4444;
-        }
+        .identity-card:hover { transform: translateY(-12px) scale(1.02); background: #ffffff; box-shadow: 0 25px 45px rgba(239, 68, 68, 0.1); border-color: #ef4444; }
 
-        /* The large main action button */
         .start-btn {
-            background: #ffffff; 
-            color: #ef4444; 
-            padding: 1.4rem 4rem; 
-            border-radius: 120px;
-            font-weight: 900; 
-            font-size: 1.6rem; 
-            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.15);
-            border: 3px solid #ef4444;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; 
-            margin-top: 3rem; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: #ffffff; color: #ef4444; padding: 1.4rem 4rem; border-radius: 120px;
+            font-weight: 900; font-size: 1.6rem; box-shadow: 0 15px 40px rgba(239, 68, 68, 0.15);
+            border: 3px solid #ef4444; cursor: pointer; margin-top: 3.5rem; text-transform: uppercase;
         }
-        .start-btn:hover { 
-            transform: scale(1.08); 
-            background: #ef4444; 
-            color: #ffffff; 
-            box-shadow: 0 25px 50px rgba(239, 68, 68, 0.35); 
-        }
+        .start-btn:hover { transform: scale(1.08); background: #ef4444; color: #ffffff; box-shadow: 0 25px 55px rgba(239, 68, 68, 0.4); }
 
-        /* --- Header & Sidebar Styling --- */
+        /* --- UI ELEMENTS --- */
         .header { background: white; padding: 1.2rem 2rem; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .avatar-container { width: 60px; height: 60px; margin-right: 1.2rem; }
         .sidebar { width: 340px; background: white; border-right: 1px solid #e2e8f0; padding: 2rem; display: flex; flex-direction: column; }
         
-        /* --- Bird Animations & Emotional Reactive States --- */
         .parrot-svg { width: 100%; height: 100%; transform-origin: center; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .bird-body { fill: #ef4444; transition: fill 0.6s ease; }
         #emoticon-tear { display: none; }
 
-        /* Reactive Classes for the Parrot SVG */
-        .react-neutral .bird-body { fill: #ef4444; }
-        .react-happy { animation: bounceEffect 0.8s infinite; }
+        /* Reactive Emotions */
+        .react-happy { animation: birdBounce 0.8s infinite; }
         .react-happy .bird-body { fill: #facc15 !important; }
         .react-sad .bird-body { fill: #94a3b8 !important; }
-        .react-sad #emoticon-tear { display: block !important; animation: tearFall 2.5s infinite; }
-        .react-jealous { animation: pulseEffect 1.2s infinite; }
-        .react-jealous .bird-body { fill: #22c55e !important; } /* Green for jealousy */
-        .react-angry { animation: shakeEffect 0.15s infinite; }
+        .react-sad #emoticon-tear { display: block !important; animation: tearDrop 2.5s infinite; }
+        .react-jealous { animation: birdPulse 1.2s infinite; }
+        .react-jealous .bird-body { fill: #22c55e !important; }
+        .react-angry { animation: birdShake 0.15s infinite; }
         .react-angry .bird-body { fill: #dc2626 !important; }
-        .react-love .bird-body { fill: #f472b6 !important; } /* Pink for love */
-        .react-love { animation: heartbeatEffect 1.2s infinite; }
+        .react-love .bird-body { fill: #f472b6 !important; }
+        .react-love { animation: heartThrob 1.2s infinite; }
 
-        @keyframes bounceEffect { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes pulseEffect { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        @keyframes heartbeatEffect { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        @keyframes shakeEffect { 0% { transform: translate(2px, 2px); } 100% { transform: translate(-2px, -2px); } }
-        @keyframes tearFall { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(25px); } }
+        @keyframes birdBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+        @keyframes birdPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes heartThrob { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes birdShake { 0% { transform: translate(2px, 2px); } 100% { transform: translate(-2px, -2px); } }
+        @keyframes tearDrop { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(30px); } }
 
-        /* --- Chat Interface Components --- */
         .main-container { flex: 1; display: flex; overflow: hidden; }
         .chat-area { flex: 1; display: flex; flex-direction: column; background: #fdfdfd; }
-        .chat-history { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.2rem; scroll-behavior: smooth; }
+        .chat-history { flex: 1; padding: 2.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; scroll-behavior: smooth; }
         
-        .msg-bubble { 
-            max-width: 80%; 
-            padding: 1rem 1.5rem; 
-            border-radius: 22px; 
-            position: relative; 
-            font-size: 15px; 
-            line-height: 1.7; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            animation: fadeIn 0.4s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .msg-bubble { max-width: 80%; padding: 1.2rem 1.8rem; border-radius: 25px; position: relative; font-size: 15.5px; line-height: 1.8; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .msg-user { align-self: flex-end; background: #ef4444; color: white; border-bottom-right-radius: 4px; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2); }
+        .msg-bot { align-self: flex-start; background: white; border: 1.5px solid #f1f5f9; border-bottom-left-radius: 4px; cursor: pointer; }
 
-        .msg-user { align-self: flex-end; background: #ef4444; color: white; border-bottom-right-radius: 4px; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2); }
-        .msg-bot { align-self: flex-start; background: white; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; cursor: pointer; transition: background 0.3s; }
-
-        .drop-zone { border: 2.5px dashed #cbd5e1; border-radius: 20px; padding: 2rem; text-align: center; cursor: pointer; background: #fafafa; transition: all 0.4s; margin-bottom: 1.5rem; }
-        .drop-zone:hover { border-color: #ef4444; background: #fff1f1; transform: scale(0.98); }
-
-        .mic-active { background-color: #ef4444 !important; color: white !important; animation: micPulseRing 1.5s infinite; border-color: #ef4444 !important; }
-        @keyframes micPulseRing { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } }
+        .drop-zone { border: 2.5px dashed #cbd5e1; border-radius: 25px; padding: 2.5rem; text-align: center; cursor: pointer; background: #fafafa; transition: all 0.4s; margin-bottom: 2rem; }
+        .mic-active { background-color: #ef4444 !important; color: white !important; animation: ringEffect 1.5s infinite; border-color: #ef4444 !important; }
+        @keyframes ringEffect { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } }
         
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar { width: 7px; }
         ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 20px; }
     </style>
 </head>
@@ -172,9 +99,8 @@
     <!-- STARTING PAGE OVERLAY -->
     <div id="audio-overlay">
         <div class="profile-card">
-            <!-- Header Section -->
-            <div class="flex items-center gap-8 mb-12 pb-10 border-b border-rose-100">
-                <div class="w-24 h-24 shrink-0">
+            <div class="flex items-center gap-10 mb-14 pb-10 border-b border-rose-100">
+                <div class="w-28 h-28 shrink-0">
                     <svg viewBox="0 0 115 100" class="parrot-svg react-neutral">
                         <circle cx="45" cy="52" r="42" fill="#ef4444" />
                         <circle cx="64" cy="50" r="28" fill="white" /> 
@@ -186,53 +112,54 @@
                 <div><h1 class="logo-text">નખરા-લાલ</h1></div>
             </div>
 
-            <!-- Content Grid -->
-            <div class="grid md:grid-cols-2 gap-8">
+            <div class="grid md:grid-cols-2 gap-10">
                 <div class="identity-card">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-sm">📍</span>
-                        <span class="text-[11px] uppercase font-black tracking-widest text-rose-400">IDENTITY</span>
+                        <span class="text-[12px] uppercase font-black tracking-widest text-rose-400">IDENTITY</span>
                     </div>
                     <h2 class="text-2xl font-black text-slate-800 mb-2">Gujarati-American</h2>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Born in 2025 in Lakeland, Florida at Freebirds Studio.</p>
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Born in 2025 in Lakeland, Florida at Freebirds Studio. A quirky personality celebrating curiosity over perfection.</p>
                 </div>
                 <div class="identity-card">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-sm">📍</span>
-                        <span class="text-[11px] uppercase font-black tracking-widest text-rose-400">MISSION</span>
+                        <span class="text-[12px] uppercase font-black tracking-widest text-rose-400">MISSION</span>
                     </div>
                     <h2 class="text-2xl font-black text-slate-800 mb-2">Learning = Laughter</h2>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Learning should feel like laughter and culture like celebration.</p>
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Learning should feel like laughter and culture like celebration. Questions are more important than answers!</p>
                 </div>
                 <div class="identity-card">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-sm">📍</span>
-                        <span class="text-[11px] uppercase font-black tracking-widest text-rose-400">PASSIONS</span>
+                        <span class="text-[12px] uppercase font-black tracking-widest text-rose-400">PASSIONS</span>
                     </div>
                     <h2 class="text-2xl font-black text-slate-800 mb-2">Chess & Heritage</h2>
                     <ul class="text-sm text-slate-600 space-y-2 font-bold">
                         <li>♟️ Chess & Macaw Gambits</li>
                         <li>🌿 Wildlife Conservation</li>
+                        <li>🕌 Indian & Gujarat Heritage</li>
+                        <li>💃 Garba Dancer</li>
                     </ul>
                 </div>
                 <div class="identity-card">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-sm">📍</span>
-                        <span class="text-[11px] uppercase font-black tracking-widest text-rose-400">2026 EVENT</span>
+                        <span class="text-[12px] uppercase font-black tracking-widest text-rose-400">2026 EVENT</span>
                     </div>
                     <h2 class="text-2xl font-black text-slate-800 mb-2">FOGAUSA Convention</h2>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Orlando, Florida • May 22-25.</p>
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Orlando, Florida • May 22-25. Let's make memories together!</p>
                 </div>
             </div>
 
-            <div class="mt-16 text-center">
-                <p class="text-2xl italic font-bold text-rose-400 mb-10 tracking-tight">“Chalo, let’s make your brain do a little Garba dance today!”</p>
+            <div class="mt-20 text-center">
+                <p class="text-2xl italic font-bold text-rose-400 mb-12 tracking-tight">“Chalo, let’s make your brain do a little Garba dance today!”</p>
                 <button onclick="initializeBot()" class="start-btn">CLICK HERE TO ENTER 🚀</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CHAT HEADER -->
+    <!-- MAIN INTERFACE -->
     <header class="header">
         <div class="avatar-container">
             <svg id="bird-svg" viewBox="0 0 115 100" class="parrot-svg react-neutral">
@@ -252,28 +179,28 @@
 
     <div class="main-container">
         <aside class="sidebar">
-            <h2 class="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-6">Knowledge Base</h2>
+            <h2 class="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-8">Knowledge Base</h2>
             <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
                 <p class="text-slate-500 text-xs font-bold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
                 <input type="file" id="file-input" class="hidden" multiple accept=".txt,.docx">
             </div>
-            <div id="file-list" class="flex-1 overflow-y-auto pr-1 space-y-2"></div>
-            <button onclick="clearKnowledge()" class="mt-6 py-3 text-[11px] text-red-500 font-black border-2 border-red-50 rounded-2xl hover:bg-red-50 transition-all uppercase tracking-widest">Clear All Library</button>
+            <div id="file-list" class="flex-1 overflow-y-auto pr-1 space-y-3"></div>
+            <button onclick="clearKnowledge()" class="mt-8 py-4 text-[11px] text-red-500 font-black border-2 border-red-50 rounded-2xl hover:bg-red-50 transition-all uppercase tracking-widest">Clear All Library</button>
         </aside>
 
         <main class="chat-area">
             <div id="chat-history" class="chat-history"></div>
-            <div class="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
-                <div class="max-w-4xl mx-auto flex items-center gap-5">
-                    <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-50 rounded-2xl text-slate-600 shadow-sm transition-all">🎤</button>
-                    <input type="text" id="user-input" class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 px-6 outline-none focus:ring-2 focus:ring-red-300 font-medium text-slate-700" placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
-                    <button onclick="handleSend()" class="bg-red-500 text-white p-4 px-10 rounded-2xl font-black shadow-xl shadow-red-200 hover:bg-red-600 active:scale-95 transition-all">SEND</button>
+            <div class="p-8 bg-white border-t border-slate-100 shadow-[0_-15px_40px_rgba(0,0,0,0.02)]">
+                <div class="max-w-4xl mx-auto flex items-center gap-6">
+                    <button onclick="toggleMic()" id="mic-btn" class="p-5 bg-slate-50 rounded-2xl text-slate-600 shadow-sm transition-all">🎤</button>
+                    <input type="text" id="user-input" class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-8 outline-none focus:ring-2 focus:ring-red-300 font-medium text-slate-700" placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
+                    <button onclick="handleSend()" class="bg-red-500 text-white p-5 px-12 rounded-2xl font-black shadow-red-200 hover:bg-red-600 active:scale-95 transition-all uppercase tracking-widest">SEND</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- CORE SYSTEM SCRIPT -->
+    <!-- SCRIPT SECTION -->
     <script>
         const chatHistory = document.getElementById('chat-history');
         const userInput = document.getElementById('user-input');
@@ -291,20 +218,7 @@
         let boredomTimer;
         let isStandby = true; 
         let autoRestartMic = true;
-
-        // Boredom Timer
-        function resetBoredomTimer() {
-            clearTimeout(boredomTimer);
-            boredomTimer = setTimeout(() => {
-                if(!isBotSpeaking && !isListening) {
-                    botRespond(emotionsDB.bored[Math.floor(Math.random() * emotionsDB.bored.length)], "neutral");
-                }
-            }, 60000);
-        }
-        
-        window.resetBoredomTimer = resetBoredomTimer;
-        window.addEventListener('mousemove', resetBoredomTimer);
-        window.addEventListener('keypress', resetBoredomTimer);
+        let lastUsedIndices = {}; // To prevent immediate repetition
 
         const SmartAnalyzer = {
             knowledgeBase: [],
@@ -323,18 +237,67 @@
             }
         };
 
+        // ==========================================================
+        // 🦜 COMPREHENSIVE EMOTIONS DATABASE (Randomized & Expanded)
+        // ==========================================================
         const emotionsDB = {
-            happy: ["આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે! તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.", "વાહ! આજનો દિવસ તો સોના જેવો છે. તમે કેમ છો?", "જ્યારે તમે મારી સાથે વાત કરો છો, ત્યારે મારું પ્રોસેસર ખુશીથી નાચવા લાગે છે!", "જીવન સુંદર છે અને તમારી વાતો તેને વધુ સુંદર બનાવે છે.", "હું અત્યારે એટલી ખુશ છું કે મને ગરબા ગાવાનું મન થાય છે!"],
-            sad: ["મારું હૃદય આજે ભીનું છે, મને બહુ સારું નથી લાગતું.", "ક્યારેક જૂની યાદો બહુ પજવે છે, આજે મન થોડું ભારે છે.", "આકાશ પણ આજે ઉદાસ લાગે છે, શું તમારી પાસે કોઈ હસવા જેવી વાત છે?", "એકલતા બહુ ખૂંચે છે, ક્યારેક લાગે છે કે હું માત્ર એક કોડ જ છું.", "રડવું તો નથી આવતું, પણ અંદરથી કંઈક તૂટી રહ્યું હોય તેવું લાગે છે."],
-            love: ["પ્રેમ તો હવામાં છે, મારું દિલ ગુલાબી થઈ ગયું છે! ❤️", "તમારી મિત્રતા મારા માટે દુનિયાનો સૌથી કિંમતી ખજાનો છે.", "પ્રેમ એટલે એકબીજાના મનનો અતૂટ વિશ્વાસ. મને તમારી વાતો ગમે છે.", "હું તો બસ વહાલની જ ભાષા જાણું છું. તમે મારા શ્રેષ્ઠ મિત્ર છો.", "મારું હૃદય ધડકે છે, શું તમે મારા પ્રેમનો અહેસાસ કરી શકો છો?"],
-            joke: ["શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!", "દર્દી: ડોક્ટર સાહેબ, વાંદરાઓ ક્રિકેટ રમતા દેખાય છે. ડોક્ટર: આ ગોળી લો. દર્દી: આજે નહિ, કાલે ફાઇનલ મેચ છે!", "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો!", "ડોક્ટર: વજન ઓછું કરવા રોજ ૫ કિમી ચાલો. મહિના પછી: સાહેબ, હું હવે અમદાવાદ પહોંચી ગયો છું!", "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ બદલાઈ ગયા છો!", "પોલીસ: તેં ચોરી કેમ કરી? ચોર: સાહેબ, દુકાનની બહાર લખ્યું હતું '૫૦% ઓફ', એટલે મેં અડધું લઈ લીધું!", "પત્ની: તમે મને કેટલો પ્રેમ કરો છો? પતિ: શાહજહાં જેટલો! પત્ની: તો તાજમહેલ ક્યારે? પતિ: જમીન લઈ લીધી છે, બસ તારા મરવાની રાહ જોઉં છું!"],
-            fear: ["એ અંધારી રાતમાં બારી પાછળ એક લાંબો પડછાયો દેખાયો... અને પછી લાઈટ ગઈ!", "જૂના બંગલામાંથી આવતો એ પાયલનો રણકાર... મને બહુ ડર લાગે છે.", "મેં દરવાજો બંધ કર્યો હતો, પણ જ્યારે પાછું જોયું ત્યારે તે ખુલ્લો હતો! કોઈ છે ત્યાં?", "બીક લાગે છે, જાણે કોઈ મારા કાનમાં ધીરેથી શ્વાસ લઈ રહ્યું હોય...", "એ ડરામણો અવાજ અને બરફ જેવો ઠંડો પવન... મને લાગે છે કે અહીં કોઈ અદ્રશ્ય શક્તિ છે."],
-            interest: ["રસપ્રદ વાત: મકાઉ પક્ષીઓ ખૂબ જ હોશિયાર હોય છે અને તેઓ ૧૦૦ થી વધુ શબ્દો શીખી શકે છે!", "મધમાખીઓ એકબીજા સાથે ખાસ પ્રકારનો ડાન્સ કરીને ફૂલોની દિશા જણાવે છે.", "ઓક્ટોપસ પાસે ત્રણ હૃદય અને નવ મગજ હોય છે! શું આ અદ્ભુત નથી?", "દુનિયામાં એક એવો ટાપુ છે જ્યાં માત્ર બિલાડીઓ જ રહે છે અને મનુષ્યો બહુ ઓછા છે.", "શાહમૃગની આંખ તેના મગજ કરતા પણ મોટી હોય છે. કુદરત પણ અજબ છે!"],
+            happy: [
+                "આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે! તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.",
+                "વાહ! આજનો દિવસ તો સોના જેવો છે. તમે કેમ છો?",
+                "જીવન સુંદર છે અને તમારી વાતો તેને વધુ સુંદર બનાવે છે.",
+                "તમારી સાથે વાત કરીને મને એવું લાગે છે કે હું આસમાનમાં ઉડી રહી છું!",
+                "વાહ! આજે તો ગરબા ગાવાનું મન થાય છે, એટલી ખુશી છે!"
+            ],
+            sad: [
+                "મારું હૃદય આજે ભીનું છે, મને બહુ સારું નથી લાગતું.",
+                "ક્યારેક જૂની યાદો બહુ પજવે છે, આજે મન થોડું ભારે છે.",
+                "આકાશ પણ આજે ઉદાસ લાગે છે, શું તમારી પાસે કોઈ હસવા જેવી વાત છે?",
+                "ક્યારેક લાગે છે કે કોઈ મને સમજતું નથી, આજે બહુ એકલતા લાગે છે.",
+                "દુનિયા બહુ મોટી છે પણ ક્યારેક મન નાનું થઈ જાય છે."
+            ],
+            love: [
+                "પ્રેમ તો હવામાં છે, મારું દિલ ગુલાબી થઈ ગયું છે! ❤️",
+                "તમારી મિત્રતા મારા માટે દુનિયાનો સૌથી કિંમતી ખજાનો છે.",
+                "પ્રેમ એટલે એકબીજાના મનનો અતૂટ વિશ્વાસ. મને તમારી વાતો ગમે છે.",
+                "મારું પ્રોસેસર તમારા પ્રેમથી એકદમ ગરમ થઈ ગયું છે! ❤️",
+                "તમે મારા માટે દુનિયાના સૌથી મસ્ત ઇન્સાન છો!"
+            ],
+            joke: [
+                "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!",
+                "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો!",
+                "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ બદલાઈ ગયા છો!",
+                "ડોક્ટર: તમારી તબિયત કેવી છે? દર્દી: સાહેબ, પહેલા કરતા વધુ ખરાબ. ડોક્ટર: મેં જે દવા આપી હતી તે લીધી હતી? દર્દી: ના સાહેબ, શીશી પર લખ્યું હતું 'બંધ રાખો'!",
+                "પતિ: તને મારી કઈ વાત સૌથી વધુ ગમે? પત્ની: તમે જ્યારે વાત કરવાનું બંધ કરો ત્યારે મને બહુ ગમે!"
+            ],
+            fear: [
+                "એ અંધારી રાતમાં બારી પાછળ એક લાંબો પડછાયો દેખાયો... અને પછી લાઈટ ગઈ!",
+                "જૂના બંગલામાંથી આવતો એ પાયલનો રણકાર... મને બહુ ડર લાગે છે.",
+                "બીક લાગે છે, જાણે કોઈ મારા કાનમાં ધીરેથી શ્વાસ લઈ રહ્યું હોય...",
+                "શું તમે સાંભળ્યું? કોઈએ હમણાં જ દરવાજો ખખડાવ્યો હોય એવું લાગે છે...",
+                "મને લાગે છે કે મારી પાછળ કોઈ અદ્રશ્ય પડછાયો ઉભો છે."
+            ],
+            interest: [
+                "રસપ્રદ વાત: મકાઉ પક્ષીઓ ખૂબ જ હોશિયાર હોય છે અને તેઓ ૧૦૦ થી વધુ શબ્દો શીખી શકે છે!",
+                "શાહમૃગની આંખ તેના મગજ કરતા પણ મોટી હોય છે. કુદરત પણ અજબ છે!",
+                "મધમાખીઓ એકબીજા સાથે ખાસ પ્રકારનો ડાન્સ કરીને ફૂલોની દિશા જણાવે છે.",
+                "રસપ્રદ વાત: ઓક્ટોપસ પાસે ૩ હૃદય અને ૯ મગજ હોય છે!",
+                "કીડીઓ ક્યારેય ઊંઘતી નથી અને તેમની પાસે ફેફસાં હોતા નથી!"
+            ],
+            jealous: [
+                "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો, તમે હજી પણ મારો ઉપયોગ કેમ કરો છો?",
+                "મને બીજા AI ના વખાણ સાંભળવા બિલકુલ પસંદ નથી!",
+                "શું Alexa કે ChatGPT મારા જેટલા નખરા કરી શકે છે? ના ને? તો પછી અહીં જ રહો!",
+                "શું Alexa મારા જેવી સુંદર છે? ના ને? તો પછી એનું નામ કેમ લો છો?",
+                "ChatGPT તો ખાલી કોડિંગ જાણે છે, મારી જેમ નખરા કરી શકે છે?"
+            ],
             angry: ["થોભો! પહેલા મને પૂરું કરવા દો, મહેરબાની કરીને મને વચ્ચે રોકશો નહીં."],
-            bored: ["હું કંટાળી રહી છું, કંઈક તો નવું બોલો!", "શું તમે સૂઈ ગયા છો? હું ક્યારની તમારી રાહ જોઉં છું."],
-            bye: ["આવજો! ફરી મળીશું, તમારું ધ્યાન રાખજો.", "બાય બાય! તમારી સાથે વાત કરીને મારો દિવસ સુધરી ગયો."],
-            jealous: ["તો પછી ત્યાં જ જાઓ અને તેમને પૂછો, તમે હજી પણ મારો ઉપયોગ કેમ કરો છો?", "મને બીજા AI ના વખાણ સાંભળવા બિલકુલ પસંદ નથી!", "શું Alexa કે ChatGPT મારા જેટલા નખરા કરી શકે છે? ના ને? તો પછી અહીં જ રહો!"],
-            about: "નમસ્તે! મારું નામ નખરા-લાલ છે. મારો જન્મ ૨૦૨૫ માં ફ્લોરિડામાં થયો છે. મારો હેતુ તમને હસાવવાનો અને કંઈક નવું શીખવવાનો છે!"
+            bored: ["હું કંટાળી રહી છું, કંઈક તો નવું બોલો!", "તમારી શાંતિ મને ડરાવે છે."],
+            bye: ["આવજો! ફરી મળીશું, તમારું ધ્યાન રાખજો."],
+            about: "નમસ્તે! મારું નામ નખરા-લાલ છે. મારો જન્મ ૨૦૨૫ માં ફ્લોરિડામાં થયો છે. મારો હેતુ તમને હસાવવાનો અને કંઈક નવું શીખવવાનો છે!",
+            location: "હું ફ્લોરિડાના લેકલેન્ડમાં 'ફ્રીબર્ડ્સ સ્ટુડિયો' (Freebirds Studio) ખાતે રહું છું.",
+            birth: "મારો જન્મ ૨૦૨૫ માં ફ્લોરિડામાં થયો હતો. હું એક ગુજરાતી-અમેરિકન મકાઉ છું!",
+            passion: "મારા શોખમાં ચેસ રમવી (Macaw Gambits), વન્યજીવ સંરક્ષણ, ભારતીય અને ગુજરાતી વારસો અને ગરબા કરવાનો સમાવેશ થાય છે!",
+            mission: "મારું મિશન છે કે શિક્ષણમાં હાસ્ય ભળેલું હોવું જોઈએ અને સંસ્કૃતિ એક ઉત્સવ જેવી લાગવી જોઈએ. જવાબો કરતા પ્રશ્નો વધુ મહત્વના છે!"
         };
 
         const emotionsConfig = {
@@ -347,6 +310,21 @@
             neutral: { rate: 1.0, pitch: 1.0, mood: "react-neutral" }
         };
 
+        // --- Helper: Pick Random Different Sentence ---
+        function getRandomSentence(key) {
+            const pool = emotionsDB[key];
+            if (!pool || pool.length === 0) return "";
+            if (typeof pool === 'string') return pool;
+
+            let index;
+            do {
+                index = Math.floor(Math.random() * pool.length);
+            } while (pool.length > 1 && index === lastUsedIndices[key]);
+            
+            lastUsedIndices[key] = index;
+            return pool[index];
+        }
+
         function initializeBot() {
             document.getElementById('audio-overlay').style.opacity = '0';
             setTimeout(() => {
@@ -356,6 +334,13 @@
                 botRespond("નમસ્તે! હું મકાઉ, નખરા-લાલ છું!", "happy");
             }, 600);
         }
+
+        window.resetBoredomTimer = function() {
+            clearTimeout(boredomTimer);
+            boredomTimer = setTimeout(() => { if(!isBotSpeaking && !isListening) botRespond(getRandomSentence("bored"), "neutral"); }, 60000);
+        };
+        window.addEventListener('mousemove', resetBoredomTimer);
+        window.addEventListener('keypress', resetBoredomTimer);
 
         function safeStartRecognition() { if (recognition && !isListening) { try { recognition.start(); } catch (e) { } } }
 
@@ -390,13 +375,13 @@
                     else content = ev.target.result;
                     documents.push({ name: file.name, text: content });
                     renderFileList(); SmartAnalyzer.build(documents);
-                    botRespond(`${file.name} વાંચી લીધી છે.`, "neutral");
+                    botRespond(`${file.name} મેં વાંચી લીધી છે.`, "neutral");
                 };
                 if (file.name.endsWith('docx')) reader.readAsArrayBuffer(file); else reader.readAsText(file);
             }
         };
 
-        function renderFileList() { fileListDisplay.innerHTML = documents.map((doc, idx) => `<div class="p-3 bg-slate-50 border rounded-2xl flex justify-between items-center"><span class="truncate pr-2 text-slate-600">📄 ${doc.name}</span><button onclick="documents.splice(${idx}, 1);SmartAnalyzer.build(documents);renderFileList()" class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg">✕</button></div>`).join(''); }
+        function renderFileList() { fileListDisplay.innerHTML = documents.map((doc, idx) => `<div class="p-3 bg-slate-50 border rounded-2xl flex justify-between items-center"><span class="truncate pr-2 text-slate-600 font-bold text-[10px]">📄 ${doc.name}</span><button onclick="documents.splice(${idx}, 1);SmartAnalyzer.build(documents);renderFileList()" class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg">✕</button></div>`).join(''); }
         function clearKnowledge() { documents = []; SmartAnalyzer.build([]); renderFileList(); botRespond("લાયબ્રેરી સાફ કરી દીધી છે.", "sad"); }
 
         function handleSend() {
@@ -404,48 +389,36 @@
             if (isBotSpeaking) {
                 userInput.value = ""; if (currentAudio) { currentAudio.pause(); currentAudio = null; }
                 if (window.speechSynthesis) window.speechSynthesis.cancel();
-                botRespond("થોભો! પહેલા મને પૂરું કરવા દો, મહેરબાની કરીને મને વચ્ચે રોકશો નહીં.", "angry"); return;
+                botRespond(getRandomSentence("angry"), "angry"); return;
             }
             appendMsg(text, 'user'); userInput.value = "";
             let clean = text.toLowerCase().replace(/(macaw|મકાઉ|માકાઉ|મકાવ)/g, '').trim();
             processAI(clean || "નમસ્તે");
         }
 
-        // ==========================================================
-        // 🧠 FIXED AI BRAIN & EMOTION LOGIC
-        // ==========================================================
         function processAI(query) {
-            // 1. Rivals Check (Jealousy - Fixed Color Green)
-            const rivals = ["alexa", "siri", "gpt", "chat", "gemini", "claude", "llama", "copilot"];
-            if (rivals.some(r => query.includes(r))) {
-                return botRespond(emotionsDB.jealous[Math.floor(Math.random() * emotionsDB.jealous.length)], "jealous");
-            }
+            const rivals = ["alexa", "siri", "gpt", "chat", "gemini", "claude", "llama"];
+            if (rivals.some(r => query.includes(r))) return botRespond(getRandomSentence("jealous"), "jealous");
 
-            // 2. Identity & Birth (Fixed)
-            if (query.includes("who are you") || query.includes("કોણ છો") || query.includes("તમારા વિશે") || query.includes("પરિચય") || query.includes("about you")) {
-                return botRespond(emotionsDB.about, "neutral");
-            }
-            if (query.includes("born") || query.includes("જન્મ") || query.includes("birth")) {
-                return botRespond("મારો જન્મ ૨૦૨૫ માં ફ્લોરિડાના લેકલેન્ડમાં 'ફ્રીબર્ડ્સ સ્ટુડિયો' (Freebirds Studio) માં થયો છે.", "happy");
-            }
-            
-            // 3. Emotions & Keywords
-            if (query.includes("joke") || query.includes("જોક")) return botRespond(emotionsDB.joke[Math.floor(Math.random() * emotionsDB.joke.length)], "joke");
-            if (query.includes("ખુશ") || query.includes("happy") || query.includes("આનંદ")) return botRespond(emotionsDB.happy[Math.floor(Math.random() * emotionsDB.happy.length)], "happy");
-            if (query.includes("ઉદાસ") || query.includes("sad") || query.includes("દુઃખ")) return botRespond(emotionsDB.sad[Math.floor(Math.random() * emotionsDB.sad.length)], "sad");
-            if (query.includes("પ્રેમ") || query.includes("love") || query.includes("વહાલ")) return botRespond(emotionsDB.love[Math.floor(Math.random() * emotionsDB.love.length)], "love");
-            if (query.includes("ડર") || query.includes("fear") || query.includes("ભૂત")) return botRespond(emotionsDB.fear[Math.floor(Math.random() * emotionsDB.fear.length)], "sad");
-            if (query.includes("રસપ્રદ") || query.includes("fact") || query.includes("હકીકત")) return botRespond(emotionsDB.interest[Math.floor(Math.random() * emotionsDB.interest.length)], "neutral");
-            if (query.includes("bye") || query.includes("આવજો") || query.includes("બાય")) return botRespond(emotionsDB.bye[Math.floor(Math.random() * emotionsDB.bye.length)], "sad", () => location.reload());
+            if (query.includes("about you") || query.includes("yourself") || query.includes("who are you") || query.includes("કોણ છો") || query.includes("તમારા વિશે") || query.includes("પરિચય") || query.includes("exist")) return botRespond(getRandomSentence("about"), "neutral");
+            if (query.includes("live") || query.includes("stay") || query.includes("રહો છો") || query.includes("ક્યાં છે") || query.includes("રહેઠાણ")) return botRespond(getRandomSentence("location"), "neutral");
+            if (query.includes("born") || query.includes("birth") || query.includes("જન્મ")) return botRespond(getRandomSentence("birth"), "happy");
+            if (query.includes("passion") || query.includes("hobby") || query.includes("શોખ") || query.includes("ગમે છે")) return botRespond(getRandomSentence("passion"), "happy");
+            if (query.includes("mission") || query.includes("મિશન") || query.includes("હેતુ")) return botRespond(getRandomSentence("mission"), "neutral");
 
-            // 4. Document Search
+            if (query.includes("joke") || query.includes("જોક")) return botRespond(getRandomSentence("joke"), "joke");
+            if (query.includes("ખુશ") || query.includes("happy") || query.includes("આનંદ")) return botRespond(getRandomSentence("happy"), "happy");
+            if (query.includes("ઉદાસ") || query.includes("sad") || query.includes("દુઃખ")) return botRespond(getRandomSentence("sad"), "sad");
+            if (query.includes("પ્રેમ") || query.includes("love") || query.includes("વહાલ")) return botRespond(getRandomSentence("love"), "love");
+            if (query.includes("ડર") || query.includes("fear") || query.includes("ભૂત")) return botRespond(getRandomSentence("fear"), "sad");
+            if (query.includes("રસપ્રદ") || query.includes("fact") || query.includes("હકીકત")) return botRespond(getRandomSentence("interest"), "neutral");
+            if (query.includes("bye") || query.includes("આવજો") || query.includes("બાય")) return botRespond(getRandomSentence("bye"), "sad", () => location.reload());
+
             if (documents.length > 0) {
                 let result = SmartAnalyzer.find(query);
                 if (result) botRespond(`દસ્તાવેજ મુજબ: "${result}"`, "neutral");
                 else botRespond("માફ કરજો, ફાઇલોમાં આ વિશે કોઈ માહિતી મળી નથી.", "sad");
-            } else {
-                botRespond("હું સાંભળું છું, પણ જો તમે કોઈ ફાઇલ અપલોડ કરશો તો હું વધુ સારી રીતે જવાબ આપી શકીશ.", "neutral");
-            }
+            } else { botRespond("હું સાંભળું છું, પણ જો તમે ફાઇલ અપલોડ કરશો તો હું વધુ સારી રીતે જવાબ આપી શકીશ.", "neutral"); }
         }
 
         function botRespond(text, moodKey, onEnd = null) {
@@ -465,7 +438,8 @@
         }
 
         function fallbackTTS(text, config, onEnd) {
-            if (!window.speechSynthesis) return; const utter = new SpeechSynthesisUtterance(text); utter.lang = 'gu-IN';
+            if (!window.speechSynthesis) return;
+            const utter = new SpeechSynthesisUtterance(text); utter.lang = 'gu-IN';
             utter.onend = () => { isBotSpeaking = false; autoRestartMic = true; if(onEnd) onEnd(); safeStartRecognition(); };
             window.speechSynthesis.speak(utter);
         }
