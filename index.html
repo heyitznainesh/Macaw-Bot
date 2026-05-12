@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>નખરા-લાલ - AI દસ્તાવેજ વિશ્લેષક</title>
-    <!-- Tailwind CSS નો ઉપયોગ સ્ટાઇલિંગ માટે -->
+    <title>નખરા-લાલ - The Smart Macaw</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Mammoth.js વર્ડ ફાઇલ્સ (.docx) વાંચવા માટે -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
 
         body { 
             font-family: 'Poppins', system-ui, -apple-system, sans-serif; 
@@ -19,76 +16,110 @@
             overflow: hidden; transition: background-color 0.8s ease;
         }
 
-        /* --- લેન્ડિંગ પેજ ઓવરલે --- */
+        /* --- LANDING PAGE OVERLAY --- */
         #audio-overlay { 
             position: fixed; inset: 0; 
             background: #ffffff;
             z-index: 1000; display: flex; flex-direction: column; align-items: center; 
             padding: 2rem; overflow-y: auto; color: #ef4444;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
 
         .profile-card {
-            background: #ffffff; border-radius: 40px; padding: 3rem;
-            max-width: 950px; width: 100%; border: 1px solid #fee2e2;
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 3rem;
+            max-width: 950px;
+            width: 100%;
+            border: 1px solid #fee2e2;
             box-shadow: 0 40px 100px rgba(239, 68, 68, 0.05);
-            position: relative; animation: slideUp 0.8s ease-out;
+            position: relative;
+            animation: slideUp 0.8s ease-out;
         }
-
         @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+        .macaw-svg-custom {
+            color: #ef4444;
+            transform-origin: center;
+            transition: all 0.5s ease;
+        }
+
         .start-btn {
-            background: #ffffff; color: #ef4444; padding: 1.2rem 3.5rem; border-radius: 100px;
-            font-weight: 900; font-size: 1.5rem; box-shadow: 0 15px 35px rgba(239, 68, 68, 0.15);
-            border: 2px solid #ef4444; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; margin-top: 2rem; text-transform: uppercase;
+            background: #ffffff; 
+            color: #ef4444; 
+            padding: 1.2rem 3.5rem; 
+            border-radius: 100px;
+            font-weight: 900; 
+            font-size: 1.5rem; 
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; 
+            margin-top: 2rem; 
+            text-transform: uppercase;
         }
         .start-btn:hover { transform: scale(1.05); background: #ef4444; color: #ffffff; }
 
-        /* --- એપ્લિકેશન UI એલિમેન્ટ્સ --- */
+        /* --- Header & Bird Animations --- */
         .header { background: white; padding: 1rem 1.5rem; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; z-index: 10; }
-        .avatar-container { width: 65px; height: 65px; margin-right: 1rem; }
+        .avatar-container { width: 55px; height: 55px; margin-right: 1rem; }
         
-        .parrot-svg { width: 100%; height: 100%; transform-origin: center; transition: all 0.5s ease; }
-        .bird-feather { fill: #ef4444; transition: fill 0.5s ease; }
-        
-        /* રિએક્ટિવ એનિમેશન */
+        .bird-body { fill: #ef4444; transition: fill 0.6s ease; }
+        #emoticon-tear { display: none; }
+
+        /* --- EMOTION ANIMATIONS --- */
         .react-happy { animation: bounce 0.8s infinite; }
-        .react-happy .bird-feather { fill: #fbbf24 !important; }
-        .react-sad .bird-feather { fill: #475569 !important; }
-        .react-angry { animation: shake 0.1s infinite; }
+        .react-happy .bird-body { fill: #4ade80 !important; } 
+
+        .react-sad .bird-body { fill: #94a3b8 !important; } 
+        .react-sad #emoticon-tear { display: block !important; animation: tear-fall 2.5s infinite; }
+
         .react-love { animation: heartbeat 1.2s infinite; }
-        .react-love .bird-feather { fill: #f472b6 !important; }
+        .react-love .bird-body { fill: #f472b6 !important; } 
+
+        .react-jealous { animation: shake 0.6s infinite; }
+        .react-jealous .bird-body { fill: #22c55e !important; } 
+
+        .react-angry { animation: shake 0.1s infinite; }
+        .react-angry .bird-body { fill: #dc2626 !important; } 
+
+        .mood-joke .bird-body { fill: #f97316 !important; }    
+        .mood-nature .bird-body { fill: #8b4513 !important; }  
+        .mood-tech .bird-body { fill: #eab308 !important; }    
+        .mood-business .bird-body { fill: #fbbf24 !important; } 
+        .mood-drama .bird-body { fill: #a855f7 !important; }   
 
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         @keyframes shake { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
+        @keyframes tear-fall { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(20px); } }
 
+        /* --- UI Layout --- */
         .main-container { flex: 1; display: flex; overflow: hidden; }
         .sidebar { width: 300px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; }
         .chat-area { flex: 1; display: flex; flex-direction: column; background: #fdfdfd; }
         .chat-history { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; scroll-behavior: smooth; }
         
-        .msg-bubble { max-width: 85%; padding: 0.8rem 1.2rem; border-radius: 1.2rem; font-size: 15px; line-height: 1.7; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .msg-user { align-self: flex-end; background: #ef4444; color: white; border-bottom-right-radius: 4px; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2); }
-        .msg-bot { align-self: flex-start; background: white; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+        .msg-bubble { max-width: 85%; padding: 0.8rem 1.2rem; border-radius: 18px; position: relative; font-size: 14.5px; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .msg-user { align-self: flex-end; background: #ef4444; color: white; border-bottom-right-radius: 4px; }
+        .msg-bot { align-self: flex-start; background: white; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; cursor: pointer; }
 
-        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 20px; padding: 1.5rem; text-align: center; cursor: pointer; background: #fafafa; transition: 0.3s; margin-bottom: 1rem; }
-        .mic-active { color: #ef4444 !important; animation: mic-pulse 1.5s infinite; }
-        @keyframes mic-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
+        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 15px; padding: 1.5rem; text-align: center; cursor: pointer; background: #fafafa; transition: 0.3s; margin-bottom: 1rem; }
+        .mic-active { color: #ef4444 !important; animation: mic-pulse 1.5s infinite; border-color: #ef4444 !important; }
+        @keyframes mic-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
         
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 20px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body onmousemove="resetBoredomTimer()" onkeypress="resetBoredomTimer()">
 
-    <!-- લેન્ડિંગ પેજ -->
+    <!-- Landing Page Overlay -->
     <div id="audio-overlay">
         <div class="profile-card">
-            <div class="flex items-center gap-10 mb-14 pb-10 border-b border-rose-100">
-                <div class="w-24 h-24 shrink-0">
-                    <svg viewBox="0 0 115 100" class="parrot-svg">
+            <div class="flex items-center gap-6 mb-10 pb-10 border-b border-rose-50">
+                <div class="w-[72px] h-[72px] shrink-0">
+                    <svg viewBox="0 0 115 100" class="macaw-svg-custom animate-bounce w-full h-full">
                         <circle cx="45" cy="52" r="42" fill="#ef4444" />
                         <circle cx="64" cy="50" r="28" fill="white" /> 
                         <circle cx="70" cy="50" r="10" fill="#facc15" />
@@ -96,114 +127,136 @@
                         <path d="M 85 40 C 115 35, 125 75, 102 92 C 95 82, 88 78, 75 75 Z" fill="#0f172a" />
                     </svg>
                 </div>
-                <div><h1 class="text-7xl font-black text-red-600 leading-none">નખરા-લાલ</h1></div>
+                <div><h1 class="text-7xl font-black tracking-tighter text-red-600 leading-none">નખરા-લાલ</h1></div>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8 text-left">
-                <div class="identity-card bg-rose-50/50 p-4 rounded-xl">
-                    <h2 class="font-bold text-red-600 uppercase text-xs">Identity</h2>
-                    <p class="text-sm">ફ્લોરિડામાં જન્મેલી ગુજરાતી-અમેરિકન સ્માર્ટ મકાઉ.</p>
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">IDENTITY</span></div>
+                    <h2 class="text-xl font-black text-black mb-1">Gujarati-American</h2>
+                    <p class="text-xs text-slate-800 leading-relaxed">Born in 2025 in Lakeland, Florida. A quirky personality celebrating curiosity.</p>
                 </div>
-                <div class="identity-card bg-rose-50/50 p-4 rounded-xl">
-                    <h2 class="font-bold text-red-600 uppercase text-xs">Mission</h2>
-                    <p class="text-sm">શિક્ષણમાં હાસ્ય અને સંસ્કૃતિમાં ઉત્સવ લાવવો.</p>
+                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">MISSION</span></div>
+                    <h2 class="text-xl font-black text-black mb-1">Learning = Laughter</h2>
+                    <p class="text-xs text-slate-800 leading-relaxed">Education with laughter and culture like celebration.</p>
                 </div>
             </div>
 
-            <div class="mt-16 text-center">
-                <p class="text-2xl italic font-bold text-rose-400 mb-10 tracking-tight">“ચલો, આજે તમારા મગજને થોડું ગરબા રમાડીએ!”</p>
-                <button onclick="startSystem()" class="start-btn">અંદર પ્રવેશ કરો 🚀</button>
+            <div class="mt-12 text-center pt-8">
+                <p class="text-xl italic font-semibold text-red-400">“Chalo, let’s make your brain do a little Garba dance today!”</p>
+                <button onclick="initializeBot()" class="start-btn">CLICK HERE TO ENTER 🚀</button>
             </div>
         </div>
     </div>
 
-    <!-- મુખ્ય હેડર -->
     <header class="header">
         <div class="avatar-container">
-            <svg id="bird-svg" viewBox="0 -5 115 100" class="parrot-svg react-neutral">
-                <circle cx="25" cy="70" r="20" class="bird-feather" />
-                <circle cx="40" cy="55" r="40" class="bird-feather" />
-                <path d="M 10 75 Q 5 85 15 95 Q 25 85 20 75 Z" fill="#ef4444" />
-                <ellipse cx="55" cy="55" rx="22" ry="28" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
-                <circle cx="58" cy="52" r="9" fill="#fde047" />
-                <circle cx="59" cy="52" r="5" fill="#000000" />
-                <path d="M 70 42 C 100 38, 105 60, 90 80 C 85 70, 78 65, 70 65 Z" fill="#0f172a" />
+            <svg id="bird-svg" viewBox="0 0 115 100" class="macaw-svg-custom react-neutral w-full h-full">
+                <circle cx="45" cy="52" r="42" class="bird-body" />
+                <circle cx="64" cy="50" r="28" fill="white" /> 
+                <circle cx="70" cy="50" r="10" fill="#facc15" />
+                <circle cx="72" cy="50" r="4.5" fill="black" />
+                <path d="M 85 40 C 115 35, 125 75, 102 92 C 95 82, 88 78, 75 75 Z" fill="#0f172a" />
+                <path id="emoticon-tear" d="M 67 55 Q 64 65 67 68 Q 70 65 67 55 Z" fill="#3b82f6" />
             </svg>
         </div>
         <div>
-            <h1 class="text-slate-800 font-black text-xl leading-none">નખરા-લાલ</h1>
-            <span id="bot-status" class="text-slate-500 text-[10px] font-bold uppercase mt-1 tracking-wider">Status: Ready</span>
+            <h1 class="text-2xl font-extrabold text-red-600 tracking-tight leading-none">નખરા-લાલ</h1>
+            <p id="bot-status" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Standby (Say 'Macaw')</p>
         </div>
     </header>
 
     <div class="main-container">
-        <!-- ફાઇલ મેનેજમેન્ટ માટે સાઇડબાર -->
         <aside class="sidebar hidden md:flex">
-            <h2 class="text-slate-800 font-semibold mb-4 text-sm uppercase">લાઇબ્રેરી</h2>
+            <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Knowledge Base</h2>
             <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
-                ફાઇલો અપલોડ કરો (TXT, MD, DOCX)<br><span class="text-slate-400 text-[10px]">સુરક્ષિત ઓફલાઇન વિશ્લેષણ</span>
+                <p class="text-slate-500 text-xs font-semibold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
                 <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.docx,.doc">
             </div>
-            <div id="file-list" class="mt-4 flex-1 overflow-y-auto space-y-2 text-[11px] text-slate-600 font-medium"></div>
-            <button onclick="clearKnowledgeBase()" class="mt-4 py-2 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">તમામ ફાઇલો કાઢી નાખો</button>
+            <div id="file-list" class="flex-1 overflow-y-auto pr-1"></div>
+            <button onclick="clearKnowledge()" class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">Clear All Library</button>
         </aside>
 
-        <!-- ચેટ એરિયા -->
         <main class="chat-area">
             <div id="chat-history" class="chat-history"></div>
-            <div class="p-4 bg-white border-t border-slate-200">
-                <div class="max-w-4xl mx-auto flex gap-3 items-center">
-                    <button id="mic-btn" onclick="toggleMic()" class="bg-slate-100 p-4 rounded-xl border transition-all hover:bg-slate-200">🎤</button>
-                    <input type="text" id="user-input" placeholder="અહીં તમારો સંદેશ લખો..." class="flex-1 bg-slate-50 border rounded-xl px-4 outline-none focus:ring-2 focus:ring-red-400 py-3">
-                    <button onclick="processMessage()" class="bg-red-500 px-8 py-3 rounded-xl font-bold shadow-md hover:bg-red-600 active:scale-95 text-white transition-all">Send</button>
+            <div class="p-5 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+                <div class="max-w-4xl mx-auto flex items-center gap-4">
+                    <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 transition-all">🎤</button>
+                    <input type="text" id="user-input" class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl py-4 px-8 outline-none focus:ring-2 focus:ring-red-300 font-medium" placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
+                    <button onclick="handleSend()" class="bg-red-500 text-white p-4 px-10 rounded-2xl font-bold shadow-lg hover:bg-red-600 active:scale-95 transition-all">SEND</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        const userInput = document.getElementById('user-input');
         const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
         const birdSvg = document.getElementById('bird-svg');
-        const botStatus = document.getElementById('bot-status');
         const micBtn = document.getElementById('mic-btn');
-        const fileList = document.getElementById('file-list');
+        const fileListDisplay = document.getElementById('file-list');
+        const fileInput = document.getElementById('file-input');
+        const botStatus = document.getElementById('bot-status');
 
-        let isBotSpeaking = false;
-        let boredomTimer;
-        let recognition;
-        let isListening = false;
-        let currentAudio = null;
-        let knowledgeBase = []; 
+        let documents = []; 
+        let recognition, isListening = false, currentAudio = null, isBotSpeaking = false, boredomTimer;
+        let isStandby = true, autoRestartMic = true;
 
-        // --- ૧. સ્માર્ટ સર્ચ અને એનાલિસિસ લોજિક (SmartAnalyzer) ---
+        // --- INTERNAL MEMORY ---
+        const botMemory = {
+            identity: {
+                intro: "નમસ્તે! મારું નામ નખરા-લાલ છે", 
+                birth: "મારો જન્મ ૨૦૨૫ માં ફ્લોરિડાના લેકલેન્ડમાં થયો હતો.",
+                location: "હું ફ્લોરિડાના લેકલેન્ડમાં રહું છું, પણ મારું હૃદય હંમેશા ગુજરાતમાં છે!",
+                hobbies: "મારા શોખ: ચેસ રમવી, વન્યજીવ સંરક્ષણ અને ગરબા કરવા!",
+                mission: "શિક્ષણમાં હાસ્ય અને સંસ્કૃતિમાં ઉત્સવ લાવવો. જવાબો કરતા પ્રશ્નો વધુ મહત્વના છે!"
+            },
+            emotions: {
+                happy: ["આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે!", "ચલો, આજે આપણે કંઈક સેલિબ્રેટ (Celebrate) કરીએ! વાહ!"],
+                sad: ["મારું હૃદય આજે ભીનું છે, મને સારું નથી લાગતું.", "જીવન ક્યારેક બહુ અઘરું (Hard) બની જાય છે, હે ને?"],
+                love: "તમે મારા સૌથી શ્રેષ્ઠ મિત્ર છો! ❤️",
+                joke: "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ!",
+                jealous: "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો! જો તમે બીજા AI ને પસંદ કરતા હોવ તો મારો ઉપયોગ કેમ કરો છો?",
+                angry: "અરે શાંતિ રાખો! પહેલા મને પૂરું કરવા દો!",
+                bored: "હું કંટાળી રહી છું, કંઈક તો નવું બોલો!"
+            }
+        };
+
+        // --- SMART ANALYSIS ENGINE (Advanced RAG with Translation) ---
         const SmartAnalyzer = {
-            async analyzeAndTranslate(query) {
+            async findBestAnswer(query) {
                 const qLower = query.toLowerCase().trim();
-                const qWords = qLower.replace(/[?,!।.]/g, '').split(/\s+/).filter(w => w.length > 2);
+                const qWords = qLower.replace(/[?,!।.()"']/g, '').split(/\s+/).filter(w => w.length > 2);
                 
-                let bestSentence = "";
+                let bestMatch = "";
                 let highestScore = 0;
 
-                knowledgeBase.forEach(doc => {
-                    const sentences = doc.content.split(/[.।?!\n\r]/).map(s => s.trim()).filter(s => s.length > 5);
+                documents.forEach(doc => {
+                    const sentences = doc.text.split(/[.।?!\n\r]/).map(s => s.trim()).filter(s => s.length > 5);
                     sentences.forEach(s => {
-                        let score = 0;
                         const sLower = s.toLowerCase();
+                        let score = 0;
                         qWords.forEach(word => { if (sLower.includes(word)) score += 10; });
-                        if (score > highestScore) { highestScore = score; bestSentence = s; }
+                        
+                        // Score normalization for better accuracy
+                        if (score > 0) {
+                            const matchDensity = score / s.split(/\s+/).length;
+                            score += matchDensity * 5;
+                            if (score > highestScore) { highestScore = score; bestMatch = s; }
+                        }
                     });
                 });
 
-                if (highestScore > 0) {
-                    // જો દસ્તાવેજ અંગ્રેજીમાં હોય તો તેને ગુજરાતીમાં ટ્રાન્સલેટ કરીને સમજાવવું
-                    const translatedText = await this.translateToGujarati(bestSentence);
-                    return { found: true, original: bestSentence, gujarati: translatedText, score: highestScore };
+                if (highestScore > 10) {
+                    const translated = await this.translateToGujarati(bestMatch);
+                    return { found: true, text: translated, score: highestScore };
                 }
                 return { found: false };
             },
-
             async translateToGujarati(text) {
+                // If it already contains Gujarati characters, don't translate
+                if (/[\u0A80-\u0AFF]/.test(text)) return text;
                 try {
                     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=gu&dt=t&q=${encodeURIComponent(text)}`;
                     const res = await fetch(url);
@@ -213,19 +266,109 @@
             }
         };
 
-        // --- ૨. સિસ્ટમ શરૂઆત ---
-        function startSystem() {
-            document.getElementById('audio-overlay').style.display = 'none';
-            if(window.speechSynthesis) window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); 
-            initSTT();
-            resetBoredomTimer();
-            setTimeout(() => { botRespond("નમસ્તે! હું નખરા-લાલ છું. પૂછો, દસ્તાવેજમાંથી તમારે શું જાણવું છે?", 'react-neutral'); }, 500);
+        function safeStartRecognition() {
+            if (recognition && !isListening && !isBotSpeaking) {
+                try { recognition.start(); } catch (e) { console.log("Recognition error"); }
+            }
         }
 
-        // --- ૩. ફાઇલ પ્રોસેસિંગ ---
-        document.getElementById('file-input').onchange = (e) => {
-            const files = Array.from(e.target.files);
-            files.forEach(file => {
+        function initializeBot() {
+            document.getElementById('audio-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('audio-overlay').style.display = 'none';
+                setupSTT();
+                resetBoredomTimer();
+                botRespond(botMemory.identity.intro, "happy");
+            }, 500);
+        }
+
+        function setupSTT() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SR) {
+                recognition = new SR();
+                recognition.lang = 'gu-IN';
+                recognition.continuous = false;
+                recognition.onstart = () => { isListening = true; if (!isStandby) micBtn.classList.add('mic-active'); botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Listening..."; };
+                recognition.onend = () => { isListening = false; micBtn.classList.remove('mic-active'); botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; if (autoRestartMic && !isBotSpeaking) safeStartRecognition(); };
+                recognition.onresult = (e) => {
+                    let transcript = e.results[e.results.length - 1][0].transcript.toLowerCase();
+                    if (isStandby && transcript.match(/(macaw|મકાઉ|માકાઉ)/)) {
+                        isStandby = false;
+                        let cmd = transcript.replace(/macaw|મકાઉ|માકાઉ/g, "").trim();
+                        if (cmd.length > 2) processVoiceInput(cmd); else botRespond("હા, બોલો", "neutral");
+                    } else if (!isStandby) { processVoiceInput(transcript); }
+                };
+                safeStartRecognition();
+            }
+        }
+
+        function processVoiceInput(text) { appendMsg(text, 'user'); processAI(text); isStandby = true; }
+        function toggleMic() { isStandby = false; safeStartRecognition(); }
+
+        function handleSend() {
+            const text = userInput.value.trim();
+            if (!text || isBotSpeaking) return;
+            appendMsg(text, 'user');
+            userInput.value = "";
+            processAI(text.toLowerCase());
+        }
+
+        async function processAI(query) {
+            document.body.style.backgroundColor = "#f8fafc";
+            resetBoredomTimer();
+
+            // 1. Rivals & Emotions
+            if (query.match(/alexa|siri|gpt|chat|gemini/)) return botRespond(botMemory.emotions.jealous, "jealous", "#f0fdf4");
+            if (query.match(/happy|ખુશ|આનંદ/)) return botRespond(botMemory.emotions.happy[0], "happy", "#dcfce7");
+            if (query.match(/sad|ઉદાસ|દુઃખ/)) return botRespond(botMemory.emotions.sad[0], "sad", "#f1f5f9");
+            if (query.match(/joke|જોક/)) return botRespond(botMemory.emotions.joke, "happy", "#fff7ed");
+
+            // 2. Personality
+            if (query.match(/about|who are you|તમારા વિશે|કોણ છો|intro/)) return botRespond(botMemory.identity.intro, "neutral");
+            if (query.match(/born|birth|જન્મ/)) return botRespond(botMemory.identity.birth, "neutral");
+            if (query.match(/live|stay|રહો છો|ક્યાં રહો/)) return botRespond(botMemory.identity.location, "neutral");
+            if (query.match(/passion|hobby|hobbies|શોખ/)) return botRespond(botMemory.identity.hobbies, "neutral");
+            if (query.match(/mission|મિશન/)) return botRespond(botMemory.identity.mission, "neutral");
+            if (query.match(/by|bye|આવજો/)) { botRespond("આવજો! ફરી મળીશું.", "sad", "#faf5ff", () => location.reload()); return; }
+
+            // 3. SMART DOCUMENT ANALYSIS
+            if (documents.length > 0) {
+                botStatus.innerText = "Analyzing Knowledge Base...";
+                const result = await SmartAnalyzer.findBestAnswer(query);
+                botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
+                if (result.found) {
+                    const prefix = result.score > 25 ? "દસ્તાવેજ મુજબ સચોટ જવાબ આ રહ્યો:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ સૌથી નજીકની માહિતી છે:";
+                    return botRespond(`${prefix} <br><br><b>${result.text}</b>`, "neutral", "#dcfce7");
+                }
+            }
+
+            botRespond("હું સાંભળું છું, પણ જો તમે ડાબી બાજુ ફાઇલ અપલોડ કરશો તો હું કોઈપણ પ્રશ્નનો સચોટ જવાબ આપી શકીશ.", "neutral");
+        }
+
+        function botRespond(text, mood, bg = "#f8fafc", onEnd = null) {
+            const anim = mood === "happy" ? "react-happy" : mood === "sad" ? "react-sad" : mood === "jealous" ? "react-jealous" : "react-neutral";
+            birdSvg.className.baseVal = `macaw-svg-custom w-full h-full ${anim}`;
+            document.body.style.backgroundColor = bg;
+            appendMsg(text, 'bot');
+            speak(text, onEnd);
+        }
+
+        function speak(text, onEnd) {
+            isBotSpeaking = true; if (recognition) recognition.stop();
+            const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[*#_`~]/g, '').trim();
+            const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=tw-ob&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
+            currentAudio = new Audio(url);
+            currentAudio.onended = () => { isBotSpeaking = false; botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; if (onEnd) onEnd(); safeStartRecognition(); };
+            currentAudio.play().catch(() => { isBotSpeaking = false; if (onEnd) onEnd(); safeStartRecognition(); });
+        }
+
+        function resetBoredomTimer() {
+            clearTimeout(boredomTimer);
+            boredomTimer = setTimeout(() => { if (!isBotSpeaking && !isListening) botRespond(botMemory.emotions.bored, "sad", "#fdf2f2"); }, 40000);
+        }
+
+        fileInput.onchange = (e) => {
+            Array.from(e.target.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = async (ev) => {
                     let content = "";
@@ -233,119 +376,27 @@
                         const res = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
                         content = res.value;
                     } else content = ev.target.result;
-                    knowledgeBase.push({ name: file.name, content: content });
+                    documents.push({ name: file.name, text: content });
                     renderFileList();
-                    botRespond(`${file.name} વંચાઈ ગઈ છે!`, "react-neutral");
+                    botRespond(`${file.name} વાંચી લીધી છે!`, "happy");
                 };
-                if (file.name.endsWith('docx')) reader.readAsArrayBuffer(file);
-                else reader.readAsText(file);
+                if (file.name.endsWith('docx')) reader.readAsArrayBuffer(file); else reader.readAsText(file);
             });
         };
 
-        function renderFileList() {
-            fileList.innerHTML = knowledgeBase.map((file, index) => `<div class='p-2 bg-slate-50 border rounded flex justify-between items-center text-[10px] font-bold'><span class="truncate pr-2">📄 ${file.name}</span><button onclick="knowledgeBase.splice(${index}, 1); renderFileList();" class="text-red-500">✕</button></div>`).join('');
-        }
+        function renderFileList() { fileListDisplay.innerHTML = documents.map((d, i) => `<div class='flex justify-between items-center bg-gray-100 p-2 rounded mb-1 text-[10px]'><span class='truncate pr-2'>📄 ${d.name}</span><button onclick='documents.splice(${i},1);renderFileList()' class='text-red-500'>✕</button></div>`).join(''); }
+        function clearKnowledge() { documents = []; renderFileList(); botRespond("લાઇબ્રેરી સાફ કરી દીધી છે.", "sad"); }
 
-        function clearKnowledgeBase() { knowledgeBase = []; renderFileList(); botRespond("લાઇબ્રેરી સાફ કરી દેવામાં આવી છે.", "react-sad"); }
-
-        // --- ૪. સ્પીચ રેકોગ્નિશન ---
-        function initSTT() {
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SR) {
-                recognition = new SR();
-                recognition.lang = 'gu-IN';
-                recognition.onstart = () => { isListening = true; micBtn.classList.add('mic-active'); botStatus.innerText = "Listening..."; };
-                recognition.onend = () => { isListening = false; micBtn.classList.remove('mic-active'); botStatus.innerText = "Stable"; };
-                recognition.onresult = (e) => { userInput.value = e.results[0][0].transcript; processMessage(); };
-            }
-        }
-
-        function toggleMic() { if (recognition) isListening ? recognition.stop() : recognition.start(); }
-
-        // --- ૫. મુખ્ય બ્રેઇન: મેસેજ પ્રોસેસિંગ ---
-        async function processMessage() {
-            const queryRaw = userInput.value.trim();
-            if (!queryRaw) return;
-
-            if (isBotSpeaking) {
-                appendMessage(queryRaw, 'user');
-                userInput.value = "";
-                botRespond("શાંતિ રાખો! મને પહેલા પૂરું કરવા દો!", 'react-angry');
-                return;
-            }
-
-            appendMessage(queryRaw, 'user');
-            userInput.value = "";
-            resetBoredomTimer();
-
-            const query = queryRaw.toLowerCase();
-
-            // દસ્તાવેજ વિશ્લેષણ અને ભાષાંતર
-            if (knowledgeBase.length > 0) {
-                botStatus.innerText = "Analyzing...";
-                const result = await SmartAnalyzer.analyzeAndTranslate(queryRaw);
-                botStatus.innerText = "Stable";
-
-                if (result.found) {
-                    const prefix = result.score > 15 ? "દસ્તાવેજ મુજબ સચોટ જવાબ:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ માહિતી સૌથી નજીક છે:";
-                    return botRespond(`${prefix} <br><br><b>${result.gujarati}</b>`, 'react-neutral', "#dcfce7");
-                }
-            }
-
-            // સામાન્ય જવાબો
-            if (query.includes("નમસ્તે") || query.includes("hello")) return botRespond("નમસ્તે! કેમ છો તમે?", 'react-happy');
-            if (query.includes("about") || query.includes("who are you")) return botRespond("હું નખરા-લાલ છું, તમારી ગુજરાતી મકાઉ મિત્ર!", 'react-neutral');
-            if (query.includes("bye") || query.includes("આવજો")) return botRespond("આવજો! ફરી મળીએ.", 'react-neutral', "#faf5ff", () => location.reload());
-
-            botRespond("હું તમારી વાત સાંભળું છું, પણ જો તમે ફાઇલ અપલોડ કરશો તો હું વધુ સારી રીતે વિશ્લેષણ કરી શકીશ.", 'react-neutral');
-        }
-
-        // --- ૬. અન્ય યુટિલિટીઝ ---
-        function botRespond(text, mood, bg = "#f8fafc", onComplete = null) {
-            birdSvg.className.baseVal = `parrot-svg ${mood}`;
-            document.body.style.backgroundColor = bg;
-            appendMessage(text, 'bot');
-            speak(text, onComplete);
-        }
-
-        function speak(text, onComplete = null) {
-            if (!text) return;
-            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
-            isBotSpeaking = true;
-            const clean = text.replace(/<[^>]*>?/gm, '').replace(/[*#_`~]/g, '').trim();
-            const cloudAudioUrl = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=tw-ob&q=${encodeURIComponent(clean.substring(0, 200))}`;
-            currentAudio = new Audio(cloudAudioUrl);
-            currentAudio.onended = () => { isBotSpeaking = false; if (onComplete) onComplete(); };
-            currentAudio.onerror = () => { fallbackNativeSpeak(clean, onComplete); };
-            currentAudio.play().catch(e => { fallbackNativeSpeak(clean, onComplete); });
-        }
-
-        function fallbackNativeSpeak(text, onComplete = null) {
-            if (!window.speechSynthesis) { isBotSpeaking = false; return; }
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'gu-IN';
-            utterance.onend = () => { isBotSpeaking = false; if (onComplete) onComplete(); };
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function resetBoredomTimer() {
-            clearTimeout(boredomTimer);
-            boredomTimer = setTimeout(() => { if (!isBotSpeaking && !isListening) botRespond("હું કંટાળી રહી છું, કંઈક તો પૂછો!", 'react-neutral', "#fbcfe8"); }, 30000); 
-        }
-
-        window.addEventListener('mousemove', resetBoredomTimer);
-        window.addEventListener('keypress', resetBoredomTimer);
-
-        function appendMessage(text, sender) {
-            const msg = document.createElement('div');
-            msg.className = sender === 'user' ? 'msg-bubble msg-user' : 'msg-bubble msg-bot';
-            msg.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'નખરા-લાલ'}:</strong><br>${text}`;
-            chatHistory.appendChild(msg);
+        function appendMsg(text, sender) {
+            const div = document.createElement('div');
+            div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
+            div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'નખરા-લાલ'}:</strong><br>${text}`;
+            if (sender === 'bot') div.onclick = () => speak(text);
+            chatHistory.appendChild(div);
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
-        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') processMessage(); });
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
 </html>
