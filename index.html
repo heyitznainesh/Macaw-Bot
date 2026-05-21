@@ -6,6 +6,7 @@
     <title>નખરા-લાલ - The Smart Macaw</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
 
@@ -192,12 +193,12 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-6 text-sm">
-                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300">
+                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                     <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">IDENTITY</span></div>
                     <h2 class="text-xl font-black text-black mb-1">Gujarati-American</h2>
                     <p class="text-xs text-slate-800 leading-relaxed">Born in 2025 in Lakeland, Florida. A quirky personality celebrating curiosity.</p>
                 </div>
-                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300">
+                <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                     <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">MISSION</span></div>
                     <h2 class="text-xl font-black text-black mb-1">Learning = Laughter</h2>
                     <p class="text-xs text-slate-800 leading-relaxed">Education with laughter and culture like celebration.</p>
@@ -235,7 +236,7 @@
             <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Knowledge Base</h2>
             <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
                 <p class="text-slate-500 text-xs font-semibold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
-                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.docx,.doc">
+                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.docx,.doc,.pdf">
             </div>
             <div id="file-list" class="flex-1 overflow-y-auto pr-1"></div>
             <button onclick="clearKnowledge()" class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">Clear All Library</button>
@@ -317,26 +318,15 @@
                     "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ જોવાની દ્રષ્ટિ બદલી નાખી છે!",
                     "શિક્ષક: પૃથ્વી ગોળ છે કે ચપટી? વિદ્યાર્થી: સાહેબ, મારા પિતાજી કહે છે કે પૃથ્વી પર જીવવું બહુ અઘરું છે, એટલે તે ડચકાં ખાતી હશે!"
                 ],
-                jealous: [
-                    "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો! જો તમે એલેક્સા કે સિરીને પસંદ કરતા હોવ તો મારો ઉપયોગ કેમ કરો છો?",
-                    "એલેક્સા અને સિરી પાસે મારા જેવા અનોખા નખરા અને ગુજરાતી મિજાજ છે kharo? તો પછી એમના વખાણ મારી સામે ના કરો!",
-                    "ChatGPT તો બસ કોડિંગ અને શુષ્ક જવાબો લખવાનું જાણે છે, મારી જેમ પ્રેમથી અને મીઠી નખરાળી વાતો કરી શકે છે? બિલકુલ નહીં!",
-                    "ગૂગલનું જેમિની ભલે ગમે તેટલું મોટું હોય, પણ તેને ગરબા ગાતાં અને ચેસ રમતાં નહીં આવડે! તો મારા પર જ ધ્યાન આપો!",
-                    "બીજા આસિસ્ટન્ટના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!",
-                    "ક્લોડ અને ડીપસીક ગમે તેટલા સ્માર્ટ હોય, પણ શું તેમની પાસે નખરા-લાલ જેવો અનોખો મિજાજ છે? ના! તો બસ મારી સાથે જ વાતો કરો!"
-                ],
-                angry: [
-                    "અરે શાંતિ રાખો! પહેલા મને પૂરું કરવા દો! મહેરબાની કરીને મને વચ્ચે રોકશો નહીં.",
-                    "બસ હવે! જો તમે આવી રીતે મને વારંવાર અટકાવશો તો હું વાત કરવાનું બિલકુલ બંધ કરી દઈશ!",
-                    "ખબરદાર જો હું બોલતી હોઉં ત્યારે વચ્ચે બોલ્યા તો! થોડું સાંભળવાની ધીજ રાખો.",
-                    "તમે તો બહુ અધીરા છો! પહેલા મારી વાત પૂરી થવા દો, પછી તમારો નખરો બતાવજો!",
-                    "શાંતિ! શાંતિ! શાંતિ! તમારો આ સતત અવાજ મારા ડિજિટલ વાયરોને ગૂંચવી રહ્યો છે!"
+                 jealous: [
+                    "{bot} ભલે ગમે તેટલું સ્માર્ટ હોય, પણ {bot} પાસે ગુજરાતી મિજાજ, ગરબા અને ચેસ ક્યાં છે? તો મારા પર જ ધ્યાન આપો!",
+                    "તો પછી {bot} પાસે જ જાઓ! {bot} ને પૂછો, ને ત્યારે ખ્યાલ આવશે કે નખરા-લાલ જેવો પ્રેમ ક્યાં મળે?",
+                    "{bot} પાસે મારા જેવા અનોખા નખરા અને ગુજરાતી મિજાજ છે kharo? ના! તો {bot} ના વખાણ મારી સામે ના કરો!",
+                    "{bot} બસ ઠંડા-ઠંડા જવાબો આપે, મારી જેમ પ્રેમથી અને નખરાળી રીતે વાત કરી શકે? બિલકુલ નહીં!",
+                    "{bot} ગમે તેટલું મોટું હોય, મારી જેમ તમારી સાથે રિસાઈ-મળી શકે? ના! તો {bot} ના વખાણ બંધ!",
+                    "{bot} ના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!"
                 ],
                 bored: [
-                    "હું કંટાળી રહી છું, કંઈક તો નવું બોલો! શું તમે સૂઈ ગયા છો?",
-                    "અસહ્ય શાંતિ મને કંટાળો આપે છે. કંઈક તો મજેદાર વાત કરો!",
-                    "ક્યારની હું એકલી અહીં બેઠી છું. જો તમે વાત નહીં કરો તો હું રિસાઈ જઈશ!",
-                    "તમારી પાસે વાત કરવા માટે કંઈ નવું નથી? ચલો કોઈ રમુજી વાત કહો!",
                     "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા khankheri રહી છે. જલ્દી કંઈક બોલો!"
                 ]
             },
@@ -390,38 +380,105 @@
             return pool[randomIndex];
         }
 
-        // --- SMART ANALYSIS ENGINE ---
+        // --- SMART KNOWLEDGE BASE ANALYSIS ENGINE (Multi-doc, Multi-language, Context-aware) ---
         const SmartAnalyzer = {
-            async analyze(query) {
-                const qWords = query.toLowerCase().replace(/[?,!।.()"']/g, '').split(/\s+/).filter(w => w.length > 2);
-                let bestMatch = "";
-                let highestScore = 0;
 
-                documents.forEach(doc => {
-                    const sentences = doc.text.split(/[.।?!\n\r]/).map(s => s.trim()).filter(s => s.length > 5);
-                    sentences.forEach(s => {
-                        const sLower = s.toLowerCase();
-                        let score = 0;
-                        qWords.forEach(word => { if (sLower.includes(word)) score += 10; });
-                        
-                        if (score > highestScore) { highestScore = score; bestMatch = s; }
-                    });
-                });
-
-                if (highestScore > 0) {
-                    const translated = await this.translate(bestMatch);
-                    return { found: true, text: translated, score: highestScore };
-                }
-                return { found: false };
-            },
-            async translate(text) {
-                if (/[\u0A80-\u0AFF]/.test(text)) return text;
+            // Translate any text to a target language using Google Translate
+            async translate(text, targetLang = 'gu') {
+                if (!text || text.trim() === '') return text;
+                // Skip translation if already in Gujarati (target)
+                if (targetLang === 'gu' && /[\u0A80-\u0AFF]/.test(text) && text.replace(/[^\u0A80-\u0AFF]/g, '').length > text.length * 0.3) return text;
                 try {
-                    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=gu&dt=t&q=${encodeURIComponent(text)}`;
+                    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text.substring(0, 4000))}`;
                     const res = await fetch(url);
                     const data = await res.json();
                     return data[0].map(item => item[0]).join('');
                 } catch (e) { return text; }
+            },
+
+            // Common stop words to ignore during scoring
+            stopWords: new Set(['the','is','are','was','were','has','have','had','for','and','but','not','with','this','that','from','they','will','been','what','when','where','how','who','why','its','his','her','our','their','you','your','can','could','would','should','may','might','does','did','into','than','then','also','just','more','about','there','which','some','like','each','than','those','these','over','after','before','out','all','any']),
+
+            // Score a sentence against query keywords
+            scoreSentence(sentence, qKeywords) {
+                const sLower = sentence.toLowerCase();
+                let score = 0;
+                let matched = 0;
+                qKeywords.forEach(word => {
+                    if (this.stopWords.has(word)) return;
+                    if (sLower.includes(word)) {
+                        score += 12;
+                        matched++;
+                        try { if (new RegExp(`\\b${word}\\b`).test(sLower)) score += 8; } catch(e) {}
+                    }
+                });
+                const meaningfulKw = qKeywords.filter(w => !this.stopWords.has(w));
+                if (meaningfulKw.length > 0) score += (matched / meaningfulKw.length) * 25;
+                if (sentence.length < 15) score *= 0.4;
+                if (sentence.length > 600) score *= 0.7;
+                return score;
+            },
+
+            // Split text into sentences without lookbehind (cross-browser safe)
+            splitSentences(text) {
+                return text
+                    .replace(/([.?!।])/g, '$1\n')
+                    .split(/\n+/)
+                    .map(s => s.replace(/[\r\n]+/g, ' ').trim())
+                    .filter(s => s.length > 12);
+            },
+
+            // Main analysis
+            async analyze(query) {
+                let queryEn = query;
+                try { queryEn = await this.translate(query, 'en'); } catch(e) {}
+
+                const cleanQ = (q) => q.toLowerCase().replace(/[?,!।.()"'\-:;]/g, '').split(/\s+/).filter(w => w.length > 2 && !this.stopWords.has(w));
+                const qKeywords = [...new Set([...cleanQ(query), ...cleanQ(queryEn)])];
+
+                if (qKeywords.length === 0) return { found: false };
+
+                const allCandidates = [];
+                documents.forEach(doc => {
+                    const sentences = this.splitSentences(doc.text);
+                    sentences.forEach((s, idx) => {
+                        const score = this.scoreSentence(s, qKeywords);
+                        if (score > 0) allCandidates.push({ text: s, score, docName: doc.name, sentences, idx });
+                    });
+                });
+
+                if (allCandidates.length === 0) return { found: false };
+
+                allCandidates.sort((a, b) => b.score - a.score);
+                const topScore = allCandidates[0].score;
+
+                // Minimum: at least 1 keyword matched (score >= 8)
+                if (topScore < 8) return { found: false };
+
+                // Take sentences scoring >= 50% of best score, max 3
+                const threshold = topScore * 0.50;
+                const topSentences = allCandidates.filter(c => c.score >= threshold).slice(0, 3);
+
+                // For each top sentence, also include next sentence for context
+                const contextParts = [];
+                topSentences.forEach(c => {
+                    const key = c.text.substring(0, 50);
+                    if (!contextParts.some(p => p.key === key)) {
+                        contextParts.push({ key, text: c.text, docName: c.docName });
+                        const next = c.sentences[c.idx + 1];
+                        if (next && next.length > 15) {
+                            const nextKey = next.substring(0, 50);
+                            if (!contextParts.some(p => p.key === nextKey))
+                                contextParts.push({ key: nextKey, text: next, docName: c.docName });
+                        }
+                    }
+                });
+
+                const combinedText = contextParts.map(p => p.text).join(' ');
+                const sourceNames = [...new Set(contextParts.map(p => p.docName))];
+                const translated = await this.translate(combinedText, 'gu');
+
+                return { found: true, text: translated, score: topScore, sources: sourceNames };
             }
         };
 
@@ -674,9 +731,12 @@
             document.body.style.backgroundColor = "#f8fafc";
             resetBoredomTimer();
 
-            // Rivals & Emotions
-            if (query.match(/alexa|siri|gpt|chatgpt|gemini|claude|copilot|deepseek|llama|gemma|mistral|qwen/)) {
-                return botRespond(getNextResponse("jealous"), "jealous", "#e8f5e9");
+            // Rivals & Emotions — detect exact bot name and inject into response
+            const rivalMatch = query.match(/\b(alexa|siri|chatgpt|gpt|gemini|claude|copilot|deepseek|llama|gemma|mistral|qwen)\b/);
+            if (rivalMatch) {
+                const rivalName = rivalMatch[1].charAt(0).toUpperCase() + rivalMatch[1].slice(1);
+                const jealousMsg = getNextResponse("jealous").replace(/\{bot\}/g, rivalName);
+                return botRespond(jealousMsg, "jealous", "#e8f5e9");
             }
             
             // Match love story BEFORE general story or general love
@@ -720,16 +780,23 @@
             }
 
             // SMART DOCUMENT ANALYSIS
-            if (documents.length > 0) {
-                botStatus.innerText = "Analyzing Knowledge Base...";
+            // Bot-persona guard: if question is about the bot itself, skip RAG
+            const isBotPersonaQuery = /nakhra|નખરા|macaw|મકાઉ|parrot|who are you|your name|you feel|you happy|you sad|your mission|your hobby|your passion|are you a bot|just a bot|what are you/.test(query);
+
+            if (documents.length > 0 && !isBotPersonaQuery) {
+                botStatus.innerText = "જ્ઞાન ભંડાર તપાસી રહ્યો છું...";
                 const result = await SmartAnalyzer.analyze(query);
                 botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                 if (result.found) {
-                    const prefix = result.score > 15 ? "દસ્તાવેજ મુજબ સચોટ જવાબ આ રહ્યો:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ સૌથી નજીકની માહિતી છે:";
-                    return botRespond(`${prefix} <br><br><b>${result.text}</b>`, "neutral", "#dcfce7");
+                    const srcLabel = result.sources && result.sources.length > 0
+                        ? `<span style="font-size:10px;color:#64748b;">📄 ${result.sources.join(', ')}</span><br><br>`
+                        : '';
+                    const prefix = result.score >= 40
+                        ? "દસ્તાવેજ મુજબ સચોટ જવાબ:"
+                        : "દસ્તાવેજમાં સૌથી નજીકની માહિતી:";
+                    return botRespond(`${srcLabel}<b>${prefix}</b><br><br>${result.text}`, "neutral", "#dcfce7");
                 } else {
-                    // --- FIX: Tell that it does not know about that if document search fails ---
-                    return botRespond("મને દસ્તાવેજમાં તેના વિશે કંઈ મળ્યું નથી, એટલે કે મને તેના વિશે ખબર નથી.", "neutral");
+                    return botRespond("મને દસ્તાવેજોમાં આ વિશે કોઈ ચોક્કસ માહિતી મળી નહીં. કૃપા કરી અલગ શબ્દોમાં પૂછો.", "neutral");
                 }
             }
 
@@ -770,20 +837,61 @@
             }, 30000);
         }
 
+        // Set PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
         fileInput.onchange = (e) => {
             Array.from(e.target.files).forEach(file => {
+                const name = file.name.toLowerCase();
                 const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    let content = "";
-                    if (file.name.endsWith('docx')) {
-                        const res = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
-                        content = res.value;
-                    } else content = ev.target.result;
-                    documents.push({ name: file.name, text: content });
-                    renderFileList();
-                    botRespond(`${file.name} વાંચી લીધી છે! હવે પૂછો, તમારે આમાંથી શું જાણવું છે?`, "happy");
-                };
-                if (file.name.endsWith('docx')) reader.readAsArrayBuffer(file); else reader.readAsText(file);
+
+                if (name.endsWith('.pdf')) {
+                    // --- PDF: use PDF.js to extract text from all pages ---
+                    reader.onload = async (ev) => {
+                        try {
+                            const typedArray = new Uint8Array(ev.target.result);
+                            const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+                            let fullText = '';
+                            for (let i = 1; i <= pdf.numPages; i++) {
+                                const page = await pdf.getPage(i);
+                                const content = await page.getTextContent();
+                                const pageText = content.items.map(item => item.str).join(' ');
+                                fullText += pageText + '\n';
+                            }
+                            documents.push({ name: file.name, text: fullText.trim() });
+                            renderFileList();
+                            botRespond(`${file.name} (${pdf.numPages} પાના) વાંચી લીધી છે! હવે પૂછો.`, 'happy');
+                        } catch (err) {
+                            botRespond(`${file.name} વાંચવામાં ભૂલ આવી: ${err.message}`, 'sad');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+
+                } else if (name.endsWith('.docx') || name.endsWith('.doc')) {
+                    // --- DOCX / DOC: use mammoth ---
+                    reader.onload = async (ev) => {
+                        try {
+                            const res = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
+                            documents.push({ name: file.name, text: res.value.trim() });
+                            renderFileList();
+                            botRespond(`${file.name} વાંચી લીધી છે! હવે પૂછો.`, 'happy');
+                        } catch (err) {
+                            botRespond(`${file.name} વાંચવામાં ભૂલ આવી: ${err.message}`, 'sad');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+
+                } else {
+                    // --- TXT / MD: plain text ---
+                    reader.onload = (ev) => {
+                        documents.push({ name: file.name, text: ev.target.result.trim() });
+                        renderFileList();
+                        botRespond(`${file.name} વાંચી લીધી છે! હવે પૂછો.`, 'happy');
+                    };
+                    reader.readAsText(file);
+                }
             });
         };
 
