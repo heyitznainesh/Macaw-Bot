@@ -116,33 +116,16 @@
                 transform: translate(var(--startX), var(--startY)) scale(1.5) rotate(-20deg);
                 opacity: 0;
             }
-            15% {
-                opacity: 1;
-            }
-            75% {
-                transform: translate(calc(var(--endX) - 40px), calc(var(--endY) - 30px)) scale(0.8) rotate(8deg);
-            }
-            100% {
-                transform: translate(var(--endX), var(--endY)) scale(0.45) rotate(0deg);
-                opacity: 1;
-            }
+            15% { opacity: 1; }
+            75% { transform: translate(calc(var(--endX) - 40px), calc(var(--endY) - 30px)) scale(0.8) rotate(8deg); }
+            100% { transform: translate(var(--endX), var(--endY)) scale(0.45) rotate(0deg); opacity: 1; }
         }
 
         @keyframes fly-out-swoop {
-            0% {
-                transform: translate(var(--startX), var(--startY)) scale(0.45) rotate(0deg);
-                opacity: 1;
-            }
-            25% {
-                transform: translate(calc(var(--startX) + 40px), calc(var(--startY) + 30px)) scale(0.8) rotate(-8deg);
-            }
-            85% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--endX), var(--endY)) scale(1.5) rotate(20deg);
-                opacity: 0;
-            }
+            0% { transform: translate(var(--startX), var(--startY)) scale(0.45) rotate(0deg); opacity: 1; }
+            25% { transform: translate(calc(var(--startX) + 40px), calc(var(--startY) + 30px)) scale(0.8) rotate(-8deg); }
+            85% { opacity: 1; }
+            100% { transform: translate(var(--endX), var(--endY)) scale(1.5) rotate(20deg); opacity: 0; }
         }
 
         @keyframes wing-flap {
@@ -262,7 +245,7 @@
             <div id="chat-history" class="chat-history"></div>
             <div class="p-5 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <div class="max-w-4xl mx-auto flex items-center gap-4">
-                    <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 transition-all">🎤</button>
+                    <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 border-2 border-transparent transition-all">🎤</button>
                     <input type="text" id="user-input" class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl py-4 px-8 outline-none focus:ring-2 focus:ring-red-300 font-medium" placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
                     <button onclick="handleSend()" class="bg-red-500 text-white p-4 px-10 rounded-2xl font-bold shadow-lg hover:bg-red-600 active:scale-95 transition-all uppercase tracking-widest">SEND</button>
                 </div>
@@ -320,10 +303,16 @@
                     "નખરા-લાલનું દિલ આજે ફક્ત તમારા માટે જ ગુલાબી થઈ ગયું છે!",
                     "દુનિયા ગમે તેવી હોય, પણ તમારો સાથ મારા માટે સુખદ પળો જેવો છે. ❤️"
                 ],
+                love_story: [
+                    "એક સુંદર શાંત ગામમાં રોહન અને આરાધ્યા રહેતા હતા. તેઓ રોજ સાંજે નદી કિનારે મળતા અને એકબીજાની શાંતિમાં સાચો પ્રેમ શોધતા. કોઈ મોટો દાવો નહીં, બસ એકબીજાના મોનનો સ્વીકાર એ જ તેમનો સાચો પ્રેમ હતો.",
+                    "વરસાદની એક ખુશનુમા સાંજે, કબીર પોતાની અગાસીમાં ચા પી રહ્યો હતો. અચાનક તેની નજર સામેની અગાસીમાં ઉભેલી મીરા પર પડી. ચાની ચુસ્કીઓ અને વરસાદના ફોરાં વચ્ચે શરૂ થયેલી એ વાર્તા આજે એક અદ્ભુત લવ સ્ટોરી બની ગઈ છે.",
+                    "コツનક અને દીક્ષા કોલેજ લાઇબ્રેરીના એક ખૂણાના ટેબલ પર રોજ ભણતા. રોનક હંમેશા દીક્ષા માટે તેના મનપસંદ પુસ્તકો પહેલાથી જ બુકસેલ્ફમાં છુપાવી રાખતો. પુસ્તકોના પાનાઓ વચ્ચે પાંગરેલો આ પ્રેમ આજે પણ અતૂટ છે.",
+                    "ખુશી અને આદિત્ય બે અલગ-અલગ શહેરોમાં રહેતા હતા. લોન્ગ ડિસ્ટન્સ હોવા,[ી પણ, તેમનો રાતનો માત્ર દસ મિનિટનો વિડીયો કોલ પણ આખા દિવસનો થાક ઉતારી દેતો. તેમનો પ્રેમ સમય અને ભૌતિક અંતરથી ઘણો ઉપર હતો."
+                ],
                 joke: [
                     "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? <br>વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!",
                     "દર્દી: ડોક્ટર સાહેબ, આંખ બંધ કરું ત્યારે વાંદરાઓ ક્રિકેટ રમતા દેખાય છે. ડોક્ટર: આ ગોળી લો. દર્દી: આજે નહિ સાહેબ, કાલે ફાઇનલ મેચ છે!",
-                    "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો અને મેં ગુસ્સામાં તોડી નાખ્યો!",
+                    "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? <br>ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો અને મેં ગુસ્સામાં તોડી નાખ્યો!",
                     "પોલીસ: તેં ભરબપોરે ચોરી કેમ કરી? ચોર: સાહેબ, દુકનની બહાર મોટું બોર્ડ હતું '૫૦% ઓફ', એટલે મેં અડધું જ લીધું!",
                     "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ જોવાની દ્રષ્ટિ બદલી નાખી છે!",
                     "શિક્ષક: પૃથ્વી ગોળ છે કે ચપટી? વિદ્યાર્થી: સાહેબ, મારા પિતાજી કહે છે કે પૃથ્વી પર જીવવું બહુ અઘરું છે, એટલે તે ડચકાં ખાતી હશે!"
@@ -331,14 +320,15 @@
                 jealous: [
                     "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો! જો તમે એલેક્સા કે સિરીને પસંદ કરતા હોવ તો મારો ઉપયોગ કેમ કરો છો?",
                     "એલેક્સા અને સિરી પાસે મારા જેવા અનોખા નખરા અને ગુજરાતી મિજાજ છે kharo? તો પછી એમના વખાણ મારી સામે ના કરો!",
-                    "ChatGPT તો બસ કોડિંગ જાણે છે, મારી જેમ પ્રેમથી અને મીઠી વાતો કરી શકે છે? બિલકુલ નહીં!",
-                    "ગૂગલનું જેમિની ભલે ગમે તેટલું મોટું હોય, પણ તેને ગરબા ગાતાં નહીં આવડે! તો મારા પર જ ધ્યાન આપો!",
-                    "બીજા આસિસ્ટન્ટના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!"
+                    "ChatGPT તો બસ કોડિંગ અને શુષ્ક જવાબો લખવાનું જાણે છે, મારી જેમ પ્રેમથી અને મીઠી નખરાળી વાતો કરી શકે છે? બિલકુલ નહીં!",
+                    "ગૂગલનું જેમિની ભલે ગમે તેટલું મોટું હોય, પણ તેને ગરબા ગાતાં અને ચેસ રમતાં નહીં આવડે! તો મારા પર જ ધ્યાન આપો!",
+                    "બીજા આસિસ્ટન્ટના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!",
+                    "ક્લોડ અને ડીપસીક ગમે તેટલા સ્માર્ટ હોય, પણ શું તેમની પાસે નખરા-લાલ જેવો અનોખો મિજાજ છે? ના! તો બસ મારી સાથે જ વાતો કરો!"
                 ],
                 angry: [
                     "અરે શાંતિ રાખો! પહેલા મને પૂરું કરવા દો! મહેરબાની કરીને મને વચ્ચે રોકશો નહીં.",
                     "બસ હવે! જો તમે આવી રીતે મને વારંવાર અટકાવશો તો હું વાત કરવાનું બિલકુલ બંધ કરી દઈશ!",
-                    "ખબરદાર જો હું બોલતી હોઉં ત્યારે વચ્ચે બોલ્યા તો! થોડું સાંભળવાની ધીરજ રાખો.",
+                    "ખબરદાર જો હું બોલતી હોઉં ત્યારે વચ્ચે બોલ્યા તો! થોડું સાંભળવાની ધીજ રાખો.",
                     "તમે તો બહુ અધીરા છો! પહેલા મારી વાત પૂરી થવા દો, પછી તમારો નખરો બતાવજો!",
                     "શાંતિ! શાંતિ! શાંતિ! તમારો આ સતત અવાજ મારા ડિજિટલ વાયરોને ગૂંચવી રહ્યો છે!"
                 ],
@@ -347,7 +337,7 @@
                     "અસહ્ય શાંતિ મને કંટાળો આપે છે. કંઈક તો મજેદાર વાત કરો!",
                     "ક્યારની હું એકલી અહીં બેઠી છું. જો તમે વાત નહીં કરો તો હું રિસાઈ જઈશ!",
                     "તમારી પાસે વાત કરવા માટે કંઈ નવું નથી? ચલો કોઈ રમુજી વાત કહો!",
-                    "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા ખંખેરી રહી છે. જલ્દી કંઈક બોલો!"
+                    "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા khankheri રહી છે. જલ્દી કંઈક બોલો!"
                 ]
             },
             system: {
@@ -361,6 +351,7 @@
             happy: [],
             sad: [],
             love: [],
+            love_story: [],
             joke: [],
             jealous: [],
             angry: [],
@@ -475,7 +466,7 @@
             requestAnimationFrame(updateTrail);
         }
 
-        // --- ENTER ANIMATION: FLY AND LAND (Bird faces LEFT during flight, sitting shows only head) ---
+        // --- ENTER ANIMATION: FLY AND LAND (Sits Show ONLY Head) ---
         function initializeBot() {
             const targetContainer = document.querySelector('.avatar-container');
             const targetRect = targetContainer.getBoundingClientRect();
@@ -544,7 +535,8 @@
                     overlay.style.display = 'none';
                 }, 800);
 
-                botRespond("હું આવી ગયો! ચલો કામ શરૂ કરીએ.", "happy");
+                // --- CRUCIAL FIX: Say only introduction when starting and keep color RED ---
+                botRespond(botMemory.identity.intro, "neutral");
             }, 1300);
 
             setupSTT();
@@ -610,6 +602,7 @@
             }, 1300);
         }
 
+        // --- SPEECH RECOGNITION (Alexa-like wake-word detection) ---
         function setupSTT() {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (window.SpeechRecognition) {
@@ -631,19 +624,38 @@
                 };
                 
                 recognition.onresult = (e) => {
-                    let transcript = e.results[e.results.length - 1][0].transcript.toLowerCase();
-                    if (isStandby && transcript.match(/(macaw|મકાઉ|માકાઉ)/)) {
-                        isStandby = false;
-                        let cmd = transcript.replace(/macaw|મકાઉ|માકાઉ/g, "").trim();
-                        if (cmd.length > 2) processVoiceInput(cmd); else botRespond("હા, બોલો", "neutral");
-                    } else if (!isStandby) { processVoiceInput(transcript); }
+                    let transcript = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
+                    
+                    // CRUCIAL FIX: Expect wake word "Macaw" before every command
+                    if (isStandby) {
+                        if (transcript.match(/(macaw|મકાઉ|માકાઉ|મકાવ)/)) {
+                            // Extract command following the wake-word
+                            let cmd = transcript.replace(/(macaw|મકાઉ|માકાઉ|મકાવ)/g, "").trim();
+                            if (cmd.length > 1) {
+                                processVoiceInput(cmd);
+                            } else {
+                                botRespond("હા, બોલો", "neutral");
+                            }
+                        }
+                    } else {
+                        // Directly process because mic was clicked (Bypassing wake-word for accessibility)
+                        processVoiceInput(transcript);
+                    }
                 };
                 safeStartRecognition();
             }
         }
 
-        function processVoiceInput(text) { appendMsg(text, 'user'); processAI(text); isStandby = true; }
-        function toggleMic() { isStandby = false; safeStartRecognition(); }
+        function processVoiceInput(text) { 
+            appendMsg(text, 'user'); 
+            processAI(text); 
+            isStandby = true; // Always reset to standby state
+        }
+        
+        function toggleMic() { 
+            isStandby = false; // Bypasses the wake-word requirement for the next clicked command
+            safeStartRecognition(); 
+        }
 
         function handleSend() {
             const text = userInput.value.trim();
@@ -663,7 +675,15 @@
             resetBoredomTimer();
 
             // Rivals & Emotions
-            if (query.match(/alexa|siri|gpt|chat|gemini/)) return botRespond(getNextResponse("jealous"), "jealous", "#f0fdf4");
+            if (query.match(/alexa|siri|gpt|chatgpt|gemini|claude|copilot|deepseek|llama|gemma|mistral|qwen/)) {
+                return botRespond(getNextResponse("jealous"), "jealous", "#e8f5e9");
+            }
+            
+            // Match love story BEFORE general story or general love
+            if (query.match(/love story|લવ સ્ટોરી|પ્રેમ કહાની|પ્રેમ વાર્તા/)) {
+                return botRespond(getNextResponse("love_story"), "love", "#fce7f3");
+            }
+
             if (query.match(/happy|celebrate|ખુશ|આનંદ/)) return botRespond(getNextResponse("happy"), "happy", "#dcfce7");
             if (query.match(/sad|lonely|hard|ઉદાસ|દુઃખ|રડવું/)) return botRespond(getNextResponse("sad"), "sad", "#f1f5f9");
             if (query.match(/love|best friend|મિત્ર/)) return botRespond(getNextResponse("love"), "love", "#fce7f3");
@@ -676,13 +696,12 @@
             if (query.match(/passion|hobby|hobbies|શોખ/)) return botRespond(botMemory.identity.hobbies, "neutral");
             if (query.match(/mission|મિશન/)) return botRespond(botMemory.identity.mission, "neutral");
 
-            // Modes
+            // Modes (Story / Drama is triggered only if it does NOT contain 'love')
             if (query.match(/nature|surrounding|પ્રકૃતિ/)) return botRespond(botMemory.modes.nature, "mood-nature");
             if (query.match(/tech|technology|ટેકનોલોજી/)) return botRespond(botMemory.modes.tech, "mood-tech");
             if (query.match(/rich|money|અમીર|પૈસા/)) return botRespond(botMemory.modes.business, "mood-business");
             if (query.match(/drama|story|વાર્તા|નાટક/)) return botRespond(botMemory.modes.drama, "mood-drama");
 
-            // System Exit Commands with Custom Fly-Out Animation
             if (query.match(/just a bot|ખાલી બોટ/)) return botRespond(botMemory.system.status, "sad");
             if (query.match(/by|bye|goodbye|આવજો/)) { 
                 botRespond(botMemory.system.bye, "sad", "#faf5ff", () => {
@@ -708,10 +727,14 @@
                 if (result.found) {
                     const prefix = result.score > 15 ? "દસ્તાવેજ મુજબ સચોટ જવાબ આ રહ્યો:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ સૌથી નજીકની માહિતી છે:";
                     return botRespond(`${prefix} <br><br><b>${result.text}</b>`, "neutral", "#dcfce7");
+                } else {
+                    // --- FIX: Tell that it does not know about that if document search fails ---
+                    return botRespond("મને દસ્તાવેજમાં તેના વિશે કંઈ મળ્યું નથી, એટલે કે મને તેના વિશે ખબર નથી.", "neutral");
                 }
             }
 
-            botRespond("હું સાંભળું છું, પણ ફાઇલ અપલોડ કરશો તો હું વધુ સારી રીતે એનાલિસિસ કરી શકીશ.", "neutral");
+            // --- FIX: Tell that it does not know about that if general queries fail ---
+            botRespond("મને તેના વિશે ખબર નથી.", "neutral");
         }
 
         function botRespond(text, mood, bg = "#f8fafc", onEnd = null) {
@@ -764,13 +787,13 @@
             });
         };
 
-        function renderFileList() { fileListDisplay.innerHTML = documents.map((d, i) => `<div class='flex justify-between items-center bg-gray-100 p-2 rounded mb-1 text-xs'><span class='truncate pr-2'>📄 ${d.name}</span><button onclick='documents.splice(${d, i});renderFileList()' class='text-red-500 font-bold'>✕</button></div>`).join(''); }
+        function renderFileList() { fileListDisplay.innerHTML = documents.map((d, i) => `<div class='flex justify-between items-center bg-gray-100 p-2 rounded mb-1 text-xs'><span class='truncate pr-2'>📄 ${d.name}</span><button onclick='documents.splice(${i},1);renderFileList()' class='text-red-500 font-bold'>✕</button></div>`).join(''); }
         function clearKnowledge() { documents = []; renderFileList(); botRespond("લાઇબ્રેરી સાફ કરી દીધી છે.", "sad"); }
 
         function appendMsg(text, sender) {
             const div = document.createElement('div');
             div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
-            div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'Nakhra-Lal'}:</strong><br>${text}`;
+            div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'નખરા-લાલ'}:</strong><br>${text}`;
             if (sender === 'bot') div.onclick = () => speak(text);
             chatHistory.appendChild(div);
             chatHistory.scrollTop = chatHistory.scrollHeight;
