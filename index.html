@@ -621,7 +621,7 @@
             love_story: [],
             joke: [],
             jealous: [],
-            angry: [],
+            angry: ["હવે સાંભળો! હું ગુસ્સામાં નથી, પણ જવાબ આપવાનો છે!", "ઓય! હું બોલતો છું—પ્રશ્ન પૂછો જરા!", "ચાલો, ગુસ્સો છોડો અને વાત શરૂ કરીએ!"],
             bored: []
         };
 
@@ -710,8 +710,15 @@
                 const minChunkChars = options.minChunkChars ?? 300;
                 const maxChunkChars = options.maxChunkChars ?? 900;
 
+                // Fallback: if incoming doc is very small, just treat it as a single chunk.
+                if (!docText || docText.trim().length < minChunkChars) {
+                    const t = (docText || '').trim();
+                    return t.length >= 80 ? [{ startIdx: 0, endIdx: 1, text: t }] : [];
+                }
+
                 const sentences = this.splitSentences(docText);
                 if (!sentences || sentences.length === 0) return [];
+
 
                 // Adaptive target chunk size: scales with document size.
                 const totalChars = docText.length;
@@ -773,40 +780,55 @@
 
                 if (qKeywords.length === 0) return { found: false };
 
+                // Pre-filter: only keep sentences/chunks that match enough keywords.
+                // This reduces hallucination by refusing to answer from weak matches.
                 const allCandidates = [];
                 documents.forEach(doc => {
                     const chunks = this.smartChunkWithOverlap(doc.text);
                     chunks.forEach(ch => {
                         const chunkSentences = this.splitSentences(ch.text);
                         let score = 0;
-                        let matchedHits = 0;
+                        let matchedSentences = 0;
+                        let keywordHitCount = 0;
+
+                        // Track per-keyword hits across the chunk (helps enforce strictness)
+                        const chunkLower = ch.text.toLowerCase();
+                        qKeywords.forEach(word => {
+                            if (this.stopWords.has(word)) return;
+                            if (chunkLower.includes(word)) keywordHitCount++;
+                        });
 
                         chunkSentences.forEach(s => {
                             const sc = this.scoreSentence(s, qKeywords);
-                            if (sc > 0) matchedHits++;
+                            if (sc > 0) matchedSentences++;
                             score += sc;
                         });
 
-                        // Boost if multiple sentences inside the chunk match.
-                        if (matchedHits >= 2) score *= 1.15;
+                        // Require at least 2 keyword hits in the chunk for any chance of answering.
+                        // (Avoids random or overly-broad matches.)
+                        if (keywordHitCount < 2) return;
 
-                        if (score > 0) allCandidates.push({ text: ch.text, score, docName: doc.name });
+                        // Boost if multiple sentences inside the chunk match.
+                        if (matchedSentences >= 2) score *= 1.2;
+
+                        if (score > 0) allCandidates.push({ text: ch.text, score, docName: doc.name, keywordHitCount });
                     });
                 });
 
                 if (allCandidates.length === 0) return { found: false };
 
                 allCandidates.sort((a, b) => b.score - a.score);
-                const topScore = allCandidates[0].score;
+                const top = allCandidates[0];
+                const topScore = top.score;
 
-                // Minimum: at least 1 keyword matched (score >= 8)
-                if (topScore < 8) return { found: false };
+                // Minimum: strict gate
+                if (topScore < 18) return { found: false };
 
-                // Take chunks scoring >= 50% of best score, max 3
-                const threshold = topScore * 0.50;
-                const topChunks = allCandidates.filter(c => c.score >= threshold).slice(0, 3);
+                // Take chunks scoring >= 70% of best score, max 2
+                const threshold = topScore * 0.70;
+                const topChunks = allCandidates.filter(c => c.score >= threshold).slice(0, 2);
 
-                // Merge top chunks with de-dup so we keep the overlap context without repeating the same text.
+                // Merge top chunks with de-dup
                 const contextParts = [];
                 topChunks.forEach(c => {
                     const key = c.text.substring(0, 70);
@@ -1060,8 +1082,9 @@
             if (!text) return;
             if (isBotSpeaking) {
                 userInput.value = "";
-                botRespond(getNextResponse("angry"), "angry");
-                return;
+                const angryText = getNextResponse("angry") || botMemory.emotions.angry?.[0] || "";
+                // If angry pool is missing (undefined), fall back to sad emotion so user still gets a reply.
+                return botRespond(angryText || getNextResponse("sad") || "મને રોકો નહીં, હું જવાબ આપી રહ્યો છું!", "angry");
             }
             appendMsg(text, 'user');
             userInput.value = "";
@@ -1105,8 +1128,16 @@
 
             if (query.match(/just a bot|ખાલી બોટ/)) return botRespond(botMemory.system.status, "sad");
             if (query.match(/by|bye|goodbye|આવજો/)) {
+                // Stop any currently playing audio so it doesn't keep speaking after Bye.
+                isBotSpeaking = false;
+                if (currentAudio) {
+                    try { currentAudio.pause(); } catch (e) { }
+                    try { currentAudio.currentTime = 0; } catch (e) { }
+                }
+                // Also stop any active speech-recognition loop.
+                if (recognition) { try { recognition.stop(); } catch (e) { } }
+
                 botRespond(botMemory.system.bye, "sad", "#faf5ff", () => {
-                    // Start absolute swoop to bottom-right, then bring back page overlay cleanly
                     triggerExitFlight(() => {
                         const overlay = document.getElementById('audio-overlay');
                         overlay.style.display = 'flex';
@@ -1126,6 +1157,16 @@
 
             if (documents.length > 0 && !isBotPersonaQuery) {
                 botStatus.innerText = "જ્ઞાન ભંડાર તપાસી રહ્યો છું...";
+
+                // If the uploaded document is small/short, bypass scoring and answer directly.
+                // This prevents "found:false" when chunking/scoring is too strict.
+                const bestDoc = documents.slice().sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))[0];
+                if (bestDoc && bestDoc.text && bestDoc.text.trim().length < 900) {
+                    botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
+                    const direct = bestDoc.text.trim();
+                    return botRespond(await SmartAnalyzer.translate(direct, 'gu'), "neutral", "#dcfce7");
+                }
+
                 const result = await SmartAnalyzer.analyze(query);
                 botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                 if (result.found) {
