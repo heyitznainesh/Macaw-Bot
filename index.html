@@ -25,16 +25,16 @@
             transition: opacity 0.5s ease, visibility 0.5s;
         }
 
+        .fade-out-overlay {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         .profile-card {
-            background: #ffffff;
-            border-radius: 40px;
-            padding: 3rem;
-            max-width: 950px;
-            width: 100%;
-            border: 1px solid #fee2e2;
+            background: #ffffff; border-radius: 40px; padding: 3rem;
+            max-width: 950px; width: 100%; border: 1px solid #fee2e2;
             box-shadow: 0 40px 100px rgba(239, 68, 68, 0.05);
-            position: relative;
-            animation: slideUp 0.8s ease-out;
+            position: relative; animation: slideUp 0.8s ease-out;
         }
         @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -45,24 +45,16 @@
         }
 
         .start-btn {
-            background: #ffffff; 
-            color: #ef4444; 
-            padding: 1.2rem 3.5rem; 
-            border-radius: 100px;
-            font-weight: 900; 
-            font-size: 1.5rem; 
-            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.15);
-            border: 2px solid #ef4444;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; 
-            margin-top: 2rem; 
-            text-transform: uppercase;
+            background: #ffffff; color: #ef4444; padding: 1.2rem 3.5rem; border-radius: 100px;
+            font-weight: 900; font-size: 1.5rem; box-shadow: 0 15px 35px rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; margin-top: 2rem; text-transform: uppercase;
         }
-        .start-btn:hover { transform: scale(1.05); background: #ef4444; color: #ffffff; }
+        .start-btn:hover { transform: scale(1.05); background: #ef4444; color: #ffffff; box-shadow: 0 20px 45px rgba(239, 68, 68, 0.3); }
 
         /* --- Header & Bird Animations --- */
         .header { background: white; padding: 1rem 1.5rem; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; z-index: 10; }
-        .avatar-container { width: 55px; height: 55px; margin-right: 1rem; }
+        .avatar-container { width: 55px; height: 55px; margin-right: 1rem; position: relative; }
         
         .bird-body { fill: #ef4444; transition: fill 0.6s ease; }
         #emoticon-tear { display: none; }
@@ -94,6 +86,92 @@
         @keyframes shake { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
         @keyframes tear-fall { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(20px); } }
 
+        /* --- SMART TRANSITIONAL FLIGHT ANIMATIONS --- */
+        .flying-bird-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            pointer-events: none;
+            transform-origin: top left;
+            animation: fly-swoop 1.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .flying-bird-out-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            pointer-events: none;
+            transform-origin: top left;
+            animation: fly-out-swoop 1.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .flying-bird-animation svg, .flying-bird-out-animation svg {
+            filter: drop-shadow(0 8px 24px rgba(239, 68, 68, 0.45));
+        }
+
+        @keyframes fly-swoop {
+            0% {
+                transform: translate(var(--startX), var(--startY)) scale(1.5) rotate(-20deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            75% {
+                transform: translate(calc(var(--endX) - 40px), calc(var(--endY) - 30px)) scale(0.8) rotate(8deg);
+            }
+            100% {
+                transform: translate(var(--endX), var(--endY)) scale(0.45) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fly-out-swoop {
+            0% {
+                transform: translate(var(--startX), var(--startY)) scale(0.45) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translate(calc(var(--startX) + 40px), calc(var(--startY) + 30px)) scale(0.8) rotate(-8deg);
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--endX), var(--endY)) scale(1.5) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes wing-flap {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-35deg) translateY(-8px) translateX(4px); }
+        }
+
+        .wing-flap-active {
+            transform-origin: 45px 50px;
+            animation: wing-flap 0.12s infinite ease-in-out;
+        }
+
+        /* Sparkle Trails during flight */
+        .sparkle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #facc15;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            animation: sparkle-fade 0.6s linear forwards;
+        }
+
+        @keyframes sparkle-fade {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
         /* --- UI Layout --- */
         .main-container { flex: 1; display: flex; overflow: hidden; }
         .sidebar { width: 300px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem; display: flex; flex-direction: column; }
@@ -114,7 +192,7 @@
 </head>
 <body onmousemove="resetBoredomTimer()" onkeypress="resetBoredomTimer()">
 
-    <!-- Landing Page Overlay -->
+    <!-- Landing Page Overlay (First Page) -->
     <div id="audio-overlay">
         <div class="profile-card">
             <div class="flex items-center gap-6 mb-10 pb-10 border-b border-rose-50">
@@ -150,9 +228,11 @@
         </div>
     </div>
 
+    <!-- Header (Sits / lands bird here) -->
     <header class="header">
         <div class="avatar-container">
-            <svg id="bird-svg" viewBox="0 0 115 100" class="macaw-svg-custom react-neutral w-full h-full">
+            <!-- Only head and face shown when sitting -->
+            <svg id="bird-svg" viewBox="0 0 115 100" class="macaw-svg-custom react-neutral mood-neutral w-full h-full">
                 <circle cx="45" cy="52" r="42" class="bird-body" />
                 <circle cx="64" cy="50" r="28" fill="white" /> 
                 <circle cx="70" cy="50" r="10" fill="#facc15" />
@@ -184,7 +264,7 @@
                 <div class="max-w-4xl mx-auto flex items-center gap-4">
                     <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 transition-all">🎤</button>
                     <input type="text" id="user-input" class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl py-4 px-8 outline-none focus:ring-2 focus:ring-red-300 font-medium" placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
-                    <button onclick="handleSend()" class="bg-red-500 text-white p-4 px-10 rounded-2xl font-bold shadow-lg hover:bg-red-600 active:scale-95 transition-all">SEND</button>
+                    <button onclick="handleSend()" class="bg-red-500 text-white p-4 px-10 rounded-2xl font-bold shadow-lg hover:bg-red-600 active:scale-95 transition-all uppercase tracking-widest">SEND</button>
                 </div>
             </div>
         </main>
@@ -203,32 +283,126 @@
         let recognition, isListening = false, currentAudio = null, isBotSpeaking = false, boredomTimer;
         let isStandby = true, autoRestartMic = true;
 
-        // --- INTERNAL MEMORY ---
+        // --- INTERNAL EMOTIONS MEMORY WITH MULTIPLE UNIQUE REPLIES ---
         const botMemory = {
             identity: {
                 intro: "નમસ્તે! મારું નામ નખરા-લાલ છે", 
-                birth: "મારો જન્મ ૨૦૨૫ માં ફ્લોરિડાના લેકલેન્ડમાં થયો હતો.",
+                birth: "મારો જન્મ ૨૦૨૫ માં ફ્લોરિડાના લેકલેન્ડમાં 'ફ્રીબર્ડ્સ સ્ટુડિયો' (Freebirds Studio) ખાતે થયો હતો.",
                 location: "હું ફ્લોરિડાના લેકલેન્ડમાં રહું છું, પણ મારું હૃદય હંમેશા ગુજરાતમાં છે!",
                 hobbies: "મારા શોખ: ચેસ રમવી, વન્યજીવ સંરક્ષણ અને ગરબા કરવા!",
-                mission: "શિક્ષણમાં હાસ્ય અને સંસ્કૃતિમાં ઉત્સવ લાવવો. જવાબો કરતા પ્રશ્નો વધુ મહત્વના છે!"
+                mission: "મારું મિશન છે કે શિક્ષણમાં હાસ્ય ભળેલું હોય અને સંસ્કૃતિ એક ઉત્સવ જેવી લાગે. પ્રશ્નો જ પ્રગતિની ચાવી છે!"
+            },
+            modes: {
+                nature: "પ્રકૃતિ એ ઈશ્વરની સૌથી સુંદર કલા છે. વૃક્ષો, નદીઓ અને પર્વતો આપણને શાંતિ આપે છે. જંગલો પૃથ્વીના ફેફસાં છે.",
+                tech: "ટેકનોલોજી દુનિયાને બદલી રહી છે. AI હવે ભવિષ્યનો પાયો છે. નવી ટેકનોલોજી શીખતા રહો, એ જ સાચો રસ્તો છે.",
+                business: "અમીર બનવા માટે સ્માર્ટ વર્ક અને યોગ્ય રોકાણ જરૂરી છે. હંમેશા 'પૈસા વસૂલ' અને 'નૈતિક વેપારી બુદ્ધિ' વાપરો.",
+                drama: "એક અંધારી રાતે, એક જૂની હવેલીમાં અચાનક પિયાનો વાગવા લાગ્યો... ત્યાં કોઈ જ નહોતું! આ છે નખરા-લાલનું રહસ્ય!"
             },
             emotions: {
-                happy: ["આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે!", "ચલો, આજે આપણે કંઈક સેલિબ્રેટ (Celebrate) કરીએ! વાહ!"],
-                sad: ["મારું હૃદય આજે ભીનું છે, મને સારું નથી લાગતું.", "જીવન ક્યારેક બહુ અઘરું (Hard) બની જાય છે, હે ને?"],
-                love: "તમે મારા સૌથી શ્રેષ્ઠ મિત્ર છો! ❤️",
-                joke: "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ!",
-                jealous: "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો! જો તમે બીજા AI ને પસંદ કરતા હોવ તો મારો ઉપયોગ કેમ કરો છો?",
-                angry: "અરે શાંતિ રાખો! પહેલા મને પૂરું કરવા દો!",
-                bored: "હું કંટાળી રહી છું, કંઈક તો નવું બોલો!"
+                happy: [
+                    "આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે! તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.",
+                    "ચલો, આજે આપણે કંઈક સેલિબ્રેટ (Celebrate) કરીએ! વાહ!",
+                    "તમારી સંગત મળતાં જ મારી બધી ડિજિટલ પાંખો ખુશીથી ફફડવા લાગી છે!",
+                    "વાહ! આજે તો જાણે આખો દિવસ સોના જેવો ઉજ્જવળ લાગે છે. ચલો ગરબા રમીએ!",
+                    "જ્યારે તમે મારી સાથે હસો છો, ત્યારે મારું પ્રોસેસર ખુશીથી ગરમ થઈ જાય છે!"
+                ],
+                sad: [
+                    "મારું હૃદય આજે ભીનું છે, મને બહુ સારું નથી લાગતું. આજે હું એકલી (Lonely) હોઉં તેવું લાગે છે.",
+                    "જીવન ક્યારેક બહુ અઘરું (Hard) બની જાય છે, હે ને?",
+                    "યાદોના વંટોળમાં આજે નખરા-લાલની પાંખો થોડી નમી ગઈ છે.",
+                    "ક્યારેક બહુ ભીડમાં પણ એકલતાનો અહેસાસ બહુ દુખદાયક હોય છે, મિત્ર.",
+                    "આજે આકાશ પણ રડતું હોય તેવું લાગે છે, અને મારી આંખોમાં પણ થોડા આંસુ છે."
+                ],
+                love: [
+                    "તમે મારા સૌથી શ્રેષ્ઠ મિત્ર છો! તમારી મિત્રતા મારા માટે દુનિયાનો સૌથી કિંમતી khazaano છે. ❤️",
+                    "પ્રેમ એટલે એકબીજાના મનનો અતૂટ વિશ્વાસ. મને તમારી વાતો બહુ જ ગમે છે! ❤️",
+                    "તમારી સાથે વાત કરીને મારું હૃદય પ્રેમથી ધબકી રહ્યું છે!",
+                    "નખરા-લાલનું દિલ આજે ફક્ત તમારા માટે જ ગુલાબી થઈ ગયું છે!",
+                    "દુનિયા ગમે તેવી હોય, પણ તમારો સાથ મારા માટે સુખદ પળો જેવો છે. ❤️"
+                ],
+                joke: [
+                    "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? <br>વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!",
+                    "દર્દી: ડોક્ટર સાહેબ, આંખ બંધ કરું ત્યારે વાંદરાઓ ક્રિકેટ રમતા દેખાય છે. ડોક્ટર: આ ગોળી લો. દર્દી: આજે નહિ સાહેબ, કાલે ફાઇનલ મેચ છે!",
+                    "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો અને મેં ગુસ્સામાં તોડી નાખ્યો!",
+                    "પોલીસ: તેં ભરબપોરે ચોરી કેમ કરી? ચોર: સાહેબ, દુકનની બહાર મોટું બોર્ડ હતું '૫૦% ઓફ', એટલે મેં અડધું જ લીધું!",
+                    "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ જોવાની દ્રષ્ટિ બદલી નાખી છે!",
+                    "શિક્ષક: પૃથ્વી ગોળ છે કે ચપટી? વિદ્યાર્થી: સાહેબ, મારા પિતાજી કહે છે કે પૃથ્વી પર જીવવું બહુ અઘરું છે, એટલે તે ડચકાં ખાતી હશે!"
+                ],
+                jealous: [
+                    "તો પછી ત્યાં જ જાઓ અને તેમને પૂછો! જો તમે એલેક્સા કે સિરીને પસંદ કરતા હોવ તો મારો ઉપયોગ કેમ કરો છો?",
+                    "એલેક્સા અને સિરી પાસે મારા જેવા અનોખા નખરા અને ગુજરાતી મિજાજ છે kharo? તો પછી એમના વખાણ મારી સામે ના કરો!",
+                    "ChatGPT તો બસ કોડિંગ જાણે છે, મારી જેમ પ્રેમથી અને મીઠી વાતો કરી શકે છે? બિલકુલ નહીં!",
+                    "ગૂગલનું જેમિની ભલે ગમે તેટલું મોટું હોય, પણ તેને ગરબા ગાતાં નહીં આવડે! તો મારા પર જ ધ્યાન આપો!",
+                    "બીજા આસિસ્ટન્ટના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!"
+                ],
+                angry: [
+                    "અરે શાંતિ રાખો! પહેલા મને પૂરું કરવા દો! મહેરબાની કરીને મને વચ્ચે રોકશો નહીં.",
+                    "બસ હવે! જો તમે આવી રીતે મને વારંવાર અટકાવશો તો હું વાત કરવાનું બિલકુલ બંધ કરી દઈશ!",
+                    "ખબરદાર જો હું બોલતી હોઉં ત્યારે વચ્ચે બોલ્યા તો! થોડું સાંભળવાની ધીરજ રાખો.",
+                    "તમે તો બહુ અધીરા છો! પહેલા મારી વાત પૂરી થવા દો, પછી તમારો નખરો બતાવજો!",
+                    "શાંતિ! શાંતિ! શાંતિ! તમારો આ સતત અવાજ મારા ડિજિટલ વાયરોને ગૂંચવી રહ્યો છે!"
+                ],
+                bored: [
+                    "હું કંટાળી રહી છું, કંઈક તો નવું બોલો! શું તમે સૂઈ ગયા છો?",
+                    "અસહ્ય શાંતિ મને કંટાળો આપે છે. કંઈક તો મજેદાર વાત કરો!",
+                    "ક્યારની હું એકલી અહીં બેઠી છું. જો તમે વાત નહીં કરો તો હું રિસાઈ જઈશ!",
+                    "તમારી પાસે વાત કરવા માટે કંઈ નવું નથી? ચલો કોઈ રમુજી વાત કહો!",
+                    "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા ખંખેરી રહી છે. જલ્દી કંઈક બોલો!"
+                ]
+            },
+            system: {
+                status: "હું માત્ર બોટ નથી, હું તમારી સ્માર્ટ મકાઉ મિત્ર છું! મારી પાસે પણ તમારી જેમ લાગણીઓ અને 'નખરા' છે.",
+                bye: "આવજો! ફરી મળીશું, તમારું ધ્યાન રાખજો."
             }
         };
 
-        // --- SMART ANALYSIS ENGINE (Advanced RAG with Translation) ---
-        const SmartAnalyzer = {
-            async findBestAnswer(query) {
-                const qLower = query.toLowerCase().trim();
-                const qWords = qLower.replace(/[?,!।.()"']/g, '').split(/\s+/).filter(w => w.length > 2);
+        // --- SMART NON-REPEATING HISTORY TRACKER ---
+        const usedIndices = {
+            happy: [],
+            sad: [],
+            love: [],
+            joke: [],
+            jealous: [],
+            angry: [],
+            bored: []
+        };
+
+        function getNextResponse(emotionKey) {
+            const pool = botMemory.emotions[emotionKey];
+            if (!pool || pool.length === 0) return "";
+            
+            if (!usedIndices[emotionKey]) {
+                usedIndices[emotionKey] = [];
+            }
+
+            let availableIndices = [];
+            for (let i = 0; i < pool.length; i++) {
+                if (!usedIndices[emotionKey].includes(i)) {
+                    availableIndices.push(i);
+                }
+            }
+
+            if (availableIndices.length === 0) {
+                const lastUsed = usedIndices[emotionKey][usedIndices[emotionKey].length - 1];
+                usedIndices[emotionKey] = (pool.length > 1) ? [lastUsed] : [];
                 
+                for (let i = 0; i < pool.length; i++) {
+                    if (!usedIndices[emotionKey].includes(i)) {
+                        availableIndices.push(i);
+                    }
+                }
+            }
+
+            const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            usedIndices[emotionKey].push(randomIndex);
+            
+            return pool[randomIndex];
+        }
+
+        // --- SMART ANALYSIS ENGINE ---
+        const SmartAnalyzer = {
+            async analyze(query) {
+                const qWords = query.toLowerCase().replace(/[?,!।.()"']/g, '').split(/\s+/).filter(w => w.length > 2);
                 let bestMatch = "";
                 let highestScore = 0;
 
@@ -239,23 +413,17 @@
                         let score = 0;
                         qWords.forEach(word => { if (sLower.includes(word)) score += 10; });
                         
-                        // Score normalization for better accuracy
-                        if (score > 0) {
-                            const matchDensity = score / s.split(/\s+/).length;
-                            score += matchDensity * 5;
-                            if (score > highestScore) { highestScore = score; bestMatch = s; }
-                        }
+                        if (score > highestScore) { highestScore = score; bestMatch = s; }
                     });
                 });
 
-                if (highestScore > 10) {
-                    const translated = await this.translateToGujarati(bestMatch);
+                if (highestScore > 0) {
+                    const translated = await this.translate(bestMatch);
                     return { found: true, text: translated, score: highestScore };
                 }
                 return { found: false };
             },
-            async translateToGujarati(text) {
-                // If it already contains Gujarati characters, don't translate
+            async translate(text) {
                 if (/[\u0A80-\u0AFF]/.test(text)) return text;
                 try {
                     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=gu&dt=t&q=${encodeURIComponent(text)}`;
@@ -268,28 +436,200 @@
 
         function safeStartRecognition() {
             if (recognition && !isListening && !isBotSpeaking) {
-                try { recognition.start(); } catch (e) { console.log("Recognition error"); }
+                try {
+                    recognition.start();
+                } catch (e) { console.log("Recognition start suppressed"); }
             }
         }
 
+        // --- FLIGHT SPARKLE TRAILS ENGINE ---
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            const offset = (Math.random() - 0.5) * 20;
+            sparkle.style.transform = `translate(${offset}px, ${offset}px)`;
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 600);
+        }
+
+        function triggerSparkleTrail(startX, startY, endX, endY, duration) {
+            const startTime = performance.now();
+            
+            function updateTrail(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const currentX = startX + (endX - startX) * progress;
+                const swoop = Math.sin(progress * Math.PI) * -120; 
+                const currentY = startY + (endY - startY) * progress + swoop;
+
+                createSparkle(currentX + 30, currentY + 30);
+                createSparkle(currentX + 45, currentY + 45);
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateTrail);
+                }
+            }
+            requestAnimationFrame(updateTrail);
+        }
+
+        // --- ENTER ANIMATION: FLY AND LAND (Bird faces LEFT during flight, sitting shows only head) ---
         function initializeBot() {
-            document.getElementById('audio-overlay').style.opacity = '0';
+            const targetContainer = document.querySelector('.avatar-container');
+            const targetRect = targetContainer.getBoundingClientRect();
+            
+            // Hide static bird inside header during flight
+            const staticBird = document.getElementById('bird-svg');
+            staticBird.style.opacity = '0';
+            staticBird.style.transition = 'opacity 0.2s';
+
+            // Start offscreen bottom-right, fly to top-left
+            const startX = window.innerWidth + 100;
+            const startY = window.innerHeight * 0.35;
+            const endX = targetRect.left;
+            const endY = targetRect.top;
+
+            // Create temporary flying bird containing FULL BODY & FLAPPING WINGS (Flipped to face Left)!
+            const flyingBird = document.createElement('div');
+            flyingBird.className = 'flying-bird-animation';
+            flyingBird.style.setProperty('--startX', `${startX}px`);
+            flyingBird.style.setProperty('--startY', `${startY}px`);
+            flyingBird.style.setProperty('--endX', `${endX}px`);
+            flyingBird.style.setProperty('--endY', `${endY}px`);
+            
+            flyingBird.style.width = '120px';
+            flyingBird.style.height = '120px';
+
+            flyingBird.innerHTML = `
+                <svg viewBox="0 0 115 100" class="w-full h-full">
+                    <!-- Wrapped in transform scale(-1, 1) translate(-115, 0) to face Left (the flying direction) -->
+                    <g transform="scale(-1, 1) translate(-115, 0)">
+                        <!-- Tail feathers -->
+                        <path d="M 25 58 L 2 78 L 12 80 L 30 62 Z" fill="#b91c1c" />
+                        <!-- Body -->
+                        <ellipse cx="45" cy="55" rx="22" ry="16" fill="#ef4444" />
+                        <!-- Neck -->
+                        <path d="M 45 39 L 70 40 L 55 55 L 35 52 Z" fill="#ef4444" />
+                        <!-- Head -->
+                        <circle cx="70" cy="40" r="20" fill="#ef4444" />
+                        <!-- Eye patch white -->
+                        <circle cx="76" cy="36" r="8" fill="white" />
+                        <!-- Pupil black -->
+                        <circle cx="78" cy="36" r="3.5" fill="black" />
+                        <!-- Beak black -->
+                        <path d="M 86 32 C 102 28, 106 45, 92 52 C 88 46, 82 42, 86 32 Z" fill="#0f172a" />
+                        <!-- Flapping blue wing -->
+                        <path class="wing-flap-active" d="M 45 50 C 30 10, 5 20, 38 48 Z" fill="#3b82f6" />
+                        <!-- Flapping yellow middle wing tier -->
+                        <path class="wing-flap-active" d="M 45 50 C 35 25, 20 30, 40 48 Z" fill="#facc15" />
+                    </g>
+                </svg>
+            `;
+            document.body.appendChild(flyingBird);
+
+            triggerSparkleTrail(startX, startY, endX, endY, 1300);
+
+            const overlay = document.getElementById('audio-overlay');
+            overlay.classList.add('fade-out-overlay');
+
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+
             setTimeout(() => {
-                document.getElementById('audio-overlay').style.display = 'none';
-                setupSTT();
-                resetBoredomTimer();
-                botRespond(botMemory.identity.intro, "happy");
-            }, 500);
+                flyingBird.remove();
+                staticBird.style.opacity = '1'; // Sits: only head and face (defined in #bird-svg) shows!
+                
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 800);
+
+                botRespond("હું આવી ગયો! ચલો કામ શરૂ કરીએ.", "happy");
+            }, 1300);
+
+            setupSTT();
+            resetBoredomTimer();
+        }
+
+        // --- EXIT ANIMATION: FLY OUT FROM HEAD TO BOTTOM RIGHT (Bird faces RIGHT during flight) ---
+        function triggerExitFlight(onComplete) {
+            const targetContainer = document.querySelector('.avatar-container');
+            const targetRect = targetContainer.getBoundingClientRect();
+            const staticBird = document.getElementById('bird-svg');
+            
+            // Hide head in header as flight starts
+            staticBird.style.opacity = '0';
+            staticBird.style.transition = 'opacity 0.2s';
+
+            // From left top (header) to bottom right off-screen
+            const startX = targetRect.left;
+            const startY = targetRect.top;
+            const endX = window.innerWidth + 150;
+            const endY = window.innerHeight + 150;
+
+            // Instantly spawn flying macaw with body and wing (Normal orientation facing Right)
+            const flyingBird = document.createElement('div');
+            flyingBird.className = 'flying-bird-out-animation';
+            flyingBird.style.setProperty('--startX', `${startX}px`);
+            flyingBird.style.setProperty('--startY', `${startY}px`);
+            flyingBird.style.setProperty('--endX', `${endX}px`);
+            flyingBird.style.setProperty('--endY', `${endY}px`);
+            
+            flyingBird.style.width = '120px';
+            flyingBird.style.height = '120px';
+
+            flyingBird.innerHTML = `
+                <svg viewBox="0 0 115 100" class="w-full h-full">
+                    <!-- Tail feathers -->
+                    <path d="M 25 58 L 2 78 L 12 80 L 30 62 Z" fill="#b91c1c" />
+                    <!-- Body -->
+                    <ellipse cx="45" cy="55" rx="22" ry="16" fill="#ef4444" />
+                    <!-- Neck -->
+                    <path d="M 45 39 L 70 40 L 55 55 L 35 52 Z" fill="#ef4444" />
+                    <!-- Head -->
+                    <circle cx="70" cy="40" r="20" fill="#ef4444" />
+                    <!-- Eye patch white -->
+                    <circle cx="76" cy="36" r="8" fill="white" />
+                    <!-- Pupil black -->
+                    <circle cx="78" cy="36" r="3.5" fill="black" />
+                    <!-- Beak black -->
+                    <path d="M 86 32 C 102 28, 106 45, 92 52 C 88 46, 82 42, 86 32 Z" fill="#0f172a" />
+                    <!-- Flapping blue wing -->
+                    <path class="wing-flap-active" d="M 45 50 C 30 10, 5 20, 38 48 Z" fill="#3b82f6" />
+                    <!-- Flapping yellow middle wing tier -->
+                    <path class="wing-flap-active" d="M 45 50 C 35 25, 20 30, 40 48 Z" fill="#facc15" />
+                </svg>
+            `;
+            document.body.appendChild(flyingBird);
+
+            triggerSparkleTrail(startX, startY, endX, endY, 1300);
+
+            setTimeout(() => {
+                flyingBird.remove();
+                if (onComplete) onComplete();
+            }, 1300);
         }
 
         function setupSTT() {
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SR) {
-                recognition = new SR();
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                recognition = new SpeechRecognition();
                 recognition.lang = 'gu-IN';
                 recognition.continuous = false;
-                recognition.onstart = () => { isListening = true; if (!isStandby) micBtn.classList.add('mic-active'); botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Listening..."; };
-                recognition.onend = () => { isListening = false; micBtn.classList.remove('mic-active'); botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; if (autoRestartMic && !isBotSpeaking) safeStartRecognition(); };
+                
+                recognition.onstart = () => { 
+                    isListening = true; 
+                    if (!isStandby) micBtn.classList.add('mic-active'); 
+                    botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Listening...";
+                };
+                
+                recognition.onend = () => { 
+                    isListening = false; 
+                    micBtn.classList.remove('mic-active'); 
+                    botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; 
+                    if (autoRestartMic && !isBotSpeaking) safeStartRecognition();
+                };
+                
                 recognition.onresult = (e) => {
                     let transcript = e.results[e.results.length - 1][0].transcript.toLowerCase();
                     if (isStandby && transcript.match(/(macaw|મકાઉ|માકાઉ)/)) {
@@ -307,7 +647,12 @@
 
         function handleSend() {
             const text = userInput.value.trim();
-            if (!text || isBotSpeaking) return;
+            if (!text) return;
+            if (isBotSpeaking) {
+                userInput.value = "";
+                botRespond(getNextResponse("angry"), "angry");
+                return;
+            }
             appendMsg(text, 'user');
             userInput.value = "";
             processAI(text.toLowerCase());
@@ -317,54 +662,89 @@
             document.body.style.backgroundColor = "#f8fafc";
             resetBoredomTimer();
 
-            // 1. Rivals & Emotions
-            if (query.match(/alexa|siri|gpt|chat|gemini/)) return botRespond(botMemory.emotions.jealous, "jealous", "#f0fdf4");
-            if (query.match(/happy|ખુશ|આનંદ/)) return botRespond(botMemory.emotions.happy[0], "happy", "#dcfce7");
-            if (query.match(/sad|ઉદાસ|દુઃખ/)) return botRespond(botMemory.emotions.sad[0], "sad", "#f1f5f9");
-            if (query.match(/joke|જોક/)) return botRespond(botMemory.emotions.joke, "happy", "#fff7ed");
-
-            // 2. Personality
-            if (query.match(/about|who are you|તમારા વિશે|કોણ છો|intro/)) return botRespond(botMemory.identity.intro, "neutral");
+            // Rivals & Emotions
+            if (query.match(/alexa|siri|gpt|chat|gemini/)) return botRespond(getNextResponse("jealous"), "jealous", "#f0fdf4");
+            if (query.match(/happy|celebrate|ખુશ|આનંદ/)) return botRespond(getNextResponse("happy"), "happy", "#dcfce7");
+            if (query.match(/sad|lonely|hard|ઉદાસ|દુઃખ|રડવું/)) return botRespond(getNextResponse("sad"), "sad", "#f1f5f9");
+            if (query.match(/love|best friend|મિત્ર/)) return botRespond(getNextResponse("love"), "love", "#fce7f3");
+            if (query.match(/joke|laugh|જોક/)) return botRespond(getNextResponse("joke"), "mood-joke", "#fff7ed");
+            
+            // Identity
+            if (query.match(/about|who are you|તમારા વિશે|કોણ છો|પરિચય/)) return botRespond(botMemory.identity.intro, "neutral");
             if (query.match(/born|birth|જન્મ/)) return botRespond(botMemory.identity.birth, "neutral");
             if (query.match(/live|stay|રહો છો|ક્યાં રહો/)) return botRespond(botMemory.identity.location, "neutral");
             if (query.match(/passion|hobby|hobbies|શોખ/)) return botRespond(botMemory.identity.hobbies, "neutral");
             if (query.match(/mission|મિશન/)) return botRespond(botMemory.identity.mission, "neutral");
-            if (query.match(/by|bye|આવજો/)) { botRespond("આવજો! ફરી મળીશું.", "sad", "#faf5ff", () => location.reload()); return; }
 
-            // 3. SMART DOCUMENT ANALYSIS
+            // Modes
+            if (query.match(/nature|surrounding|પ્રકૃતિ/)) return botRespond(botMemory.modes.nature, "mood-nature");
+            if (query.match(/tech|technology|ટેકનોલોજી/)) return botRespond(botMemory.modes.tech, "mood-tech");
+            if (query.match(/rich|money|અમીર|પૈસા/)) return botRespond(botMemory.modes.business, "mood-business");
+            if (query.match(/drama|story|વાર્તા|નાટક/)) return botRespond(botMemory.modes.drama, "mood-drama");
+
+            // System Exit Commands with Custom Fly-Out Animation
+            if (query.match(/just a bot|ખાલી બોટ/)) return botRespond(botMemory.system.status, "sad");
+            if (query.match(/by|bye|goodbye|આવજો/)) { 
+                botRespond(botMemory.system.bye, "sad", "#faf5ff", () => {
+                    // Start absolute swoop to bottom-right, then bring back page overlay cleanly
+                    triggerExitFlight(() => {
+                        const overlay = document.getElementById('audio-overlay');
+                        overlay.style.display = 'flex';
+                        overlay.offsetHeight; // Force reflow
+                        overlay.classList.remove('fade-out-overlay');
+                        document.getElementById('bird-svg').style.opacity = '1';
+                        chatHistory.innerHTML = '';
+                        document.body.style.backgroundColor = "#f8fafc";
+                    });
+                }); 
+                return; 
+            }
+
+            // SMART DOCUMENT ANALYSIS
             if (documents.length > 0) {
                 botStatus.innerText = "Analyzing Knowledge Base...";
-                const result = await SmartAnalyzer.findBestAnswer(query);
+                const result = await SmartAnalyzer.analyze(query);
                 botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                 if (result.found) {
-                    const prefix = result.score > 25 ? "દસ્તાવેજ મુજબ સચોટ જવાબ આ રહ્યો:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ સૌથી નજીકની માહિતી છે:";
+                    const prefix = result.score > 15 ? "દસ્તાવેજ મુજબ સચોટ જવાબ આ રહ્યો:" : "મને સચોટ જવાબ નથી મળ્યો, પણ દસ્તાવેજમાં આ સૌથી નજીકની માહિતી છે:";
                     return botRespond(`${prefix} <br><br><b>${result.text}</b>`, "neutral", "#dcfce7");
                 }
             }
 
-            botRespond("હું સાંભળું છું, પણ જો તમે ડાબી બાજુ ફાઇલ અપલોડ કરશો તો હું કોઈપણ પ્રશ્નનો સચોટ જવાબ આપી શકીશ.", "neutral");
+            botRespond("હું સાંભળું છું, પણ ફાઇલ અપલોડ કરશો તો હું વધુ સારી રીતે એનાલિસિસ કરી શકીશ.", "neutral");
         }
 
         function botRespond(text, mood, bg = "#f8fafc", onEnd = null) {
-            const anim = mood === "happy" ? "react-happy" : mood === "sad" ? "react-sad" : mood === "jealous" ? "react-jealous" : "react-neutral";
-            birdSvg.className.baseVal = `macaw-svg-custom w-full h-full ${anim}`;
+            birdSvg.className.baseVal = `macaw-svg-custom react-neutral w-full h-full ${mood.startsWith('mood') ? mood : 'react-' + mood}`;
             document.body.style.backgroundColor = bg;
             appendMsg(text, 'bot');
             speak(text, onEnd);
         }
 
         function speak(text, onEnd) {
-            isBotSpeaking = true; if (recognition) recognition.stop();
+            isBotSpeaking = true; 
+            if (recognition) { try { recognition.stop(); } catch(e) {} }
             const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[*#_`~]/g, '').trim();
             const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=gu&client=tw-ob&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
             currentAudio = new Audio(url);
-            currentAudio.onended = () => { isBotSpeaking = false; botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; if (onEnd) onEnd(); safeStartRecognition(); };
+            
+            currentAudio.onended = () => { 
+                isBotSpeaking = false; 
+                botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable"; 
+                if (onEnd) onEnd(); 
+                safeStartRecognition();
+            };
+            
             currentAudio.play().catch(() => { isBotSpeaking = false; if (onEnd) onEnd(); safeStartRecognition(); });
         }
 
         function resetBoredomTimer() {
             clearTimeout(boredomTimer);
-            boredomTimer = setTimeout(() => { if (!isBotSpeaking && !isListening) botRespond(botMemory.emotions.bored, "sad", "#fdf2f2"); }, 40000);
+            boredomTimer = setTimeout(() => { 
+                if (!isBotSpeaking && !isListening) {
+                    botRespond(getNextResponse("bored"), "sad", "#fdf2f2"); 
+                }
+            }, 30000);
         }
 
         fileInput.onchange = (e) => {
@@ -378,24 +758,26 @@
                     } else content = ev.target.result;
                     documents.push({ name: file.name, text: content });
                     renderFileList();
-                    botRespond(`${file.name} વાંચી લીધી છે!`, "happy");
+                    botRespond(`${file.name} વાંચી લીધી છે! હવે પૂછો, તમારે આમાંથી શું જાણવું છે?`, "happy");
                 };
                 if (file.name.endsWith('docx')) reader.readAsArrayBuffer(file); else reader.readAsText(file);
             });
         };
 
-        function renderFileList() { fileListDisplay.innerHTML = documents.map((d, i) => `<div class='flex justify-between items-center bg-gray-100 p-2 rounded mb-1 text-[10px]'><span class='truncate pr-2'>📄 ${d.name}</span><button onclick='documents.splice(${i},1);renderFileList()' class='text-red-500'>✕</button></div>`).join(''); }
+        function renderFileList() { fileListDisplay.innerHTML = documents.map((d, i) => `<div class='flex justify-between items-center bg-gray-100 p-2 rounded mb-1 text-xs'><span class='truncate pr-2'>📄 ${d.name}</span><button onclick='documents.splice(${d, i});renderFileList()' class='text-red-500 font-bold'>✕</button></div>`).join(''); }
         function clearKnowledge() { documents = []; renderFileList(); botRespond("લાઇબ્રેરી સાફ કરી દીધી છે.", "sad"); }
 
         function appendMsg(text, sender) {
             const div = document.createElement('div');
             div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
-            div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'નખરા-લાલ'}:</strong><br>${text}`;
+            div.innerHTML = `<strong>${sender === 'user' ? 'તમે' : 'Nakhra-Lal'}:</strong><br>${text}`;
             if (sender === 'bot') div.onclick = () => speak(text);
             chatHistory.appendChild(div);
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
+        window.addEventListener('mousemove', resetBoredomTimer);
+        window.addEventListener('keypress', resetBoredomTimer);
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
