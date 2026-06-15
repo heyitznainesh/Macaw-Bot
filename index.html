@@ -770,7 +770,7 @@
                 });
             },
 
-            // Main analysis
+                // Main analysis
             async analyze(query) {
                 let queryEn = query;
                 try { queryEn = await this.translate(query, 'en'); } catch (e) { }
@@ -780,68 +780,89 @@
 
                 if (qKeywords.length === 0) return { found: false };
 
-                // Pre-filter: only keep sentences/chunks that match enough keywords.
-                // This reduces hallucination by refusing to answer from weak matches.
-                const allCandidates = [];
+                // Evidence selection: choose the best matching SENTENCES (not whole chunks) and translate only those.
+                const sentenceCandidates = [];
+
+                // Helper: how many distinct keywords hit in a given text
+                const countKeywordHits = (textLower) => {
+                    let hit = 0;
+                    qKeywords.forEach(word => {
+                        if (this.stopWords.has(word)) return;
+                        if (textLower.includes(word)) hit++;
+                    });
+                    return hit;
+                };
+
                 documents.forEach(doc => {
                     const chunks = this.smartChunkWithOverlap(doc.text);
                     chunks.forEach(ch => {
-                        const chunkSentences = this.splitSentences(ch.text);
-                        let score = 0;
-                        let matchedSentences = 0;
-                        let keywordHitCount = 0;
+                        const sentences = this.splitSentences(ch.text);
+                        sentences.forEach(s => {
+                            const sLower = (s || '').toLowerCase();
 
-                        // Track per-keyword hits across the chunk (helps enforce strictness)
-                        const chunkLower = ch.text.toLowerCase();
-                        qKeywords.forEach(word => {
-                            if (this.stopWords.has(word)) return;
-                            if (chunkLower.includes(word)) keywordHitCount++;
-                        });
+                            const kwHits = countKeywordHits(sLower);
+                            if (kwHits < 2) return; // stricter per-sentence gate
 
-                        chunkSentences.forEach(s => {
                             const sc = this.scoreSentence(s, qKeywords);
-                            if (sc > 0) matchedSentences++;
-                            score += sc;
+                            if (sc <= 0) return;
+
+                            sentenceCandidates.push({
+                                sentence: s,
+                                score: sc,
+                                docName: doc.name,
+                                keywordHitCount: kwHits
+                            });
                         });
-
-                        // Require at least 2 keyword hits in the chunk for any chance of answering.
-                        // (Avoids random or overly-broad matches.)
-                        if (keywordHitCount < 2) return;
-
-                        // Boost if multiple sentences inside the chunk match.
-                        if (matchedSentences >= 2) score *= 1.2;
-
-                        if (score > 0) allCandidates.push({ text: ch.text, score, docName: doc.name, keywordHitCount });
                     });
                 });
 
-                if (allCandidates.length === 0) return { found: false };
+                if (sentenceCandidates.length === 0) return { found: false };
 
-                allCandidates.sort((a, b) => b.score - a.score);
-                const top = allCandidates[0];
-                const topScore = top.score;
+                // Sort by score and choose top evidence sentences.
+                sentenceCandidates.sort((a, b) => b.score - a.score);
+                const best = sentenceCandidates[0];
 
-                // Minimum: strict gate
-                if (topScore < 18) return { found: false };
+                // Gate: require higher evidence than before.
+                if (best.score < 28) return { found: false };
 
-                // Take chunks scoring >= 70% of best score, max 2
-                const threshold = topScore * 0.70;
-                const topChunks = allCandidates.filter(c => c.score >= threshold).slice(0, 2);
+                // Take top sentences with sufficient relative score.
+                const relThreshold = best.score * 0.80;
+                const topSentences = sentenceCandidates
+                    .filter(c => c.score >= relThreshold)
+                    .slice(0, 4);
 
-                // Merge top chunks with de-dup
-                const contextParts = [];
-                topChunks.forEach(c => {
-                    const key = c.text.substring(0, 70);
-                    if (!contextParts.some(p => p.key === key)) {
-                        contextParts.push({ key, text: c.text, docName: c.docName });
-                    }
+                // De-dup by prefix
+                const seen = new Set();
+                const unique = [];
+                topSentences.forEach(c => {
+                    const key = (c.sentence || '').substring(0, 90);
+                    if (seen.has(key)) return;
+                    seen.add(key);
+                    unique.push(c);
                 });
 
-                const combinedText = contextParts.map(p => p.text).join(' ');
-                const sourceNames = [...new Set(contextParts.map(p => p.docName))];
-                const translated = await this.translate(combinedText, 'gu');
+                if (unique.length === 0) return { found: false };
 
-                return { found: true, text: translated, score: topScore, sources: sourceNames };
+                // Translate each sentence separately to reduce distortion.
+                const translatedSentences = [];
+                for (const item of unique) {
+                    translatedSentences.push(await this.translate(item.sentence, 'gu'));
+                }
+
+                const sources = [...new Set(unique.map(u => u.docName))];
+
+                // Provide citations: original sentence quote + doc name.
+                const citedText = translatedSentences
+                    .map((t, idx) => {
+                        const original = unique[idx].sentence;
+                        const doc = unique[idx].docName;
+                        // Keep citation compact; do not translate citation quote.
+                        const quote = (original || '').replace(/<[^>]*>?/gm, '').trim().substring(0, 220);
+                        return `<div style="margin-bottom:10px;"><div>${t}</div><div style="font-size:10px;color:#64748b;margin-top:6px;">📌 ${doc} — ${quote}</div></div>`;
+                    })
+                    .join('');
+
+                return { found: true, text: citedText, score: best.score, sources };
             }
         };
 
