@@ -558,6 +558,13 @@
         let isStandby = true, autoRestartMic = true;
         let ollamaAvailable = false;
 
+        // --- SPAM GUARD (angry mode) ---
+        let spamCount = 0;
+        let lastUserSendAt = 0;
+        const SPAM_WINDOW_MS = 5000;
+        const SPAM_THRESHOLD = 3;
+
+
         // --- INDEXEDDB IMPLEMENTATION ---
         const dbName = "NakhraLalDB";
         const storeName = "documents";
@@ -1234,6 +1241,25 @@ ${context}
             speak(text, onEnd);
         }
 
+        function botRespondAngrySpam(text, onEnd = null) {
+            // Force angry shake + red message + angry voice (do not change chatbox colors)
+            botRespond(text, 'angry', '#f8fafc', onEnd);
+
+            const lastBot = chatHistory.lastElementChild;
+            if (lastBot && lastBot.classList && lastBot.classList.contains('msg-bot')) {
+                lastBot.style.borderColor = '#ef4444';
+                lastBot.style.color = '#dc2626';
+            }
+
+
+            // Reset angry visual shake so it re-triggers reliably
+            birdSvg.classList.remove('react-angry');
+            void birdSvg.offsetWidth;
+            birdSvg.classList.add('react-angry');
+        }
+
+
+
         // --- VOICE AUDIO SYNTHESIS ENGINE ---
         function speak(text, onEnd) {
             isBotSpeaking = true;
@@ -1285,15 +1311,31 @@ ${context}
         async function handleSend() {
             const text = userInput.value.trim();
             if (!text) return;
+
             userInput.value = '';
             appendMsg(text, 'user');
-            
+
             if (recognition && isListening) {
                 recognition.stop();
             }
-            
+
+            // Spam guard: rapid repeated sends
+            const now = Date.now();
+            if (now - lastUserSendAt <= SPAM_WINDOW_MS) {
+                spamCount += 1;
+            } else {
+                spamCount = 1;
+            }
+            lastUserSendAt = now;
+
+            if (spamCount >= SPAM_THRESHOLD) {
+                const slowDownMsg = "ઓય! બહુ સ્પામ ન કરો… ધીમે ધીમે લખો, મને પણ પાંખો ગોઠવવા દો.";
+                return botRespondAngrySpam(slowDownMsg);
+            }
+
             await processAI(text);
         }
+
 
         function toggleMic() {
             if (!recognition) {
