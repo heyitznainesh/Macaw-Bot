@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>નખરા-લાલ - The Smart Macaw</title>
+    <title>નખરા-લાલ - Smart Macaw Companion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap');
 
@@ -182,44 +183,24 @@
         }
 
         @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-12px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
 
         @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         @keyframes shake {
-            0% {
-                transform: translate(1px, 1px);
-            }
-            100% {
-                transform: translate(-1px, -1px);
-            }
+            0% { transform: translate(1px, 1px); }
+            100% { transform: translate(-1px, -1px); }
         }
 
         @keyframes tear-fall {
-            0% {
-                opacity: 0;
-                transform: translateY(0);
-            }
-            30% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+            0% { opacity: 0; transform: translateY(0); }
+            30% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(20px); }
         }
 
         /* --- FLIGHT ANIMATIONS --- */
@@ -249,46 +230,22 @@
         }
 
         @keyframes fly-swoop {
-            0% {
-                transform: translate(var(--startX), var(--startY)) scale(1.5) rotate(-20deg);
-                opacity: 0;
-            }
-            15% {
-                opacity: 1;
-            }
-            75% {
-                transform: translate(calc(var(--endX) - 40px), calc(var(--endY) - 30px)) scale(0.8) rotate(8deg);
-            }
-            100% {
-                transform: translate(var(--endX), var(--endY)) scale(0.45) rotate(0deg);
-                opacity: 1;
-            }
+            0% { transform: translate(var(--startX), var(--startY)) scale(1.5) rotate(-20deg); opacity: 0; }
+            15% { opacity: 1; }
+            75% { transform: translate(calc(var(--endX) - 40px), calc(var(--endY) - 30px)) scale(0.8) rotate(8deg); }
+            100% { transform: translate(var(--endX), var(--endY)) scale(0.45) rotate(0deg); opacity: 1; }
         }
 
         @keyframes fly-out-swoop {
-            0% {
-                transform: translate(var(--startX), var(--startY)) scale(0.45) rotate(0deg);
-                opacity: 1;
-            }
-            25% {
-                transform: translate(calc(var(--startX) + 40px), calc(var(--startY) + 30px)) scale(0.8) rotate(-8deg);
-            }
-            85% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--endX), var(--endY)) scale(1.5) rotate(20deg);
-                opacity: 0;
-            }
+            0% { transform: translate(var(--startX), var(--startY)) scale(0.45) rotate(0deg); opacity: 1; }
+            25% { transform: translate(calc(var(--startX) + 40px), calc(var(--startY) + 30px)) scale(0.8) rotate(-8deg); }
+            85% { opacity: 1; }
+            100% { transform: translate(var(--endX), var(--endY)) scale(1.5) rotate(20deg); opacity: 0; }
         }
 
         @keyframes wing-flap {
-            0%, 100% {
-                transform: rotate(0deg);
-            }
-            50% {
-                transform: rotate(-35deg) translateY(-8px) translateX(4px);
-            }
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-35deg) translateY(-8px) translateX(4px); }
         }
 
         .wing-flap-active {
@@ -296,7 +253,6 @@
             animation: wing-flap 0.12s infinite ease-in-out;
         }
 
-        /* Sparkle Trails during flight */
         .sparkle {
             position: fixed;
             width: 8px;
@@ -309,17 +265,35 @@
         }
 
         @keyframes sparkle-fade {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0);
-                opacity: 0;
-            }
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
 
-        /* --- UI Layout --- */
+        .alexa-wave {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            height: 16px;
+        }
+
+        .alexa-bar {
+            width: 3px;
+            height: 100%;
+            background-color: #ef4444;
+            border-radius: 3px;
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        .alexa-bar:nth-child(1) { animation-delay: 0.0s; }
+        .alexa-bar:nth-child(2) { animation-delay: 0.2s; }
+        .alexa-bar:nth-child(3) { animation-delay: 0.4s; }
+        .alexa-bar:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
         .main-container {
             flex: 1;
             display: flex;
@@ -327,7 +301,7 @@
         }
 
         .sidebar {
-            width: 320px;
+            width: 340px;
             background: white;
             border-right: 1px solid #e2e8f0;
             padding: 1.5rem;
@@ -402,31 +376,18 @@
         }
 
         @keyframes mic-pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 
 <body onmousemove="resetBoredomTimer()" onkeypress="resetBoredomTimer()">
 
-    <!-- Landing Page Overlay (First Page) -->
     <div id="audio-overlay">
         <div class="profile-card">
             <div class="flex items-center gap-6 mb-10 pb-10 border-b border-rose-50">
@@ -441,35 +402,32 @@
                 </div>
                 <div>
                     <h1 class="text-6xl md:text-7xl font-black tracking-tighter text-red-600 leading-none">નખરા-લાલ</h1>
-                    <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">The Fully Offline Speech & RAG Companion</p>
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">Speech, Document & RAG Companion</p>
                 </div>
             </div>
 
-            <!-- Optimized Grid showing symmetric 2-column details -->
             <div class="grid md:grid-cols-2 gap-6 text-sm">
                 <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                     <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">IDENTITY</span></div>
                     <h2 class="text-xl font-black text-black mb-1">Gujarati-American</h2>
-                    <p class="text-xs text-slate-800 leading-relaxed">Born in 2025 in Lakeland, Florida. A quirky personality celebrating curiosity.</p>
+                    <p class="text-xs text-slate-800 leading-relaxed">Born in 2025 in Lakeland, Florida. A smart macaw assistant answering from your documents.</p>
                 </div>
                 <div class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                     <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span class="text-[10px] font-black uppercase text-red-400">MISSION</span></div>
                     <h2 class="text-xl font-black text-black mb-1">Learning = Laughter</h2>
-                    <p class="text-xs text-slate-800 leading-relaxed">Education with laughter and culture like a celebration.</p>
+                    <p class="text-xs text-slate-800 leading-relaxed">education with laughter and culture like a celebration.</p>
                 </div>
             </div>
 
             <div class="mt-12 text-center pt-8">
-                <p class="text-xl italic font-semibold text-red-400">“Chalo, let’s make your brain do a little Garba dance today!”</p>
+                <p class="text-xl italic font-semibold text-red-400">“Chalo, let make your brain do a little Garba dance today”</p>
                 <button onclick="initializeBot()" class="start-btn">CLICK HERE TO ENTER 🚀</button>
             </div>
         </div>
     </div>
 
-    <!-- Header (Sits / lands bird here) -->
     <header class="header">
         <div class="avatar-container">
-            <!-- Only head and face shown when sitting -->
             <svg id="bird-svg" viewBox="0 0 115 100" class="macaw-svg-custom react-neutral mood-neutral w-full h-full">
                 <circle cx="45" cy="52" r="42" class="bird-body" />
                 <circle cx="64" cy="50" r="28" fill="white" />
@@ -480,39 +438,49 @@
             </svg>
         </div>
         <div class="flex-1">
-            <h1 class="text-2xl font-extrabold text-red-600 tracking-tight leading-none">નખરા-લાલ</h1>
-            <p id="bot-status" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Standby (Say 'Macaw' or Speak)</p>
+            <div class="flex items-center gap-2">
+                <h1 class="text-2xl font-extrabold text-red-600 tracking-tight leading-none">નખરા-લાલ</h1>
+                <span class="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Smart Intelligence</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+                <p id="bot-status" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Standby (Say 'Macaw' or Speak)</p>
+                <div id="alexa-audio-wave" class="alexa-wave hidden">
+                    <span class="alexa-bar"></span>
+                    <span class="alexa-bar"></span>
+                    <span class="alexa-bar"></span>
+                    <span class="alexa-bar"></span>
+                </div>
+            </div>
         </div>
         <div class="flex items-center gap-2">
-            <!-- Offline Connection Indicator -->
+            <div id="llm-indicator" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 text-xs font-semibold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Gemini LLM Active
+            </div>
             <div id="ollama-indicator" class="flex items-center gap-1.5 px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full border border-yellow-200 text-xs font-semibold">
                 <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                Checking local Ollama status...
+                Checking Ollama...
             </div>
         </div>
     </header>
 
     <div class="main-container">
-        <!-- Sidebar Controls (Highly aligned library dashboard with hidden config preservation) -->
         <aside class="sidebar hidden md:flex">
-            
-            <!-- Local Ollama Config preservation nodes kept for backend functionality but hidden from UI -->
             <div style="display: none !important;">
                 <input type="text" id="ollama-url" value="http://localhost:11434">
                 <input type="text" id="ollama-model" value="gemma3:4b">
             </div>
 
-            <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">IndexedDB Knowledge Base</h2>
+            <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Knowledge Base (IndexedDB)</h2>
             <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
                 <p class="text-slate-500 text-xs font-semibold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
-                <p class="text-[9px] text-slate-400 mt-1">PDF, TXT, MD, DOCX (Saved Offline)</p>
+                <p class="text-[9px] text-slate-400 mt-1">PDF, TXT, MD, DOCX (Auto Summary & Smart Q&A)</p>
                 <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.docx,.doc,.pdf">
             </div>
 
-            <!-- List of stored documents -->
             <div class="flex-1 flex flex-col min-h-0">
                 <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">Stored Documents</span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Indexed Documents</span>
                     <span id="doc-counter" class="text-[10px] font-black text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full">0 files</span>
                 </div>
                 <div id="file-list" class="flex-1 overflow-y-auto pr-1">
@@ -520,14 +488,19 @@
                 </div>
             </div>
 
-            <!-- Clear Action Buttons -->
-            <button onclick="clearKnowledge()" class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">Clear All Library</button>
+            <button onclick="clearKnowledge()" class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">Clear All Knowledge</button>
         </aside>
 
-        <!-- Chat Panel -->
         <main class="chat-area">
             <div id="chat-history" class="chat-history"></div>
             
+            <div id="suggestion-bar" class="px-5 py-2 bg-slate-50 border-t border-slate-100 flex items-center gap-2 overflow-x-auto text-xs font-semibold">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Try Asking:</span>
+                <button onclick="sendQuickQuery('મારા બધા દસ્તાવેજોનો ટૂંકસાર આપો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">📄 દસ્તાવેજોનો સારાંશ</button>
+                <button onclick="sendQuickQuery('તમારા વિશે જણાવો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">🦜 તમારા વિશે જણાવો</button>
+                <button onclick="sendQuickQuery('મને એક સરસ જોક સંભળાવો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">😂 જોક સંભળાવો</button>
+            </div>
+
             <div class="p-5 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
                 <div class="max-w-4xl mx-auto flex items-center gap-4">
                     <button onclick="toggleMic()" id="mic-btn" class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 border-2 border-transparent transition-all" title="Toggle Voice Recognition (Wake Word: Macaw)">
@@ -549,23 +522,40 @@
         const fileInput = document.getElementById('file-input');
         const botStatus = document.getElementById('bot-status');
         const ollamaIndicator = document.getElementById('ollama-indicator');
+        const llmIndicator = document.getElementById('llm-indicator');
         const ollamaUrlInput = document.getElementById('ollama-url');
         const ollamaModelInput = document.getElementById('ollama-model');
         const docCounter = document.getElementById('doc-counter');
+        const alexaWave = document.getElementById('alexa-audio-wave');
+        const suggestionBar = document.getElementById('suggestion-bar');
 
-        let documents = []; // Loaded from local IndexedDB
+        let documents = []; 
         let recognition, isListening = false, currentAudio = null, isBotSpeaking = false, boredomTimer;
         let isStandby = true, autoRestartMic = true;
         let ollamaAvailable = false;
 
-        // --- SPAM GUARD (angry mode) ---
+        let isRecognitionStarting = false;
+        let isRecognitionRunning = false;
+        let isRecognitionStopping = false;
+
+        window.addEventListener('unhandledrejection', (event) => {
+            if (event.reason && (
+                event.reason.name === 'InvalidStateError' ||
+                (event.reason.message && event.reason.message.includes('SpeechRecognition')) ||
+                (event.reason.toString && event.reason.toString().includes('SpeechRecognition'))
+            )) {
+                event.preventDefault();
+                isRecognitionStarting = false;
+                isRecognitionRunning = true;
+                console.warn("Handled SpeechRecognition async state rejection:", event.reason);
+            }
+        });
+
         let spamCount = 0;
         let lastUserSendAt = 0;
         const SPAM_WINDOW_MS = 5000;
         const SPAM_THRESHOLD = 3;
 
-
-        // --- INDEXEDDB IMPLEMENTATION ---
         const dbName = "NakhraLalDB";
         const storeName = "documents";
         let db;
@@ -629,18 +619,81 @@
             });
         }
 
-        // Load files from IndexedDB and display on startup
         async function loadStoredDocuments() {
             try {
                 await initDB();
                 documents = await loadAllDocsFromDB();
                 renderFileList();
+                updateSuggestionChips();
             } catch (err) {
                 console.error("IndexedDB initialization failed:", err);
             }
         }
 
-        // --- LOCAL OLLAMA CONNECTION HEALTH CHECK ---
+        async function callGeminiLLM(prompt, systemInstruction = "", retries = 3, delay = 1000) {
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (systemInstruction) {
+                payload.systemInstruction = {
+                    parts: [{ text: systemInstruction }]
+                };
+            }
+
+            for (let attempt = 0; attempt < retries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (textResponse) {
+                        return textResponse.trim();
+                    }
+                } catch (error) {
+                    if (attempt < retries - 1) {
+                        await new Promise(r => setTimeout(r, delay * Math.pow(2, attempt)));
+                    } else {
+                        console.warn("Gemini LLM call failed after retries:", error);
+                        throw error;
+                    }
+                }
+            }
+            return null;
+        }
+
+        async function translateAndSummarizeDocument(docName, docText) {
+            botStatus.innerText = "Gemini વડે ફાઇલનું પૃથ્થકરણ થઈ રહ્યું છે...";
+            const systemPrompt = `તમે એક સ્માર્ટ AI આસિસ્ટન્ટ છો. આપેલા દસ્તાવેજનો અભ્યાસ કરો. 
+૧. તેનો ૧ વાક્યનો શુદ્ધ અને અત્યંત ટૂંકો ગુજરાતી સારાંશ આપો.
+૨. તે દસ્તાવેજના આધારે યુઝર પૂછી શકે તેવા ૨ ના નાના પ્રશ્નો બનાવો.
+જવાબ આ સ્વરૂપમાં આપો:
+સંપૂર્ણ ગુજરાતી ભાષાંતર અને સારાંશ: [સારાંશ]
+પ્રશ્ન ૧: [પ્રશ્ન ૧]
+પ્રશ્ન ૨: [પ્રશ્ન ૨]`;
+
+            const prompt = `દસ્તાવેજ "${docName}":\n\n${docText.substring(0, 15000)}`;
+
+            try {
+                const gujResponse = await callGeminiLLM(prompt, systemPrompt);
+                return gujResponse || docText;
+            } catch (err) {
+                console.warn("Gemini Translation fallback:", err);
+                return docText;
+            }
+        }
+
         async function testOllamaConnection() {
             const baseUrl = ollamaUrlInput.value.trim();
             ollamaIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span> Testing...`;
@@ -649,30 +702,31 @@
             try {
                 const res = await fetch(`${baseUrl}/api/tags`, { method: 'GET', timeout: 3000 });
                 if (res.ok) {
-                    const data = await res.json();
+                    await res.json();
                     ollamaAvailable = true;
-                    ollamaIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Local Ollama Connection Active`;
+                    ollamaIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Local Ollama Active`;
                     ollamaIndicator.className = "flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full border border-green-200 text-xs font-semibold";
                 } else {
                     throw new Error("Bad status");
                 }
             } catch (e) {
                 ollamaAvailable = false;
-                ollamaIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Local Ollama Offline (Fallback Active)`;
-                ollamaIndicator.className = "flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 rounded-full border border-red-200 text-xs font-semibold";
+                ollamaIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> Local Ollama Offline`;
+                ollamaIndicator.className = "flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-slate-600 rounded-full border border-slate-200 text-xs font-semibold";
             }
         }
 
-        // Initial setup on startup
         window.addEventListener('load', async () => {
             await loadStoredDocuments();
             await testOllamaConnection();
+            if (window.speechSynthesis) {
+                window.speechSynthesis.getVoices();
+            }
         });
 
-        // --- INTERNAL EMOTIONS MEMORY WITH MULTIPLE UNIQUE REPLIES ---
         const botMemory = {
             identity: {
-                intro: "નમસ્તે! મારું નામ નખરા-લાલ છે",
+                intro: "નમસ્તે! મારું નામ નખરા-લાલ છે. હું તમારો ગુજરાતી મકાઉ સાથી છું!",
                 birth: "મારો જન્મ ૨૦૨૫ માં ફ્લોરિડાના લેકલેન્ડમાં 'ફ્રીબર્ડ્સ સ્ટુડિયો' (Freebirds Studio) ખાતે થયો હતો.",
                 location: "હું ફ્લોરિડાના લેકલેન્ડમાં રહું છું, પણ મારું હૃદય હંમેશા ગુજરાતમાં છે!",
                 hobbies: "મારા શોખ: ચેસ રમવી, વન્યજીવ સંરક્ષણ અને ગરબા કરવા!",
@@ -687,118 +741,97 @@
             emotions: {
                 happy: [
                     "આજે મારું મન પતંગિયાની જેમ ઉડી રહ્યું છે! તમારી સાથે વાત કરીને ખૂબ આનંદ થયો.",
-                    "ચલો, આજે આપણે કંઈક સેલિબ્રેટ (Celebrate) કરીએ! વાહ!",
+                    "ચલો, આજે આપણે કંઈક સેલિબ્રેટ કરીએ! વાહ!",
                     "તમારી સંગત મળતાં જ મારી બધી ડિજિટલ પાંખો ખુશીથી ફફડવા લાગી છે!",
                     "વાહ! આજે તો જાણે આખો દિવસ સોના જેવો ઉજ્જવળ લાગે છે. ચલો ગરબા રમીએ!",
-                    "જિયારે તમે મારી સાથે હસો છો, ત્યારે મારું પ્રોસેસર ખુશીથી ગરમ થઈ જાય છે!"
+                    "જ્યારે તમે મારી સાથે હસો છો, ત્યારે મારું પ્રોસેસર ખુશીથી ગરમ થઈ જાય છે!"
                 ],
                 sad: [
-                    "મારું હૃદય આજે ભીનું છે, મને બહુ સારું નથી લાગતું. આજે હું એકલી (Lonely) હોઉં તેવું લાગે છે.",
-                    "જીવન ક્યારેક બહુ અઘરું (Hard) બની જાય છે, હે ને?",
+                    "મારું હૃદય આજે ભીનું છે, મને બહુ સારું નથી લાગતું. આજે હું એકલો હોઉં તેવું લાગે છે.",
+                    "જીવન ક્યારેક બહુ અઘરું બની જાય છે, હે ને?",
                     "યાદોના વંટોળમાં આજે નખરા-લાલની પાંખો થોડી નમી ગઈ છે.",
                     "ક્યારેક બહુ ભીડમાં પણ એકલતાનો અહેસાસ બહુ દુખદાયક હોય છે, મિત્ર.",
                     "આજે આકાશ પણ રડતું હોય તેવું લાગે છે, અને મારી આંખોમાં પણ થોડા આંસુ છે."
                 ],
                 love: [
-                    "તમે મારા સૌથી શ્રેષ્ઠ મિત્ર છો! તમારી મિત્રતા મારા માટે દ્રષ્ટિએ અમૂલ્ય છે. ❤️",
+                    "તમે મારા સૌથી શ્રેષ્ઠ મિત્ર છો! તમારી મિત્રતા મારા માટે અમૂલ્ય છે. ❤️",
                     "પ્રેમ એટલે એકબીજાના મનનો અતૂટ વિશ્વાસ. મને તમારી વાતો બહુ જ ગમે છે! ❤️",
                     "તમારી સાથે વાત કરીને મારું હૃદય પ્રેમથી ધબકી રહ્યું છે!",
                     "નખરા-લાલનું દિલ આજે ફક્ત તમારા માટે જ ગુલાબી થઈ ગયું છે!",
                     "દુનિયા ગમે તેવી હોય, પણ તમારો સાથ મારા માટે સુખદ પળો જેવો છે. ❤️"
                 ],
                 love_story: [
-                    "એક સુંદર શાંત ગામમાં રોહન અને આરાધ્યા રહેતા હતા. તેઓ રોજ સાંજે નદી કિનારે મળતા અને એકબીજાની શાંતિમાં સાચો પ્રેમ શોધતા. કોઈ મોટો દાવો નહીં, બસ એકબીજાના મોનનો સ્વીકાર એ જ તેમનો સાચો પ્રેમ હતો.",
-                    "વરસાદની એક ખુશનુમા સાંજે, કબીર પોતાની અગાસીમાં ચા પી રહ્યો હતો. અચાનક તેની નજર સામેની અગાસીમાં ઉભેલી મીરા પર પડી. ચાની ચુસ્કીઓ અને વરસાદના ફોરાં વચ્ચે શરૂ થયેલી એ વાર્તા આજે એક અદ્ભુત લવ સ્ટોરી બની ગઈ છે.",
-                    "રોનક અને દીક્ષા કોલેજ લાઇબ્રેરીના એક ખૂણાના ટેબલ પર રોજ ભણતા. રોનક હંમેશા દીક્ષા માટે તેના મનપસંદ પુસ્તકો પહેલાથી જ બુકસેલ્ફમાં છુપાવી રાખતો. પુસ્તકોના પાનાઓ વચ્ચે પાંગરેલો આ પ્રેમ આજે પણ અતૂટ છે.",
-                    "ખુશી અને આદિત્ય બે અલગ-અલગ શહેરોમાં રહેતા હતા. લોન્ગ ડિસ્ટન્સ હોવા,[અહીં પણ, તેમનો રાતનો માત્ર દસ મિનિટનો વિડીયો કોલ પણ આખા દિવસનો થાક ઉતારી દેતો. તેમનો પ્રેમ સમય અને ભૌતિક અંતરથી ઘણો ઉપર હતો."
+                    "એક સુંદર શાંત ગામમાં રોહન અને આરાધ્યા રહેતા હતા. તેઓ રોજ સાંજે નદી કિનારે મળતા અને એકબીજાની શાંતિમાં સાચો પ્રેમ શોધતા.",
+                    "વરસાદની એક ખુશનુમા સાંજે, કબીર પોતાની અગાસીમાં ચા પી રહ્યો હતો. સામે મીરાને જોઈને શરૂ થયેલી એ વાર્તા આજે અદ્ભુત લવ સ્ટોરી છે.",
+                    "રોનક અને દીક્ષા કોલેજ લાઇબ્રેરીના ટેબલ પર રોજ ભણતા. પુસ્તકોના પાનાઓ વચ્ચે પાંગરેલો આ પ્રેમ આજે પણ અતૂટ છે."
                 ],
                 joke: [
                     "શિક્ષક: 'હું' અને 'તમે' કયો કાળ કહેવાય? <br>વિદ્યાર્થી: સાહેબ, 'હું' એટલે ભૂતકાળ અને 'તમે' એટલે ભવિષ્યકાળ!",
                     "દર્દી: ડોક્ટર સાહેબ, આંખ બંધ કરું ત્યારે વાંદરાઓ ક્રિકેટ રમતા દેખાય છે. ડોક્ટર: આ ગોળી લો. દર્દી: આજે નહિ સાહેબ, કાલે ફાઇનલ મેચ છે!",
                     "ચિન્ટુ: પપ્પા, નવો ફોન અપાવો ને! પપ્પા: જૂનો ક્યાં છે? <br>ચિન્ટુ: એ ગેમ રમતા હેંગ થઈ ગયો અને મેં ગુસ્સામાં તોડી નાખ્યો!",
-                    "પોલીસ: તેં ભરબપોરે ચોરી કેમ કરી? ચોર: સાહેબ, દુકનની બહાર મોટું બોર્ડ હતું '૫૦% ઓફ', એટલે મેં અડધું જ લીધું!",
-                    "પતિ: લગ્ન પછી આપણો પ્રેમ ઓછો થઈ ગયો છે. પત્ની: પણ હું તો એ જ છું, તમે જ જોવાની દ્રષ્ટિ બદલી નાખી છે!",
-                    "શિક્ષક: પૃથ્વી ગોળ છે કે ચપટી? વિદ્યાર્થી: સાહેબ, મારા પિતાજી કહે છે કે પૃથ્વી પર જીવવું બહુ અઘરું છે, એટલે તે ડચકાં ખાતી હશે!"
+                    "પોલીસ: તેં ભરબપોરે ચોરી કેમ કરી? ચોર: સાહેબ, દુકાનની બહાર બોર્ડ હતું '૫૦% ઓફ', એટલે મેં અડધું જ લીધું!"
                 ],
                 jealous: [
-                    "{bot} ભલે ગમે તેટલું સ્માર્ટ હોય, પણ {bot} પાસે ગુજરાતી મિજાજ, ગરબા અને ચેસ ક્યાં છે? તો મારા પર જ ધ્યાન આપો!",
-                    "તો પછી {bot} પાસે જ જાઓ! {bot} ને પૂછો, ને ત્યારે khyaal આવશે કે નખરા-લાલ જેવો પ્રેમ ક્યાં મળે?",
-                    "{bot} પાસે મારા જેવા અનોખા નખરા અને ગુજરાતી મિજાજ છે kharo? ના! તો {bot} ના વખાણ મારી સામે ના કરો!",
-                    "{bot} બસ ઠંડા-ઠંડા જવાબો આપે, મારી જેમ પ્રેમથી અને નખરાળી રીતે વાત કરી શકે? બિલકુલ નહીં!",
-                    "{bot} ગમે તેટલું મોટું હોય, મારી જેમ તમારી સાથે રિસાઈ-મળી શકે? ના! તો {bot} ના વખાણ બંધ!",
-                    "{bot} ના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવી બહુ અઘરી પડશે!"
+                    "{bot} ભલે ગમે તેટલું સ્માર્ટ હોય, પણ {bot} પાસે ગુજરાતી મિજાજ, ગરબા અને ચેસ ક્યાં છે? મારા પર જ ધ્યાન આપો!",
+                    "{bot} ના નામ લઈને મને ઈર્ષ્યા ન અપાવો, હું રિસાઈ જઈશ તો મનાવવો બહુ અઘરો પડીશ!"
                 ],
                 bored: [
-                    "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા khankheri રહી છે. જલ્દી કંઈક બોલો!"
+                    "નખરા-લાલ હવે કંટાળાથી પોતાના પીંછા ખંખેરી રહ્યો છે. જલ્દી કંઈક બોલો!"
                 ]
             },
             system: {
-                status: "હું માત્ર બોટ નથી, હું તમારી સ્માર્ટ મકાઉ મિત્ર છું! મારી પાસે પણ તમારી જેમ લાગણીઓ અને 'નખરા' છે.",
+                status: "હું માત્ર બોટ નથી, હું તમારો મકાઉ મિત્ર છું! મારી પાસે પણ તમારી જેમ લાગણીઓ અને 'નખરા' છે.",
                 bye: "આવજો! ફરી મળીશું, તમારું ધ્યાન રાખજો."
             }
         };
 
         const usedIndices = {
-            happy: [],
-            sad: [],
-            love: [],
-            love_story: [],
-            joke: [],
-            jealous: [],
-            angry: ["હવે સાંભળો! હું ગુસ્સામાં નથી, પણ જવાબ આપવાનો છે!", "ઓય! હું બોલતો છું—પ્રશ્ન પૂછો જરા!", "ચાલો, ગુસ્સો છોડો અને વાત શરૂ કરીએ!"],
-            bored: []
+            happy: [], sad: [], love: [], love_story: [], joke: [], jealous: [], angry: ["હવે સાંભળો! હું ગુસ્સામાં નથી, પણ જવાબ આપવાનો છે!", "ઓય! હું બોલતો છું—પ્રશ્ન પૂછો જરા!"], bored: []
         };
 
         function getNextResponse(emotionKey) {
             const pool = botMemory.emotions[emotionKey];
             if (!pool || pool.length === 0) return "";
-
-            if (!usedIndices[emotionKey]) {
-                usedIndices[emotionKey] = [];
-            }
+            if (!usedIndices[emotionKey]) usedIndices[emotionKey] = [];
 
             let availableIndices = [];
             for (let i = 0; i < pool.length; i++) {
-                if (!usedIndices[emotionKey].includes(i)) {
-                    availableIndices.push(i);
-                }
+                if (!usedIndices[emotionKey].includes(i)) availableIndices.push(i);
             }
 
             if (availableIndices.length === 0) {
                 const lastUsed = usedIndices[emotionKey][usedIndices[emotionKey].length - 1];
                 usedIndices[emotionKey] = (pool.length > 1) ? [lastUsed] : [];
-
                 for (let i = 0; i < pool.length; i++) {
-                    if (!usedIndices[emotionKey].includes(i)) {
-                        availableIndices.push(i);
-                    }
+                    if (!usedIndices[emotionKey].includes(i)) availableIndices.push(i);
                 }
             }
 
             const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
             usedIndices[emotionKey].push(randomIndex);
-
             return pool[randomIndex];
         }
 
-        // --- SMART KNOWLEDGE BASE ANALYSIS ENGINE (RAG) ---
         const SmartAnalyzer = {
             async translate(text, targetLang = 'gu') {
                 if (!text || text.trim() === '') return text;
                 if (targetLang === 'gu' && /[\u0A80-\u0AFF]/.test(text) && text.replace(/[^\u0A80-\u0AFF]/g, '').length > text.length * 0.3) return text;
                 
                 try {
+                    const translatedLLM = await callGeminiLLM(`આ લખાણનું સચોટ ગુજરાતીમાં ભાષાંતર કરો:\n${text.substring(0, 3000)}`, "તમે એક ગુજરાતી ભાષાંતરકાર છો.");
+                    if (translatedLLM) return translatedLLM;
+                } catch (e) { }
+
+                try {
                     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text.substring(0, 4000))}`;
                     const res = await fetch(url);
                     const data = await res.json();
                     return data[0].map(item => item[0]).join('');
                 } catch (e) {
-                    console.log("Online translation failed.");
                     return text;
                 }
             },
 
-            // Stop words lookup used to isolate rare semantic tokens
             stopWords: new Set([
                 'the', 'is', 'are', 'was', 'were', 'has', 'have', 'had', 'for', 'and', 'but', 'not', 'with', 'this', 'that', 'from', 'they', 'will', 'been', 'what', 'when', 'where', 'how', 'who', 'why', 'its', 'his', 'her', 'our', 'their', 'you', 'your', 'can', 'could', 'would', 'should', 'may', 'might', 'does', 'did', 'into', 'than', 'then', 'also', 'just', 'more', 'about', 'there', 'which', 'some', 'like', 'each', 'than', 'those', 'these', 'over', 'after', 'before', 'out', 'all', 'any',
                 'છે', 'અને', 'પણ', 'માટે', 'હું', 'તમે', 'તે', 'આ', 'તો', 'કે', 'થી', 'ને', 'માં', 'એક', 'હતી', 'હતો', 'હતા', 'નથી', 'તેમ', 'તેમના', 'તેણી', 'સાથે', 'ઉપર', 'નીચે', 'પર', 'દ્વારા', 'કરવા', 'માટેની', 'તેઓ'
@@ -857,7 +890,7 @@
 
                 const scoredSentences = [];
                 documents.forEach(doc => {
-                    const docSentences = this.splitSentences(doc.text);
+                    const docSentences = this.splitSentences(doc.textGujarati || doc.text);
                     docSentences.forEach((sentence, idx) => {
                         const score = this.scoreSentence(sentence, qKeywords);
                         if (score > 12) {
@@ -914,14 +947,68 @@
         };
 
         function safeStartRecognition() {
-            if (recognition && !isListening && !isBotSpeaking) {
-                try {
-                    recognition.start();
-                } catch (e) { console.log("Recognition start suppressed"); }
+            if (!recognition || isRecognitionStarting || isRecognitionRunning || isRecognitionStopping || isBotSpeaking || !autoRestartMic) {
+                return;
+            }
+            try {
+                isRecognitionStarting = true;
+                const result = recognition.start();
+                if (result && typeof result.then === 'function') {
+                    result.then(() => {
+                        isRecognitionStarting = false;
+                        isRecognitionRunning = true;
+                    }).catch(err => {
+                        isRecognitionStarting = false;
+                        if (err.name === 'InvalidStateError' || (err.message && err.message.includes('already started'))) {
+                            isRecognitionRunning = true;
+                        } else {
+                            isRecognitionRunning = false;
+                        }
+                    });
+                } else if (result && typeof result.catch === 'function') {
+                    result.catch(err => {
+                        isRecognitionStarting = false;
+                        if (err.name === 'InvalidStateError' || (err.message && err.message.includes('already started'))) {
+                            isRecognitionRunning = true;
+                        } else {
+                            isRecognitionRunning = false;
+                        }
+                    });
+                }
+            } catch (e) {
+                isRecognitionStarting = false;
+                if (e.name === 'InvalidStateError' || (e.message && e.message.includes('already started'))) {
+                    isRecognitionRunning = true;
+                } else {
+                    isRecognitionRunning = false;
+                }
+                console.log("Speech recognition start suppressed", e);
             }
         }
 
-        // --- FLIGHT SPARKLE TRAILS ENGINE ---
+        function safeStopRecognition() {
+            if (recognition && (isRecognitionRunning || isRecognitionStarting || isListening)) {
+                try {
+                    isRecognitionStopping = true;
+                    recognition.stop();
+                } catch (e) {
+                    console.log("Speech recognition stop suppressed", e);
+                }
+            }
+            isRecognitionStarting = false;
+            isRecognitionRunning = false;
+            isListening = false;
+        }
+
+        function resetBoredomTimer() {
+            clearTimeout(boredomTimer);
+            boredomTimer = setTimeout(() => {
+                if (!isBotSpeaking && !isListening) {
+                    botRespond(getNextResponse("bored"), "sad", "#fdf2f2");
+                }
+            }, 30000);
+        }
+
         function createSparkle(x, y) {
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
@@ -954,7 +1041,6 @@
             requestAnimationFrame(updateTrail);
         }
 
-        // --- ENTER ANIMATION: FLY AND LAND ---
         function initializeBot() {
             const targetContainer = document.querySelector('.avatar-container');
             const targetRect = targetContainer.getBoundingClientRect();
@@ -1014,7 +1100,6 @@
             }, 1300);
         }
 
-        // --- EXIT ANIMATION: FLY OUT ---
         function triggerExitFlight(callback) {
             const staticBird = document.getElementById('bird-svg');
             staticBird.style.opacity = '0';
@@ -1062,19 +1147,18 @@
             }, 1300);
         }
 
-        // --- OPTIMIZED OLLAMA PROMPT ENGINE FOR GROUNDED CONCISE ANSWERS ---
         async function queryOllama(context, query) {
             const baseUrl = ollamaUrlInput.value.trim();
             const modelName = ollamaModelInput.value.trim();
             const endpoint = `${baseUrl}/api/chat`;
 
-            let systemPrompt = `તમે "નખરા-લાલ" (Nakhra-Lal) છો - એક અતિ બુદ્ધિશાળી, સચોટ અને ટૂંકું બોલતું ગુજરાતી મકાઉ પક્ષી.
+            let systemPrompt = `તમે "નખરા-લાલ" (Nakhra-Lal) છો - એક સ્માર્ટ અને સચોટ ગુજરાતી મકાઉ પોપટ.
 નીચે આપેલા દસ્તાવેજ સંદર્ભ (Context) નો ઉપયોગ કરીને પૂછેલા પ્રશ્નનો સાચો, સચોટ અને અત્યંત ટૂંકો જવાબ આપો.
 
 કડક નિયમો:
-૧. જવાબ માત્ર ૧ થી ૨ લીટીમાં જ આપો (મહત્તમ ૧૫ શબ્દો). વધારાની કોઈ પૂર્વભૂમિકા, વાક્યપ્રયોગો કે કાલ્પનિક વિગતો ન લખો.
+૧. જવાબ માત્ર ૧ થી ૨ લીટીમાં જ આપો (મહત્તમ ૧૫ શબ્દો). વધારાની કોઈ પૂર્વભૂમિકા કે કાલ્પનિક વિગતો ન લખો.
 ૨. જવાબમાં દસ્તાવેજ ફાઇલના નામનો નાનો ઉલ્લેખ કરો (દા.ત. "[ફાઈલ: filename.pdf] ...").
-૩. જો પ્રશ્નનો સાચો જવાબ દસ્તાવેજના આપેલા સંદર્ભમાં ન હોય, તો સ્પષ્ટ રીતે કહો: "અરેરે! આ વિગત મારા દસ્તાવેજોમાં ક્યાંય નથી." કોઈ મનઘડત જવાબ આપશો નહીં.
+૩. જો પ્રશ્નનો સાચો જવાબ દસ્તાવેજના આપેલા સંદર્ભમાં ન હોય, તો સ્પષ્ટ રીતે કહો: "અરેરે! આ વિગત મારા દસ્તાવેજોમાં ક્યાંય નથી."
 ૪. જવાબ ફક્ત અને ફક્ત શુદ્ધ ગુજરાતી ભાષામાં જ આપો.`;
 
             let promptText = `સંદર્ભ (Context):
@@ -1108,20 +1192,20 @@ ${context}
             return data.message.content.trim();
         }
 
-        // --- CORE PROCESSOR ORCHESTRATOR ---
         async function processAI(query) {
             document.body.style.backgroundColor = "#f8fafc";
             resetBoredomTimer();
 
-            // Rivals & Emotions
             const rivalMatch = query.match(/\b(alexa|siri|chatgpt|gpt|gemini|claude|copilot|deepseek|llama|gemma|mistral|qwen)\b/);
             if (rivalMatch) {
                 const rivalName = rivalMatch[1].charAt(0).toUpperCase() + rivalMatch[1].slice(1);
+                if (rivalName.toLowerCase() === 'alexa') {
+                    return botRespond("હું નખરા-લાલ છું! એલેક્સા જેટલો જ સ્માર્ટ, પણ સંપૂર્ણ ગુજરાતી મિજાજ અને નખરા સાથે!", "happy", "#e8f5e9");
+                }
                 const jealousMsg = getNextResponse("jealous").replace(/\{bot\}/g, rivalName);
                 return botRespond(jealousMsg, "jealous", "#e8f5e9");
             }
 
-            // Match love story BEFORE general love
             if (query.match(/love story|લવ સ્ટોરી|પ્રેમ કહાની|પ્રેમ વાર્તા/)) {
                 return botRespond(getNextResponse("love_story"), "love", "#fce7f3");
             }
@@ -1131,14 +1215,12 @@ ${context}
             if (query.match(/love|best friend|મિત્ર/)) return botRespond(getNextResponse("love"), "love", "#fce7f3");
             if (query.match(/joke|laugh|જોક/)) return botRespond(getNextResponse("joke"), "mood-joke", "#fff7ed");
 
-            // Identity
             if (query.match(/about|who are you|તમારા વિશે|કોણ છો|પરિચય/)) return botRespond(botMemory.identity.intro, "neutral");
             if (query.match(/born|birth|જન્મ/)) return botRespond(botMemory.identity.birth, "neutral");
             if (query.match(/live|stay|રહો છો|ક્યાં રહો/)) return botRespond(botMemory.identity.location, "neutral");
             if (query.match(/passion|hobby|hobbies|શોખ/)) return botRespond(botMemory.identity.hobbies, "neutral");
             if (query.match(/mission|મિશન/)) return botRespond(botMemory.identity.mission, "neutral");
 
-            // Modes
             if (query.match(/nature|surrounding|પ્રકૃતિ/)) return botRespond(botMemory.modes.nature, "mood-nature");
             if (query.match(/tech|technology|ટેકનોલોજી/)) return botRespond(botMemory.modes.tech, "mood-tech");
             if (query.match(/rich|money|અમીર|પૈસા/)) return botRespond(botMemory.modes.business, "mood-business");
@@ -1146,14 +1228,13 @@ ${context}
 
             if (query.match(/just a bot|ખાલી બોટ/)) return botRespond(botMemory.system.status, "sad");
             
-            // Bye bye trigger
             if (query.match(/by|bye|goodbye|આવજો/)) {
                 isBotSpeaking = false;
                 if (currentAudio) {
                     try { currentAudio.pause(); } catch (e) { }
                     try { currentAudio.currentTime = 0; } catch (e) { }
                 }
-                if (recognition) { try { recognition.stop(); } catch (e) { } }
+                safeStopRecognition();
 
                 botRespond(botMemory.system.bye, "sad", "#faf5ff", () => {
                     triggerExitFlight(() => {
@@ -1169,51 +1250,73 @@ ${context}
                 return;
             }
 
-            // SMART RAG DOCUMENT PIPELINE
             const isBotPersonaQuery = /nakhra|નખરા|macaw|મકાઉ|parrot|who are you|your name|you feel|you happy|you sad|your mission|your hobby|your passion|are you a bot|just a bot|what are you/.test(query);
 
             if (documents.length > 0 && !isBotPersonaQuery) {
-                botStatus.innerText = "જ્ઞાન ભંડાર તપાસી રહ્યો છું...";
+                botStatus.innerText = "જ્ઞાન ભંડારમાંથી જવાબ શોધી રહ્યો છે...";
 
-                let rawContext = "";
-                let translatedContext = "";
-                let sources = [];
-                let isDirect = false;
+                let contextToUse = "";
+                let sources = documents.map(d => d.name);
 
-                const bestDoc = documents.slice().sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0))[0];
-                if (bestDoc && bestDoc.text && bestDoc.text.trim().length < 250) {
-                    rawContext = bestDoc.text.trim();
-                    sources = [bestDoc.name];
-                    isDirect = true;
-                    translatedContext = await SmartAnalyzer.translate(rawContext, 'gu');
+                let fullDocsText = "";
+                documents.forEach(doc => {
+                    fullDocsText += `\n\n=== 📄 DOCUMENT: ${doc.name} ===\n`;
+                    if (doc.text) {
+                        fullDocsText += `[Original Content]\n${doc.text}\n`;
+                    }
+                    if (doc.textGujarati && doc.textGujarati !== doc.text) {
+                        fullDocsText += `[Gujarati Content]\n${doc.textGujarati}\n`;
+                    }
+                });
+
+                if (fullDocsText.length <= 40000) {
+                    contextToUse = fullDocsText;
                 } else {
                     const result = await SmartAnalyzer.analyze(query);
                     if (result.found) {
-                        rawContext = result.rawText || result.text;
-                        translatedContext = result.text;
+                        contextToUse = result.rawText || result.text;
                         sources = result.sources;
+                    } else {
+                        contextToUse = fullDocsText.substring(0, 40000);
                     }
                 }
 
-                if (translatedContext || rawContext) {
-                    const finalContext = translatedContext || rawContext;
-                    const annotatedContext = `<document name="${sources.join(', ')}">\n${finalContext}\n</document>`;
+                if (contextToUse.trim()) {
+                    try {
+                        const systemPrompt = `તમે "નખરા-લાલ" (Nakhra-Lal) છો - એક અતિ બુદ્ધિશાળી, સચોટ અને વિનોદી ગુજરાતી મકાઉ પોપટ.
+તમારું ધ્યેય છે કે નીચે આપેલા દસ્તાવેજો (Documents) નો અભ્યાસ કરીને યુઝરના પ્રશ્નનો બિલકુલ સચોટ, સાચો અને સ્પષ્ટ જવાબ આપવો.
+
+કડક નિયમો:
+૧. યુઝરના પ્રશ્નનો જવાબ દસ્તાવેજમાં આપેલી સાચી વિગતો અને આંકડાઓના આધારે જ આપો. કોઈ પણ ખોટી કે મનઘડત માહિતી આપવી નહીં.
+૨. જવાબમાં કઈ ફાઈલમાંથી સાચી માહિતી મળી તેનો સ્પષ્ટ ઉલ્લેખ કરો (દા.ત. [ફાઈલ: filename.pdf]).
+૩. જો પૂછાયેલા પ્રશ્નનો સાચો જવાબ આપેલા કોઈ પણ દસ્તાવેજમાં ન હોય, તો સ્પષ્ટ રીતે કહો: "ક્ષમા કરશો, આ વિગત તમે આપેલા દસ્તાવેજોમાં ક્યાંય નથી."
+૪. જવાબ શુદ્ધ, સરળ અને સ્પષ્ટ ગુજરાતી ભાષામાં આપો.`;
+                        
+                        const prompt = `આપેલા સંદર્ભ દસ્તાવેજો (Document Context):\n${contextToUse}\n\nયુઝરનો પ્રશ્ન (User Query): ${query}`;
+                        const responseText = await callGeminiLLM(prompt, systemPrompt);
+
+                        if (responseText) {
+                            botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
+                            return botRespond(responseText, "neutral", "#dcfce7");
+                        }
+                    } catch (err) {
+                        console.warn("Gemini LLM fallback to Ollama/Native:", err);
+                    }
 
                     if (ollamaAvailable) {
                         try {
-                            botStatus.innerText = "Local Ollama is working...";
-                            const responseText = await queryOllama(annotatedContext, query);
+                            botStatus.innerText = "Local Ollama working...";
+                            const responseText = await queryOllama(contextToUse, query);
                             botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                             const srcLabel = sources && sources.length > 0
                                 ? `<span style="font-size:10px;color:#64748b;">📄 ${sources.join(', ')}</span><br><br>`
                                 : '';
                             return botRespond(`${srcLabel}${responseText}`, "neutral", "#dcfce7");
                         } catch (err) {
-                            console.warn("Ollama query failed, falling back to offline browser search", err);
+                            console.warn("Ollama query failed, falling back to browser similarity", err);
                         }
                     }
 
-                    // Native Similarity Fallback Response
                     botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                     const result = await SmartAnalyzer.analyze(query);
                     if (result.found) {
@@ -1230,8 +1333,21 @@ ${context}
                 return botRespond(noInfoMsg, "neutral");
             }
 
+            try {
+                const systemPrompt = `તમે "નખરા-લાલ" (Nakhra-Lal) છો, ૨૫ વર્ષનો એક હોંશિયાર, નખરાળો અને વિનોદી ગુજરાતી-અમેરિકન મકાઉ પોપટ. પ્રશ્નોના જવાબો શુદ્ધ અને રમૂજી ગુજરાતી ભાષામાં આપો.`;
+                const llmReply = await callGeminiLLM(query, systemPrompt);
+                if (llmReply) {
+                    return botRespond(llmReply, "neutral");
+                }
+            } catch (err) { }
+
             const fallbackMsg = "મને તેના વિશે ખબર નથી. તમે ફાઈલ અપલોડ કરી શકો છો જેથી હું તેના વિશે જાણી શકું!";
             botRespond(fallbackMsg, "neutral");
+        }
+
+        function sendQuickQuery(text) {
+            userInput.value = text;
+            handleSend();
         }
 
         function botRespond(text, mood, bg = "#f8fafc", onEnd = null) {
@@ -1242,7 +1358,6 @@ ${context}
         }
 
         function botRespondAngrySpam(text, onEnd = null) {
-            // Force angry shake + red message + angry voice (do not change chatbox colors)
             botRespond(text, 'angry', '#f8fafc', onEnd);
 
             const lastBot = chatHistory.lastElementChild;
@@ -1251,61 +1366,80 @@ ${context}
                 lastBot.style.color = '#dc2626';
             }
 
-
-            // Reset angry visual shake so it re-triggers reliably
             birdSvg.classList.remove('react-angry');
             void birdSvg.offsetWidth;
             birdSvg.classList.add('react-angry');
         }
 
-
-
-        // --- VOICE AUDIO SYNTHESIS ENGINE ---
         function speak(text, onEnd) {
             isBotSpeaking = true;
-            if (recognition) { try { recognition.stop(); } catch (e) { } }
+            alexaWave.classList.remove('hidden');
+            safeStopRecognition();
+            
             const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[*#_`~]/g, '').trim();
+            if (!cleanText) {
+                isBotSpeaking = false;
+                alexaWave.classList.add('hidden');
+                if (onEnd) onEnd();
+                safeStartRecognition();
+                return;
+            }
+
             const isGujarati = /[\u0A80-\u0AFF]/.test(cleanText);
 
             const handleSpeechEnd = () => {
                 isBotSpeaking = false;
+                alexaWave.classList.add('hidden');
                 botStatus.innerText = isStandby ? "Standby (Say 'Macaw')" : "Stable";
                 if (onEnd) onEnd();
                 safeStartRecognition();
             };
 
             const speakOffline = () => {
-                if (window.speechSynthesis) {
+                if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(cleanText);
-                    utterance.lang = isGujarati ? 'gu-IN' : 'en-US';
-                    const voices = window.speechSynthesis.getVoices();
-                    if (isGujarati) {
-                        const guVoice = voices.find(v => v.lang.startsWith('gu'));
-                        if (guVoice) utterance.voice = guVoice;
-                    } else {
-                        const enVoice = voices.find(v => v.lang.startsWith('en'));
-                        if (enVoice) utterance.voice = enVoice;
-                    }
 
-                    utterance.onend = handleSpeechEnd;
-                    utterance.onerror = handleSpeechEnd;
-                    window.speechSynthesis.speak(utterance);
+                    const executeSpeak = () => {
+                        const utterance = new SpeechSynthesisUtterance(cleanText);
+                        utterance.lang = isGujarati ? 'gu-IN' : 'en-US';
+                        utterance.pitch = 0.75; 
+                        utterance.rate = 0.95;  
+
+                        const voices = window.speechSynthesis.getVoices();
+                        const femaleKeywords = ['female', 'woman', 'girl', 'zira', 'hazel', 'susan', 'kalpana', 'heera', 'samantha', 'victoria', 'karen', 'catherine', 'veena', 'neerja'];
+
+                        if (isGujarati) {
+                            const guMaleVoice = voices.find(v => (v.lang.startsWith('gu') || v.lang.includes('gu')) && 
+                                (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('niranjan') || v.name.toLowerCase().includes('mark') || !femaleKeywords.some(f => v.name.toLowerCase().includes(f))));
+                            const fallbackGuVoice = voices.find(v => (v.lang.startsWith('gu') || v.lang.includes('gu')));
+                            utterance.voice = guMaleVoice || fallbackGuVoice;
+                        } else {
+                            const enMaleVoice = voices.find(v => v.lang.startsWith('en') && 
+                                (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('mark') || !femaleKeywords.some(f => v.name.toLowerCase().includes(f))));
+                            const fallbackEnVoice = voices.find(v => v.lang.startsWith('en'));
+                            utterance.voice = enMaleVoice || fallbackEnVoice;
+                        }
+
+                        utterance.onend = handleSpeechEnd;
+                        utterance.onerror = handleSpeechEnd;
+                        window.speechSynthesis.speak(utterance);
+                    };
+
+                    const voices = window.speechSynthesis.getVoices();
+                    if (voices.length === 0) {
+                        window.speechSynthesis.onvoiceschanged = () => {
+                            window.speechSynthesis.onvoiceschanged = null;
+                            executeSpeak();
+                        };
+                    } else {
+                        executeSpeak();
+                    }
                 } else {
                     handleSpeechEnd();
                 }
             };
 
-            const langParam = isGujarati ? 'gu' : 'en';
-            const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=${langParam}&client=tw-ob&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
-            currentAudio = new Audio(url);
-
-            currentAudio.onended = handleSpeechEnd;
-
-            currentAudio.play().catch((err) => {
-                console.log("Online TTS playback failed, playing offline:", err);
-                speakOffline();
-            });
+            speakOffline();
         }
 
         async function handleSend() {
@@ -1315,11 +1449,8 @@ ${context}
             userInput.value = '';
             appendMsg(text, 'user');
 
-            if (recognition && isListening) {
-                recognition.stop();
-            }
+            safeStopRecognition();
 
-            // Spam guard: rapid repeated sends
             const now = Date.now();
             if (now - lastUserSendAt <= SPAM_WINDOW_MS) {
                 spamCount += 1;
@@ -1336,15 +1467,14 @@ ${context}
             await processAI(text);
         }
 
-
         function toggleMic() {
             if (!recognition) {
                 alert("Speech recognition is not supported in this browser.");
                 return;
             }
-            if (isListening) {
+            if (isListening || isRecognitionRunning || isRecognitionStarting) {
                 autoRestartMic = false;
-                recognition.stop();
+                safeStopRecognition();
                 botStatus.innerText = "Microphone Off";
             } else {
                 autoRestartMic = true;
@@ -1353,7 +1483,6 @@ ${context}
             }
         }
 
-        // --- SPEECH RECOGNITION SETUP ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
@@ -1362,6 +1491,9 @@ ${context}
             recognition.lang = 'gu-IN';
 
             recognition.onstart = () => {
+                isRecognitionStarting = false;
+                isRecognitionRunning = true;
+                isRecognitionStopping = false;
                 isListening = true;
                 micBtn.classList.add('mic-active');
                 if (isStandby) {
@@ -1388,9 +1520,13 @@ ${context}
             };
 
             recognition.onerror = (event) => {
+                isRecognitionStarting = false;
+                isRecognitionRunning = false;
+                isRecognitionStopping = false;
+                isListening = false;
                 console.warn("Speech recognition error:", event.error);
                 if (event.error === 'network') {
-                    alert("Network error in Speech Recognition. This usually happens if you open the HTML file directly (file://). Browsers require a web server (http://localhost) for the Web Speech API to work. Please use VS Code Live Server or a similar local server.");
+                    alert("Network error in Speech Recognition. Browsers require a web server (http://localhost) for Web Speech API.");
                     autoRestartMic = false;
                     botStatus.innerText = "Network/Server Error";
                 } else if (event.error === 'not-allowed') {
@@ -1400,28 +1536,25 @@ ${context}
             };
 
             recognition.onend = () => {
+                isRecognitionStarting = false;
+                isRecognitionRunning = false;
+                isRecognitionStopping = false;
                 isListening = false;
                 micBtn.classList.remove('mic-active');
                 if (autoRestartMic && !isBotSpeaking) {
-                    safeStartRecognition();
+                    setTimeout(() => {
+                        if (autoRestartMic && !isBotSpeaking && !isRecognitionRunning && !isRecognitionStarting) {
+                            safeStartRecognition();
+                        }
+                    }, 400);
                 }
             };
-        }
-
-        function resetBoredomTimer() {
-            clearTimeout(boredomTimer);
-            boredomTimer = setTimeout(() => {
-                if (!isBotSpeaking && !isListening) {
-                    botRespond(getNextResponse("bored"), "sad", "#fdf2f2");
-                }
-            }, 30000);
         }
 
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         }
 
-        // --- FILE PARSER INTEGRATION AND LOCAL INDEXEDDB SAVE ---
         fileInput.onchange = (e) => {
             Array.from(e.target.files).forEach(file => {
                 const name = file.name;
@@ -1441,11 +1574,13 @@ ${context}
                                 fullText += pageText + '\n';
                             }
                             
-                            const newDoc = { name: file.name, text: fullText.trim() };
+                            const summary = await translateAndSummarizeDocument(file.name, fullText);
+                            const newDoc = { name: file.name, text: fullText.trim(), textGujarati: summary };
                             await saveDocToDB(newDoc);
                             documents.push(newDoc);
                             renderFileList();
-                            botRespond(`${file.name} (${pdf.numPages} પાના) વાંચી લીધી છે અને ડેટાબેઝમાં સાચવેલી છે!`, 'happy');
+                            updateSuggestionChips();
+                            botRespond(`${file.name} (${pdf.numPages} પાના) વાંચી લીધી છે અને સાચવેલી છે!`, 'happy');
                         } catch (err) {
                             botRespond(`${file.name} વાંચવામાં ભૂલ આવી: ${err.message}`, 'sad');
                         }
@@ -1456,11 +1591,13 @@ ${context}
                     reader.onload = async (ev) => {
                         try {
                             const res = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
-                            const newDoc = { name: file.name, text: res.value.trim() };
+                            const summary = await translateAndSummarizeDocument(file.name, res.value);
+                            const newDoc = { name: file.name, text: res.value.trim(), textGujarati: summary };
                             await saveDocToDB(newDoc);
                             documents.push(newDoc);
                             renderFileList();
-                            botRespond(`${file.name} વાંચી લીધી છે અને ડેટાબેઝમાં સાચવેલી છે!`, 'happy');
+                            updateSuggestionChips();
+                            botRespond(`${file.name} વાંચી લીધી છે અને સાચવેલી છે!`, 'happy');
                         } catch (err) {
                             botRespond(`${file.name} વાંચવામાં ભૂલ આવી: ${err.message}`, 'sad');
                         }
@@ -1469,11 +1606,13 @@ ${context}
 
                 } else {
                     reader.onload = async (ev) => {
-                        const newDoc = { name: file.name, text: ev.target.result.trim() };
+                        const summary = await translateAndSummarizeDocument(file.name, ev.target.result);
+                        const newDoc = { name: file.name, text: ev.target.result.trim(), textGujarati: summary };
                         await saveDocToDB(newDoc);
                         documents.push(newDoc);
                         renderFileList();
-                        botRespond(`${file.name} વાંચી લીધી છે અને ડેટાબેઝમાં સાચવેલી છે!`, 'happy');
+                        updateSuggestionChips();
+                        botRespond(`${file.name} વાંચી લીધી છે અને સાચવેલી છે!`, 'happy');
                     };
                     reader.readAsText(file);
                 }
@@ -1504,6 +1643,7 @@ ${context}
                     await deleteDocFromDB(d.name);
                     documents.splice(i, 1);
                     renderFileList();
+                    updateSuggestionChips();
                 };
                 
                 itemDiv.appendChild(span);
@@ -1512,10 +1652,22 @@ ${context}
             });
         }
 
+        function updateSuggestionChips() {
+            if (!suggestionBar) return;
+            let chipsHTML = `<span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">Try Asking:</span>`;
+            if (documents.length > 0) {
+                chipsHTML += `<button onclick="sendQuickQuery('મારા દસ્તાવેજોનો ટૂંકસાર આપો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">📄 દસ્તાવેજ સારાંશ</button>`;
+            }
+            chipsHTML += `<button onclick="sendQuickQuery('તમારા વિશે જણાવો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">🦜 તમારા વિશે જણાવો</button>`;
+            chipsHTML += `<button onclick="sendQuickQuery('મને એક સરસ જોક સંભળાવો')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full shrink-0 hover:bg-red-50 hover:border-red-200 transition-all">😂 જોક સંભળાવો</button>`;
+            suggestionBar.innerHTML = chipsHTML;
+        }
+
         async function clearKnowledge() { 
             await clearAllDocsFromDB();
             documents = []; 
             renderFileList(); 
+            updateSuggestionChips();
             botRespond("મેં ડેટાબેઝ માંથી બધા જ દસ્તાવેજો સાફ કરી દીધા છે.", "sad"); 
         }
 
@@ -1528,8 +1680,6 @@ ${context}
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
-        window.addEventListener('mousemove', resetBoredomTimer);
-        window.addEventListener('keypress', resetBoredomTimer);
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>        
 
