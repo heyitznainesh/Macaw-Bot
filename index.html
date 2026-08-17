@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="gu">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>નખરા-લાલ - Smart Multi-Doc RAG Analyzer</title>
+
+    <!-- Tailwind CSS CDN -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Mammoth.js for Word DOCX parsing -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+
+    <!-- PDF.js for PDF document parsing -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- Mock Ollama API (Demo Mode) - Load BEFORE main script -->
+
+    <script src="mock-ollama.js"></script>
+
+
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+
+<body onmousemove="resetBoredomTimer()" onkeypress="resetBoredomTimer()">
+
+
+
+    <!-- Landing Page Overlay -->
+
+    <div id="audio-overlay">
+
+        <div class="profile-card">
+
+            <div class="flex items-center gap-6 mb-10 pb-10 border-b border-rose-50">
+
+                <div class="w-[72px] h-[72px] shrink-0">
+
+                    <svg viewBox="0 0 115 100" class="macaw-svg-custom animate-bounce w-full h-full">
+
+                        <circle cx="45" cy="52" r="42" fill="#ef4444" />
+
+                        <circle cx="64" cy="50" r="28" fill="white" />
+
+                        <circle cx="70" cy="50" r="10" fill="#facc15" />
+
+                        <circle cx="72" cy="50" r="4.5" fill="black" />
+
+                        <path d="M 85 40 C 115 35, 125 75, 102 92 C 95 82, 88 78, 75 75 Z" fill="#0f172a" />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h1 class="text-6xl md:text-7xl font-black tracking-tighter text-red-600 leading-none">નખરા-લાલ</h1>
+
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">Smart Multi-Doc RAG
+                        Analyzer</p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+
+                <div
+                    class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+
+                    <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span
+                            class="text-[10px] font-black uppercase text-red-400">IDENTITY</span></div>
+
+                    <h2 class="text-xl font-black text-black mb-1">Gujarati-American</h2>
+
+                    <p class="text-xs text-slate-800 leading-relaxed">Born in 2025 in Lakeland, Florida. Smart document
+                        assistant.</p>
+
+                </div>
+
+                <div
+                    class="bg-rose-50/50 p-6 rounded-[25px] border border-rose-100 shadow-sm transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+
+                    <div class="flex items-center gap-2 mb-2"><span class="text-xs">📍</span><span
+                            class="text-[10px] font-black uppercase text-red-400">CAPABILITY</span></div>
+
+                    <h2 class="text-xl font-black text-black mb-1">Multi-Doc Accuracy</h2>
+
+                    <p class="text-xs text-slate-800 leading-relaxed">Accurately extracts facts across multiple PDF,
+                        DOCX, and TXT files simultaneously.</p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="mt-12 text-center pt-8">
+
+                <p class="text-xl italic font-semibold text-red-400">“ચલો, બધી ફાઇલો લાવ, સાચા જવાબો આપું!”</p>
+
+                <button onclick="initializeBot()" class="start-btn">CLICK HERE TO ENTER 🚀</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <header class="header">
+
+        <div class="avatar-container">
+
+            <svg id="bird-svg" viewBox="0 0 115 100" class="macaw-svg-custom react-neutral mood-neutral w-full h-full">
+
+                <circle cx="45" cy="52" r="42" class="bird-body" />
+
+                <circle cx="64" cy="50" r="28" fill="white" />
+
+                <circle cx="70" cy="50" r="10" fill="#facc15" />
+
+                <circle cx="72" cy="50" r="4.5" fill="black" />
+
+                <path d="M 85 40 C 115 35, 125 75, 102 92 C 95 82, 88 78, 75 75 Z" fill="#0f172a" />
+
+                <path id="emoticon-tear" d="M 67 55 Q 64 65 67 68 Q 70 65 67 55 Z" fill="#3b82f6" />
+
+            </svg>
+
+        </div>
+
+        <div class="flex-1">
+
+            <h1 class="text-2xl font-extrabold text-red-600 tracking-tight leading-none">નખરા-લાલ</h1>
+
+            <p id="bot-status" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Standby (Say
+                'Macaw' or Speak)</p>
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+            <div id="ollama-indicator"
+                class="flex items-center gap-1.5 px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full border border-yellow-200 text-xs font-semibold">
+
+                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+
+                Checking local Ollama status...
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <div class="main-container">
+
+        <aside class="sidebar hidden md:flex">
+
+            <div style="display: none !important;">
+
+                <input type="text" id="ollama-url" value="http://localhost:11434">
+
+                <input type="text" id="ollama-model" value="gemma3-lora">
+
+            </div>
+
+
+
+            <h2 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">IndexedDB Knowledge Base
+            </h2>
+
+            <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-input').click()">
+
+                <p class="text-slate-500 text-xs font-semibold">ફાઇલો અહીં ખેંચો અથવા ક્લિક કરો</p>
+
+                <p class="text-[9px] text-slate-400 mt-1">PDF, TXT, MD, DOCX (Saved Offline)</p>
+
+                <input type="file" id="file-input" class="hidden" multiple accept=".txt,.md,.docx,.doc,.pdf">
+
+            </div>
+
+
+
+            <div class="flex-1 flex flex-col min-h-0">
+
+                <div class="flex justify-between items-center mb-1">
+
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Stored Documents</span>
+
+                    <span id="doc-counter"
+                        class="text-[10px] font-black text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full">0 files</span>
+
+                </div>
+
+                <div id="file-list" class="flex-1 overflow-y-auto pr-1">
+
+                    <p class="text-xs text-slate-400 text-center py-4">No documents saved offline.</p>
+
+                </div>
+
+            </div>
+
+
+
+            <button onclick="clearKnowledge()"
+                class="mt-4 py-2.5 text-[10px] text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50 transition-all uppercase">Clear
+                All Library</button>
+
+        </aside>
+
+
+
+        <main class="chat-area">
+
+            <div id="chat-history" class="chat-history"></div>
+
+
+
+            <div class="p-5 bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.02)]">
+
+                <div class="max-w-4xl mx-auto flex items-center gap-4">
+
+                    <button onclick="toggleMic()" id="mic-btn"
+                        class="p-4 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200 border-2 border-transparent transition-all"
+                        title="Toggle Voice Recognition">
+
+                        🎤
+
+                    </button>
+
+                    <input type="text" id="user-input"
+                        class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl py-4 px-8 outline-none focus:ring-2 focus:ring-red-300 font-medium"
+                        placeholder="અહીં ટાઇપ કરો અથવા 'Macaw' બોલો...">
+
+                    <button onclick="handleSend()"
+                        class="bg-red-500 text-white p-4 px-10 rounded-2xl font-bold shadow-lg hover:bg-red-600 active:scale-95 transition-all uppercase tracking-widest">SEND</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
